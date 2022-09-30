@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,15 +12,15 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "job_published")
+@Table(name = "job_published", schema = "job_board")
 @NoArgsConstructor
 @AllArgsConstructor
 public class JobPublished {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @NotNull
     @Column(name = "description")
@@ -28,6 +29,7 @@ public class JobPublished {
 
     @NotNull
     @Column(name = "date_publish")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape= JsonFormat.Shape.STRING)
     private LocalDateTime datePublish;
 
     @OneToOne

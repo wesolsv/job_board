@@ -10,15 +10,15 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @Entity
-@Table(name = "job")
+@Table(name = "job", schema = "job_board")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Job {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @NotNull
     @Column(name = "opportunity")

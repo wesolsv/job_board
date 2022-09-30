@@ -12,15 +12,15 @@ import javax.validation.constraints.Size;
 
 @Data
 @Entity
-@Table(name = "person")
+@Table(name = "person", schema = "job_board")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Person {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @NotNull
     @Column(name = "name")
