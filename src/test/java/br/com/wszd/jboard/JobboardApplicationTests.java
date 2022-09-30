@@ -1,4 +1,4 @@
-package br.com.wszd.jobboard;
+package br.com.wszd.jboard;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

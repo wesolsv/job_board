@@ -1,4 +1,4 @@
-package br.com.wszd.jobboard.config;
+package br.com.wszd.jboard.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
