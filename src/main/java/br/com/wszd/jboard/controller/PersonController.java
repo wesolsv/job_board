@@ -5,10 +5,7 @@ import br.com.wszd.jboard.service.PersonService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -29,6 +26,15 @@ public class PersonController {
     @GetMapping("/{id}")
     public ResponseEntity<Person> getOnePerson(@PathVariable Long id){
         Person res = service.getPerson(id);
+        if(res != null){
+            return ResponseEntity.ok(res);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<Person> createPerson(@RequestBody Person novo){
+        Person res = service.createNewPerson(novo);
         if(res != null){
             return ResponseEntity.ok(res);
         }

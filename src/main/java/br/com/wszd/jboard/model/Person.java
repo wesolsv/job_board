@@ -48,4 +48,40 @@ public class Person {
     @OneToOne(mappedBy = "personId")
     @JsonIgnoreProperties("personId")
     private Job job;
+
+    public static class Builder{
+
+        private String name;
+        private String phone;
+        private String email;
+        private String cpf;
+
+        public Builder name(String name){
+            this.name = name;
+            return this;
+        }
+        public Builder phone(String phone){
+            this.phone = phone;
+            return this;
+        }
+        public Builder email(String email){
+            this.email = email;
+            return this;
+        }
+        public Builder cpf(String cpf){
+            this.cpf = cpf;
+            return this;
+        }
+
+        public Person build(){
+            return new Person(this);
+        }
+    }
+
+    private Person(Builder builder){
+        name = builder.name;
+        phone = builder.phone;
+        email = builder.email;
+        cpf = builder.cpf;
+    }
 }
