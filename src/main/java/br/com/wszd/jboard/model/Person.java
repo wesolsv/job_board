@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @Entity
@@ -42,4 +44,8 @@ public class Person {
     @Column(name = "cpf")
     @NotBlank(message = "CPF é obrigatorio")
     private String cpf;
+
+    @OneToOne(mappedBy = "personId")
+    @JsonIgnoreProperties("personId")
+    private Job job;
 }

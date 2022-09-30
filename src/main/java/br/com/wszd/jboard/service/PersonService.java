@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -19,9 +20,9 @@ public class PersonService {
        return (ArrayList<Person>) repository.findAll();
     }
 
-//    public Person getPerson(Long id){
-//        return repository.findAllById(id);
-//    }
+    public Person getPerson(Long id){
+        return repository.findById(id).orElse(null);
+    }
 
 
 }

@@ -1,6 +1,7 @@
 package br.com.wszd.jboard.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +11,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -43,4 +46,7 @@ public class Company {
     @Column(name = "cnpj")
     @NotBlank(message = "CNPJ é obrigatorio")
     private String cnpj;
+
+    @OneToMany(mappedBy = "companyId")
+    private List<Job> jobs;
 }

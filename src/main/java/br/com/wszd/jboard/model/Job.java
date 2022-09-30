@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,6 +47,6 @@ public class Job {
     private Person personId;
 
     @ManyToOne
-    @JoinColumn(name = "company_id")
+    //@JoinColumn(name = "company_id")
     private Company companyId;
 }
