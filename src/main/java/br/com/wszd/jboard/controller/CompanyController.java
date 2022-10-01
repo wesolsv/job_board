@@ -18,7 +18,7 @@ public class CompanyController {
 
     @ApiOperation(value = "Retorna todas as empresas")
     @GetMapping
-    public ArrayList<Company> getAllPeople(){
+    public ArrayList<Company> getAllCompany(){
         return service.getAllCompany();
     }
 

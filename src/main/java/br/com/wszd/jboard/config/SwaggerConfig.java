@@ -17,7 +17,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .apis(RequestHandlerSelectors.basePackage("br.com.clinicawszd.clinicavet"))
+                .apis(RequestHandlerSelectors.basePackage("br.com.wszd.jboard"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo());

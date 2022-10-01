@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.model;
 
+import br.com.wszd.jboard.util.CandidacyStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -29,8 +30,8 @@ public class Candidacy {
 
     @NotNull
     @Column(name = "status")
-    @NotBlank(message = "Status é obrigatorio")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private CandidacyStatus status;
 
     @ManyToOne
     @JoinColumn(name = "person_id")
@@ -39,4 +40,31 @@ public class Candidacy {
     @ManyToOne
     @JoinColumn(name = "job_published_id")
     private JobPublished jobPublished;
+
+    public static class Builder{
+        private Person personId;
+        private JobPublished jobPublished;
+
+        public Candidacy.Builder personId(Person personId){
+            this.personId = personId;
+            return this;
+        }
+        public Candidacy.Builder jobPublished(JobPublished jobPublished){
+            this.jobPublished = jobPublished;
+            return this;
+        }
+
+        public Candidacy build(){
+            return new Candidacy(this);
+        }
+
+    }
+
+    private Candidacy(Candidacy.Builder builder){
+        dateCandidacy = LocalDateTime.now();
+        status = CandidacyStatus.AGUARDANDO;
+        personId = builder.personId;
+        jobPublished = builder.jobPublished;
+    }
+
 }

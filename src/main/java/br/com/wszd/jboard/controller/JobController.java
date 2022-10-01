@@ -18,13 +18,13 @@ public class JobController {
 
     @ApiOperation(value = "Retorna todas os empregos")
     @GetMapping
-    public ArrayList<Job> getAllPeople(){
+    public ArrayList<Job> getAllJob(){
         return service.getAllJobs();
     }
 
     @ApiOperation(value = "Retorna um emprego")
     @GetMapping("/{id}")
-    public ResponseEntity<Job> getOnePerson(@PathVariable Long id){
+    public ResponseEntity<Job> getOneJob(@PathVariable Long id){
         Job res = service.getJob(id);
         if(res != null){
             return ResponseEntity.ok(res);
@@ -33,7 +33,7 @@ public class JobController {
     }
     @ApiOperation(value = "Cria novo emprego")
     @PostMapping
-    public ResponseEntity<Job> createPerson(@RequestBody Job novo){
+    public ResponseEntity<Job> createJob(@RequestBody Job novo){
         Job res = service.createNewJob(novo);
         if(res != null){
             return ResponseEntity.ok(res);
@@ -43,7 +43,7 @@ public class JobController {
 
     @ApiOperation(value = "Altera um emprego")
     @PutMapping
-    public ResponseEntity<Job> editPerson(@RequestBody Job novo){
+    public ResponseEntity<Job> editJob(@RequestBody Job novo){
         Job res = service.editJob((novo));
 
         if(res != null){
@@ -54,7 +54,7 @@ public class JobController {
 
     @ApiOperation(value = "Deletando um emprego")
     @DeleteMapping("/{id}")
-    public void deletePerson(@PathVariable Long id){
+    public void deleteJob(@PathVariable Long id){
         service.deleteJob(id);
     }
 }
