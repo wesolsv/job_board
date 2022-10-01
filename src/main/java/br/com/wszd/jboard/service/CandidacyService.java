@@ -4,7 +4,7 @@ import br.com.wszd.jboard.exceptions.BadRequestException;
 import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
 import br.com.wszd.jboard.model.Candidacy;
 import br.com.wszd.jboard.repository.CandidacyRepository;
-import br.com.wszd.jboard.repository.CompanyRepository;
+import br.com.wszd.jboard.util.CandidacyStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,8 +46,14 @@ public class CandidacyService {
 
     public Candidacy editCandidacy(Candidacy novo){
         log.info("Editando candidatura");
-        getCandidacy(novo.getId());
-        return repository.save(novo);
+
+        Candidacy candidacy = getCandidacy(novo.getId());
+        candidacy.setStatus(novo.getStatus());
+        if(candidacy.getStatus() == CandidacyStatus.RECUSADA) {
+            deleteCandidacy(candidacy.getId());
+            return null;
+        }
+        return repository.save(candidacy);
     }
 
     public void deleteCandidacy(Long id){
