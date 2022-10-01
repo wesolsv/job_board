@@ -31,18 +31,18 @@ public class CompanyService {
     public Company createNewCompany(Company novo) {
         log.info("Adicionando nova empresa");
 
-        Company Company = new Company.Builder()
+        Company company = new Company.Builder()
                 .name(novo.getName())
                 .phone(novo.getPhone().replaceAll("\\D", ""))
                 .email(novo.getEmail())
                 .cnpj(novo.getCnpj().replaceAll("\\D", ""))
                 .build();
         try{
-            repository.save(Company);
+            repository.save(company);
         }catch(BadRequestException e){
             throw new BadRequestException("Falha ao criar empresa");
         }
-        return Company;
+        return company;
     }
 
     public Company editCompany(Company novo){

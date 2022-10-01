@@ -48,6 +48,7 @@ public class Company {
     private String cnpj;
 
     @OneToMany(mappedBy = "companyId")
+    @JsonIgnoreProperties("companyId")
     private List<Job> jobs;
 
     public static class Builder{
