@@ -1,4 +1,4 @@
-package br.com.wszd.jboard.model.exceptions;
+package br.com.wszd.jboard.exceptions;
 
 import java.util.Date;
 

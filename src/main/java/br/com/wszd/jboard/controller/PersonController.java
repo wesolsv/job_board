@@ -31,7 +31,7 @@ public class PersonController {
         }
         return ResponseEntity.notFound().build();
     }
-
+    @ApiOperation(value = "Cria nova pessoa")
     @PostMapping
     public ResponseEntity<Person> createPerson(@RequestBody Person novo){
         Person res = service.createNewPerson(novo);
@@ -39,5 +39,22 @@ public class PersonController {
             return ResponseEntity.ok(res);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @ApiOperation(value = "Altera uma pessoa")
+    @PutMapping
+    public ResponseEntity<Person> editPerson(@RequestBody Person novo){
+        Person res = service.editPerson((novo));
+
+        if(res != null){
+            return ResponseEntity.ok(res);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @ApiOperation(value = "Deletando uma pessoa")
+    @DeleteMapping("/{id}")
+    public void deletePerson(@PathVariable Long id){
+        service.deletePerson(id);
     }
 }

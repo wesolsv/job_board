@@ -49,4 +49,40 @@ public class Company {
 
     @OneToMany(mappedBy = "companyId")
     private List<Job> jobs;
+
+    public static class Builder{
+
+        private String name;
+        private String phone;
+        private String email;
+        private String cnpj;
+
+        public Company.Builder name(String name){
+            this.name = name;
+            return this;
+        }
+        public Company.Builder phone(String phone){
+            this.phone = phone;
+            return this;
+        }
+        public Company.Builder email(String email){
+            this.email = email;
+            return this;
+        }
+        public Company.Builder cnpj(String cnpj){
+            this.cnpj = cnpj;
+            return this;
+        }
+
+        public Company build(){
+            return new Company(this);
+        }
+    }
+
+    private Company(Company.Builder builder){
+        name = builder.name;
+        phone = builder.phone;
+        email = builder.email;
+        cnpj = builder.cnpj;
+    }
 }

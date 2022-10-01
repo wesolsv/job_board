@@ -1,4 +1,4 @@
-package br.com.wszd.jboard.model.exceptions;
+package br.com.wszd.jboard.exceptions;
 
 public class BadRequestException extends RuntimeException{
     private static final long serialVersionUID = 1L;
