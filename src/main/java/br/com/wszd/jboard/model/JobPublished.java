@@ -35,4 +35,28 @@ public class JobPublished {
     @OneToOne
     @JoinColumn(name = "job_id")
     private Job jobId;
+
+    public static class Builder{
+
+        private String description;
+        private Job jobId;
+        public Builder description(String description){
+            this.description = description;
+            return this;
+        }
+        public Builder jobId(Job jobId){
+            this.jobId = jobId;
+            return this;
+        }
+
+        public JobPublished build(){
+            return new JobPublished(this);
+        }
+    }
+
+    private JobPublished(JobPublished.Builder builder){
+        description = builder.description;
+        datePublish = LocalDateTime.now();
+        jobId = builder.jobId;
+    }
 }
