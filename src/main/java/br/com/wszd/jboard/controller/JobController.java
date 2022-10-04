@@ -42,9 +42,9 @@ public class JobController {
     }
 
     @ApiOperation(value = "Altera um emprego")
-    @PutMapping
-    public ResponseEntity<Job> editJob(@RequestBody Job novo){
-        Job res = service.editJob((novo));
+    @PutMapping("/{id}")
+    public ResponseEntity<Job> editJob(@PathVariable Long id, @RequestBody Job novo){
+        Job res = service.editJob(id,novo);
 
         if(res != null){
             return ResponseEntity.ok(res);

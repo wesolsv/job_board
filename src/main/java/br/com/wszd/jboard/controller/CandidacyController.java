@@ -42,9 +42,9 @@ public class CandidacyController {
     }
 
     @ApiOperation(value = "Altera uma candidatura")
-    @PutMapping
-    public ResponseEntity<Candidacy> editCandidacy(@RequestBody Candidacy novo){
-        Candidacy res = service.editCandidacy((novo));
+    @PutMapping("/{id}")
+    public ResponseEntity<Candidacy> editCandidacy(@PathVariable Long id, @RequestBody Candidacy novo){
+        Candidacy res = service.editCandidacy(id, novo);
 
         if(res != null){
             return ResponseEntity.ok(res);

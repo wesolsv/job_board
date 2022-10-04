@@ -48,9 +48,10 @@ public class JobService {
         return job;
     }
 
-    public Job editJob(Job novo){
+    public Job editJob(Long id, Job novo){
         log.info("Editando Job");
-        getJob(novo.getId());
+        getJob(id);
+        novo.setId(id);
         return repository.save(novo);
     }
 

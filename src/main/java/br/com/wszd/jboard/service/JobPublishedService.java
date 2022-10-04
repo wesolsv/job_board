@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Service
@@ -44,11 +43,11 @@ public class JobPublishedService {
         return jobPublished;
     }
 
-    public JobPublished editJobPublished(JobPublished novo){
+    public JobPublished editJobPublished(Long id, JobPublished novo){
         log.info("Editando emprego publicado");
-        JobPublished job = getJobPublished(novo.getId());
-        job.setDescription(novo.getDescription());
-        return repository.save(job);
+        getJobPublished(id);
+        novo.setId(id);
+        return repository.save(novo);
     }
 
     public void deleteJobPublished(Long id){

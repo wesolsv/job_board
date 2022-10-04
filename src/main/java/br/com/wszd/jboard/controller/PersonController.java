@@ -42,9 +42,9 @@ public class PersonController {
     }
 
     @ApiOperation(value = "Altera uma pessoa")
-    @PutMapping
-    public ResponseEntity<Person> editPerson(@RequestBody Person novo){
-        Person res = service.editPerson((novo));
+    @PutMapping("/{id}")
+    public ResponseEntity<Person> editPerson(@PathVariable Long id, @RequestBody Person novo){
+        Person res = service.editPerson(id, novo);
 
         if(res != null){
             return ResponseEntity.ok(res);

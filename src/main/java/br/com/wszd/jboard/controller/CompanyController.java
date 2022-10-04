@@ -42,9 +42,9 @@ public class CompanyController {
     }
 
     @ApiOperation(value = "Altera uma empresa")
-    @PutMapping
-    public ResponseEntity<Company> editCompany(@RequestBody Company novo){
-        Company res = service.editCompany((novo));
+    @PutMapping("/{id}")
+    public ResponseEntity<Company> editCompany(@PathVariable Long id, @RequestBody Company novo){
+        Company res = service.editCompany(id,novo);
 
         if(res != null){
             return ResponseEntity.ok(res);

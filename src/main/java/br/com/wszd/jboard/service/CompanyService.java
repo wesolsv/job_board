@@ -45,9 +45,10 @@ public class CompanyService {
         return company;
     }
 
-    public Company editCompany(Company novo){
+    public Company editCompany(Long id, Company novo){
         log.info("Editando empresa");
-        getCompany(novo.getId());
+        getCompany(id);
+        novo.setId(id);
         return repository.save(novo);
     }
 

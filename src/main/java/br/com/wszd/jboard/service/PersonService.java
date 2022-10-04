@@ -45,9 +45,10 @@ public class PersonService {
         return person;
     }
 
-    public Person editPerson(Person novo){
+    public Person editPerson(Long id, Person novo){
         log.info("Editando pessoa");
-        getPerson(novo.getId());
+        getPerson(id);
+        novo.setId(id);
         return repository.save(novo);
     }
 

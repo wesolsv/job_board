@@ -44,13 +44,13 @@ public class CandidacyService {
         return candidacy;
     }
 
-    public Candidacy editCandidacy(Candidacy novo){
+    public Candidacy editCandidacy(Long id, Candidacy novo){
         log.info("Editando candidatura");
 
-        Candidacy candidacy = getCandidacy(novo.getId());
+        Candidacy candidacy = getCandidacy(id);
         candidacy.setStatus(novo.getStatus());
         if(candidacy.getStatus() == CandidacyStatus.RECUSADA) {
-            deleteCandidacy(candidacy.getId());
+            deleteCandidacy(id);
             return null;
         }
         return repository.save(candidacy);

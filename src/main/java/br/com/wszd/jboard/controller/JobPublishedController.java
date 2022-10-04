@@ -42,9 +42,9 @@ public class JobPublishedController {
     }
 
     @ApiOperation(value = "Altera um emprego")
-    @PutMapping
-    public ResponseEntity<JobPublished> editJobPublished(@RequestBody JobPublished novo){
-        JobPublished res = service.editJobPublished((novo));
+    @PutMapping("/{id}")
+    public ResponseEntity<JobPublished> editJobPublished(@PathVariable Long id, @RequestBody JobPublished novo){
+        JobPublished res = service.editJobPublished(id, novo);
 
         if(res != null){
             return ResponseEntity.ok(res);
