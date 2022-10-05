@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.service;
 
+import br.com.wszd.jboard.dto.PersonCandidacyDTO;
 import br.com.wszd.jboard.exceptions.BadRequestException;
 import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
 import br.com.wszd.jboard.model.Candidacy;
@@ -23,6 +24,11 @@ public class CandidacyService {
        return (ArrayList<Candidacy>) repository.findAll();
     }
 
+    public ArrayList<PersonCandidacyDTO> getAllCandidacy(Long id){
+        log.info("Buscando todas as candidaturas pelo id");
+        return (ArrayList<PersonCandidacyDTO>) repository.returnCandidacyByPerson(id);
+    }
+
     public Candidacy getCandidacy(Long id){
         log.info("Buscando candidatura");
         return repository.findById(id).orElseThrow(
@@ -32,11 +38,14 @@ public class CandidacyService {
     public Candidacy createNewCandidacy(Candidacy novo) {
         log.info("Adicionando nova candidatura");
 
-        Candidacy candidacy = new Candidacy.Builder()
-                .personId(novo.getPersonId())
-                .jobPublished(novo.getJobPublished())
-                .build();
+        Candidacy candidacy;
+
         try{
+            candidacy = new Candidacy.Builder()
+                    .personId(novo.getPersonId())
+                    .jobPublished(novo.getJobPublished())
+                    .build();
+
             repository.save(candidacy);
         }catch(BadRequestException e){
             throw new BadRequestException("Falha ao criar candidatura");

@@ -2,6 +2,7 @@ package br.com.wszd.jboard.controller;
 
 import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.service.JobService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 
 @RestController
 @RequestMapping("api/v1/job")
+@Api(value = "Job")
 public class JobController {
 
     @Autowired

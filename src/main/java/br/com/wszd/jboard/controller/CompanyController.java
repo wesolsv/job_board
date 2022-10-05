@@ -2,6 +2,7 @@ package br.com.wszd.jboard.controller;
 
 import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.service.CompanyService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 
 @RestController
 @RequestMapping("api/v1/company")
+@Api(value = "Company")
 public class CompanyController {
 
     @Autowired
@@ -31,6 +33,7 @@ public class CompanyController {
         }
         return ResponseEntity.notFound().build();
     }
+
     @ApiOperation(value = "Cria nova empresa")
     @PostMapping
     public ResponseEntity<Company> createCompany(@RequestBody Company novo){

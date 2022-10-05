@@ -1,7 +1,11 @@
 package br.com.wszd.jboard.controller;
 
+import br.com.wszd.jboard.dto.PersonCandidacyDTO;
+import br.com.wszd.jboard.model.Candidacy;
 import br.com.wszd.jboard.model.Person;
+import br.com.wszd.jboard.service.CandidacyService;
 import br.com.wszd.jboard.service.PersonService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +15,14 @@ import java.util.ArrayList;
 
 @RestController
 @RequestMapping("api/v1/person")
+@Api(value = "Person")
 public class PersonController {
 
     @Autowired
     private PersonService service;
+
+    @Autowired
+    private CandidacyService candidacyService;
 
     @ApiOperation(value = "Retorna todas as pessoas")
     @GetMapping
@@ -38,7 +46,7 @@ public class PersonController {
         if(res != null){
             return ResponseEntity.ok(res);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().build();
     }
 
     @ApiOperation(value = "Altera uma pessoa")
@@ -56,5 +64,24 @@ public class PersonController {
     @DeleteMapping("/{id}")
     public void deletePerson(@PathVariable Long id){
         service.deletePerson(id);
+    }
+
+    // Operação para realizar candidatura a uma vaga
+
+    @ApiOperation(value = "Realizar candidatura a uma vaga")
+    @PostMapping("/candidacy")
+    public ResponseEntity<Candidacy> candidacyPerson(@RequestBody Candidacy candidacy){
+        Candidacy cand = candidacyService.createNewCandidacy(candidacy);
+        if(cand != null){
+            return ResponseEntity.ok(cand);
+        }
+
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ApiOperation(value = "Pegar todas as candidaturas por pessoa")
+    @GetMapping("/candidacy/{id}")
+    public ArrayList<PersonCandidacyDTO> allCandidacyByPersonId(@PathVariable Long id){
+        return candidacyService.getAllCandidacy(id);
     }
 }
