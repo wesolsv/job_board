@@ -1,6 +1,7 @@
 package br.com.wszd.jboard.controller;
 
 import br.com.wszd.jboard.model.Company;
+import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.service.CompanyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/company")
@@ -59,5 +62,11 @@ public class CompanyController {
     @DeleteMapping("/{id}")
     public void deleteCompany(@PathVariable Long id){
         service.deleteCompany(id);
+    }
+
+    @ApiOperation(value = "Retorna todos os candidatos de uma vaga")
+    @GetMapping("/candidate/{id}")
+    public List<Optional<Person>> getAllPersonByJob(@PathVariable Long id ){
+        return service.getAllPersonByJob(id);
     }
 }

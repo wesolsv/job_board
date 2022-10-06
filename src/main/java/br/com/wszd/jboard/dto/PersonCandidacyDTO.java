@@ -3,14 +3,12 @@ package br.com.wszd.jboard.dto;
 import br.com.wszd.jboard.model.*;
 import br.com.wszd.jboard.util.CandidacyStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 

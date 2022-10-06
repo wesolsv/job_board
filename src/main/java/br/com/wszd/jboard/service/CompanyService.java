@@ -2,13 +2,19 @@ package br.com.wszd.jboard.service;
 
 import br.com.wszd.jboard.exceptions.BadRequestException;
 import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
+import br.com.wszd.jboard.model.Candidacy;
 import br.com.wszd.jboard.model.Company;
+import br.com.wszd.jboard.model.Person;
+import br.com.wszd.jboard.repository.CandidacyRepository;
 import br.com.wszd.jboard.repository.CompanyRepository;
+import br.com.wszd.jboard.repository.PersonRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -16,6 +22,12 @@ public class CompanyService {
 
     @Autowired
     private CompanyRepository repository;
+
+    @Autowired
+    private CandidacyRepository candidacyRepository;
+
+    @Autowired
+    private PersonRepository personRepository;
 
     public ArrayList<Company> getAllCompany(){
         log.info("Buscando todas as empresas");
@@ -56,5 +68,20 @@ public class CompanyService {
         log.info("Deletando empresa");
         getCompany(id);
         repository.deleteById(id);
+    }
+
+    public List<Optional<Person>> getAllPersonByJob(Long id) {
+        log.info("Buscando todas as pessoas da vaga de id " + id);
+
+        List<Optional<Person>> pessoas = null;
+        List<Candidacy> candidaturas =candidacyRepository.findAll();
+
+        for(Candidacy cd : candidaturas){
+            if(cd.getJobPublished().getJobId().getId() == id){
+               pessoas.add(personRepository.findById(cd.getPersonId().getId()));
+            }
+
+        }
+       return pessoas;
     }
 }
