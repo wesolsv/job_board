@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -38,6 +39,17 @@ public class CandidacyService {
     public Candidacy createNewCandidacy(Candidacy novo) {
         log.info("Adicionando nova candidatura");
 
+        //Validando se a pessoa e a vaga já tem a mesma combinação de registros
+
+        ArrayList<Candidacy> lista = (ArrayList<Candidacy>) repository.findAll();
+
+        for(Candidacy cd : lista){
+            if(cd.getJob().getId() == novo.getJob().getId() && cd.getPersonId().getId() == novo.getPersonId().getId()){
+                throw  new BadRequestException("A pessoa já está se candidatando a vaga");
+            }
+        }
+
+        //Criando candidatura
         Candidacy candidacy;
 
         try{

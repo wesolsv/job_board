@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS candidacy(
 	date_candidacy TIMESTAMP NOT NULL,
 	status VARCHAR(20) NOT NULL,
 	person_id INT NOT NULL,
-	job_id INT UNIQUE NOT NULL,
+	job_id INT NOT NULL,
 	PRIMARY KEY(id),
     CONSTRAINT fk_person
 	FOREIGN KEY (person_id)
