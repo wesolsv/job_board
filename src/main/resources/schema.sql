@@ -25,12 +25,14 @@ CREATE TABLE IF NOT EXISTS company(
 CREATE TABLE IF NOT EXISTS job(
 	id INT GENERATED ALWAYS AS IDENTITY,
 	opportunity VARCHAR(50) NOT NULL,
+	description VARCHAR(200) NOT NULL,
 	type VARCHAR(20) NOT NULL,
 	salary DECIMAL NOT NULL,
 	benefits  VARCHAR(50) NOT NULL,
 	status VARCHAR(20) NOT NULL,
 	person_id INT UNIQUE NULL,
 	company_id INT NULL,
+	date_publish TIMESTAMP NOT NULL,
 	PRIMARY KEY(id),
     CONSTRAINT fk_person
 	FOREIGN KEY (person_id)
@@ -40,28 +42,17 @@ CREATE TABLE IF NOT EXISTS job(
     REFERENCES company(id)
 );
 
-CREATE TABLE IF NOT EXISTS job_published(
-	id INT GENERATED ALWAYS AS IDENTITY,
-	description VARCHAR(200) NOT NULL,
-	date_publish TIMESTAMP NOT NULL,
-	job_id INT UNIQUE NOT NULL,
-	PRIMARY KEY(id),
-    CONSTRAINT fk_job
-	FOREIGN KEY (job_id)
-    REFERENCES job(id)
-);
-
 CREATE TABLE IF NOT EXISTS candidacy(
 	id INT GENERATED ALWAYS AS IDENTITY,
 	date_candidacy TIMESTAMP NOT NULL,
 	status VARCHAR(20) NOT NULL,
 	person_id INT NOT NULL,
-	job_published_id INT UNIQUE NOT NULL,
+	job_id INT UNIQUE NOT NULL,
 	PRIMARY KEY(id),
     CONSTRAINT fk_person
 	FOREIGN KEY (person_id)
     REFERENCES person(id),
-	CONSTRAINT fk_job_published
-	FOREIGN KEY (job_published_id)
-    REFERENCES job_published(id)
+	CONSTRAINT fk_job
+	FOREIGN KEY (job_id)
+    REFERENCES job(id)
 );

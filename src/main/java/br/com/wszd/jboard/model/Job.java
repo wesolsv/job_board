@@ -1,6 +1,7 @@
 package br.com.wszd.jboard.model;
 
 import br.com.wszd.jboard.util.JobStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Data
@@ -59,6 +61,11 @@ public class Job {
     @JoinColumn(name = "company_id")
     @JsonIgnoreProperties("jobs")
     private Company companyId;
+
+    @NotNull
+    @Column(name = "date_candidacy")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape= JsonFormat.Shape.STRING)
+    private LocalDateTime datePublish;
 
 
     public static class Builder{

@@ -25,21 +25,16 @@ public class PersonCandidacyDTO {
     @JsonIgnoreProperties(ignoreUnknown = true, value = {"id", "email", "job"})
     private Person person;
 
-    @JsonIgnoreProperties(ignoreUnknown = true, value = {"id", "jobId"})
-    private JobPublished jobPublished;
-
     @JsonIgnoreProperties(ignoreUnknown = true, value = {"id","personId","companyId"})
     private Optional<Job> job;
 
     @JsonIgnoreProperties(ignoreUnknown = true, value =  {"id", "phone", "cnpj", "jobs"})
     private Optional<Company> company;
 
-
     public static class Builder{
         private LocalDateTime dataCandidacy;
         private CandidacyStatus status;
         private Person person;
-        private JobPublished jobPublished;
         private Optional<Job> job;
         private Optional<Company> company;
 
@@ -63,10 +58,6 @@ public class PersonCandidacyDTO {
             this.company = company;
             return this;
         }
-        public PersonCandidacyDTO.Builder jobPublished(JobPublished jobPublished){
-            this.jobPublished = jobPublished;
-            return this;
-        }
 
         public PersonCandidacyDTO build(){
             return new PersonCandidacyDTO(this);
@@ -78,17 +69,15 @@ public class PersonCandidacyDTO {
         this.dataCandidacy = dataCandidacy;
         this.status = status;
         this.person = person;
-        this.jobPublished = jobPublished;
-        this.job = Optional.ofNullable(jobPublished.getJobId());
+        this.job = job;
         this.company = Optional.ofNullable(job.get().getCompanyId());
     }
 
-    public PersonCandidacyDTO(LocalDateTime dataCandidacy, CandidacyStatus status, Person person, JobPublished jobPublished) {
+    public PersonCandidacyDTO(LocalDateTime dataCandidacy, CandidacyStatus status, Person person, Job job) {
         this.dataCandidacy = dataCandidacy;
         this.status = status;
         this.person = person;
-        this.jobPublished = jobPublished;
-        this.job = Optional.ofNullable(jobPublished.getJobId());
-        this.company = Optional.ofNullable(job.get().getCompanyId());
+        this.job = Optional.ofNullable(job);
+        this.company = Optional.ofNullable(job.getCompanyId());
     }
 }

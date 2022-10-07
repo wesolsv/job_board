@@ -49,11 +49,10 @@ public class Candidacy {
             this.personId = personId;
             return this;
         }
-        public Candidacy.Builder jobPublished(Job job){
+        public Candidacy.Builder job(Job job){
             this.job = job;
             return this;
         }
-
         public Candidacy build(){
             return new Candidacy(this);
         }

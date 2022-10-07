@@ -77,7 +77,7 @@ public class CompanyService {
         List<Candidacy> candidaturas =candidacyRepository.findAll();
 
         for(Candidacy cd : candidaturas){
-            if(cd.getJobPublished().getJobId().getId() == id){
+            if(cd.getJob().getId() == id){
                pessoas.add(personRepository.findById(cd.getPersonId().getId()));
             }
 

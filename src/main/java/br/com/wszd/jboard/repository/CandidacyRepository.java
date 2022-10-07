@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public interface CandidacyRepository extends JpaRepository<Candidacy, Long> {
 
     @Query("SELECT "
-            + "new br.com.wszd.jboard.dto.PersonCandidacyDTO(cd.dateCandidacy, cd.status, cd.personId, cd.jobPublished) "
+            + "new br.com.wszd.jboard.dto.PersonCandidacyDTO(cd.dateCandidacy, cd.status, cd.personId, cd.job) "
             + "FROM Candidacy cd "
             + "WHERE person_id = :id ")
     public ArrayList<PersonCandidacyDTO> returnCandidacyByPerson(
