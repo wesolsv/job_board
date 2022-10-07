@@ -43,7 +43,7 @@ public class CandidacyService {
         try{
             candidacy = new Candidacy.Builder()
                     .personId(novo.getPersonId())
-                    .jobPublished(novo.getJobPublished())
+                    .jobPublished(novo.getJob())
                     .build();
 
             repository.save(candidacy);

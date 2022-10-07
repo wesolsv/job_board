@@ -38,19 +38,19 @@ public class Candidacy {
     private Person personId;
 
     @ManyToOne
-    @JoinColumn(name = "job_published_id")
-    private JobPublished jobPublished;
+    @JoinColumn(name = "job_id")
+    private Job job;
 
     public static class Builder{
         private Person personId;
-        private JobPublished jobPublished;
+        private Job job;
 
         public Candidacy.Builder personId(Person personId){
             this.personId = personId;
             return this;
         }
-        public Candidacy.Builder jobPublished(JobPublished jobPublished){
-            this.jobPublished = jobPublished;
+        public Candidacy.Builder jobPublished(Job job){
+            this.job = job;
             return this;
         }
 
@@ -64,7 +64,7 @@ public class Candidacy {
         dateCandidacy = LocalDateTime.now();
         status = CandidacyStatus.AGUARDANDO;
         personId = builder.personId;
-        jobPublished = builder.jobPublished;
+        job = builder.job;
     }
 
 }

@@ -29,6 +29,11 @@ public class Job {
     private String opportunity;
 
     @NotNull
+    @Column(name = "description")
+    @NotBlank(message = "Descricao é obrigatorio")
+    private String description;
+
+    @NotNull
     @Column(name = "type")
     private String type;
 
