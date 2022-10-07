@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Service
@@ -33,6 +35,7 @@ public class JobService {
 
         Job job = new Job.Builder()
                 .opportunity(novo.getOpportunity())
+                .description(novo.getDescription())
                 .type(novo.getType())
                 .salary(novo.getSalary())
                 .benefits(novo.getBenefits())
@@ -49,8 +52,9 @@ public class JobService {
     }
 
     public Job editJob(Long id, Job novo){
+        Job returnJob = getJob(id);
         log.info("Editando Job");
-        getJob(id);
+        novo.setDatePublish(returnJob.getDatePublish());
         novo.setId(id);
         return repository.save(novo);
     }

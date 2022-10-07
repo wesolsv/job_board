@@ -62,8 +62,7 @@ public class Job {
     @JsonIgnoreProperties("jobs")
     private Company companyId;
 
-    @NotNull
-    @Column(name = "date_candidacy")
+    @Column(name = "date_publish")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape= JsonFormat.Shape.STRING)
     private LocalDateTime datePublish;
 
@@ -71,6 +70,7 @@ public class Job {
     public static class Builder{
 
         private String opportunity;
+        private String description;
         private String type;
         private Double salary;
         private String benefits;
@@ -79,8 +79,15 @@ public class Job {
         private Person personId;
         private Company companyId;
 
+        private LocalDateTime dateCandidacy;
+
         public Job.Builder opportunity(String opportunity){
             this.opportunity = opportunity;
+            return this;
+        }
+
+        public Job.Builder description(String description){
+            this.description = description;
             return this;
         }
         public Job.Builder type(String type){
@@ -115,11 +122,13 @@ public class Job {
 
     private Job(Job.Builder builder){
         opportunity = builder.opportunity;
+        description = builder.description;
         type = builder.type;
         salary = builder.salary;
         benefits = builder.benefits;
         status = builder.status;
         personId = builder.personId;
         companyId = builder.companyId;
+        datePublish = LocalDateTime.now();
     }
 }
