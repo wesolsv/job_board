@@ -45,13 +45,13 @@ public class CandidacyService {
 
         for(Candidacy cd : lista){
             if(cd.getJob().getId() == novo.getJob().getId() && cd.getPersonId().getId() == novo.getPersonId().getId()){
-                throw  new BadRequestException("A pessoa já está se candidatando a vaga");
+                throw  new BadRequestException(cd.getPersonId().getName() +" já está se candidatou a esta vaga ");
             }
         }
 
         //Criando candidatura
-        Candidacy candidacy;
 
+        Candidacy candidacy;
         try{
             candidacy = new Candidacy.Builder()
                     .personId(novo.getPersonId())

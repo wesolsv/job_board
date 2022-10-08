@@ -69,4 +69,12 @@ public class CompanyController {
     public List<Optional<Person>> getAllPersonByJob(@PathVariable Long id ){
         return service.getAllPersonByJob(id);
     }
+
+    @ApiOperation(value = "Seleciona candidato a vaga")
+    @PostMapping("/candidate/hire")
+    public String hirePerson(@RequestParam Long personId, Long jobId ){
+       service.hirePerson(personId, jobId);
+
+       return "Pessoa contratada";
+    }
 }

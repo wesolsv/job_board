@@ -4,9 +4,11 @@ import br.com.wszd.jboard.exceptions.BadRequestException;
 import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
 import br.com.wszd.jboard.model.Candidacy;
 import br.com.wszd.jboard.model.Company;
+import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.repository.CandidacyRepository;
 import br.com.wszd.jboard.repository.CompanyRepository;
+import br.com.wszd.jboard.repository.JobRepository;
 import br.com.wszd.jboard.repository.PersonRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class CompanyService {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private JobRepository jobRepository;
 
     public ArrayList<Company> getAllCompany(){
         log.info("Buscando todas as empresas");
@@ -70,18 +75,39 @@ public class CompanyService {
         repository.deleteById(id);
     }
 
-    public List<Optional<Person>> getAllPersonByJob(Long id) {
-        log.info("Buscando todas as pessoas da vaga de id " + id);
+    public List<Optional<Person>> getAllPersonByJob(Long jobId) {
+        log.info("Buscando todas as pessoas da vaga de id " + jobId);
 
-        List<Optional<Person>> pessoas = null;
+        List<Optional<Person>> pessoas = new ArrayList<>();
         List<Candidacy> candidaturas =candidacyRepository.findAll();
 
-        for(Candidacy cd : candidaturas){
-            if(cd.getJob().getId() == id){
-               pessoas.add(personRepository.findById(cd.getPersonId().getId()));
+        try {
+            for(Candidacy cd : candidaturas){
+                if(cd.getJob().getId() == jobId){
+                    pessoas.add(personRepository.findById(cd.getPersonId().getId()));
+                }
             }
-
+        }catch (BadRequestException e){
+            throw new BadRequestException("O job id " + jobId + " não existe");
         }
+
        return pessoas;
+    }
+
+    public void hirePerson(Long personId, Long jobId) {
+        List<Optional<Person>> pessoas = getAllPersonByJob(jobId);
+
+        try{
+            for(Optional<Person> p : pessoas){
+                if(p.get().getId() == personId){
+                    Optional<Job> job = Optional.ofNullable(jobRepository.findById(jobId).orElseThrow(
+                            () -> new ObjectNotFoundException("Objeto não encontrado com o id = " + jobId)));
+
+                    job.get().getPersonId().setId(personId);
+                }
+            }
+        }catch(BadRequestException e){
+            throw new BadRequestException("Não foi encontrada candidatura para a pessoa id " +personId);
+        }
     }
 }
