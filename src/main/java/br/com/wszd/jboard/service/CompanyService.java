@@ -10,13 +10,16 @@ import br.com.wszd.jboard.repository.CandidacyRepository;
 import br.com.wszd.jboard.repository.CompanyRepository;
 import br.com.wszd.jboard.repository.JobRepository;
 import br.com.wszd.jboard.repository.PersonRepository;
+import br.com.wszd.jboard.util.JobStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -29,7 +32,14 @@ public class CompanyService {
     private CandidacyRepository candidacyRepository;
 
     @Autowired
+    private CandidacyService candidacyService;
+    @Autowired
     private PersonRepository personRepository;
+    @Autowired
+    private PersonService personService;
+
+    @Autowired
+    private JobService jobService;
 
     @Autowired
     private JobRepository jobRepository;
@@ -100,10 +110,12 @@ public class CompanyService {
         try{
             for(Optional<Person> p : pessoas){
                 if(p.get().getId() == personId){
-                    Optional<Job> job = Optional.ofNullable(jobRepository.findById(jobId).orElseThrow(
-                            () -> new ObjectNotFoundException("Objeto não encontrado com o id = " + jobId)));
+                    Job job = jobService.getJob(jobId);
 
-                    job.get().getPersonId().setId(personId);
+                    job.setPersonId(personService.getPerson(personId));
+                    job.setStatus(JobStatus.COMPLETED);
+                    candidacyService.deleteAllCandidacy(jobId);
+                    jobRepository.save(job);
                 }
             }
         }catch(BadRequestException e){

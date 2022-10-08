@@ -6,12 +6,12 @@ import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
 import br.com.wszd.jboard.model.Candidacy;
 import br.com.wszd.jboard.repository.CandidacyRepository;
 import br.com.wszd.jboard.util.CandidacyStatus;
+import br.com.wszd.jboard.util.JobStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -25,7 +25,7 @@ public class CandidacyService {
        return (ArrayList<Candidacy>) repository.findAll();
     }
 
-    public ArrayList<PersonCandidacyDTO> getAllCandidacy(Long id){
+    public ArrayList<PersonCandidacyDTO> getAllCandidacyByPersonId(Long id){
         log.info("Buscando todas as candidaturas pelo id");
         return (ArrayList<PersonCandidacyDTO>) repository.returnCandidacyByPerson(id);
     }
@@ -38,6 +38,12 @@ public class CandidacyService {
 
     public Candidacy createNewCandidacy(Candidacy novo) {
         log.info("Adicionando nova candidatura");
+
+        //Validar se o status do job é completed, caso for não é possível me candidatar
+
+        if(novo.getJob().getStatus() == JobStatus.COMPLETED){
+            throw new BadRequestException("Esta vaga não está disponível");
+        }
 
         //Validando se a pessoa e a vaga já tem a mesma combinação de registros
 
@@ -81,5 +87,22 @@ public class CandidacyService {
         log.info("Deletando candidatura");
         getCandidacy(id);
         repository.deleteById(id);
+    }
+
+    //Deletar todas as candidaturas com o job id.
+    public void deleteAllCandidacy(Long jobId){
+        log.info("Deletando todas as candidaturas");
+        ArrayList<Candidacy> candidaturas = getAllCandidacy();
+
+        for(Candidacy cd : candidaturas){
+            if(cd.getJob().getId() == jobId){
+                deleteCandidacy(cd.getId());
+            }
+        }
+//        candidaturas.stream().forEach(candidatura -> {
+//            if(candidatura.getJob().getId() == jobId){
+//                deleteCandidacy(candidatura.getId());
+//            }
+//        });
     }
 }

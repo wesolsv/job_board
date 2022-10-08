@@ -82,6 +82,6 @@ public class PersonController {
     @ApiOperation(value = "Pegar todas as candidaturas por pessoa")
     @GetMapping("/candidacy/{id}")
     public ArrayList<PersonCandidacyDTO> allCandidacyByPersonId(@PathVariable Long id){
-        return candidacyService.getAllCandidacy(id);
+        return candidacyService.getAllCandidacyByPersonId(id);
     }
 }
