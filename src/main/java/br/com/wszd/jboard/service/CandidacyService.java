@@ -99,10 +99,5 @@ public class CandidacyService {
                 deleteCandidacy(cd.getId());
             }
         }
-//        candidaturas.stream().forEach(candidatura -> {
-//            if(candidatura.getJob().getId() == jobId){
-//                deleteCandidacy(candidatura.getId());
-//            }
-//        });
     }
 }

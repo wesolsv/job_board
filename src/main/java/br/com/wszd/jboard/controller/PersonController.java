@@ -7,6 +7,8 @@ import br.com.wszd.jboard.service.CandidacyService;
 import br.com.wszd.jboard.service.PersonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -79,7 +81,7 @@ public class PersonController {
         return ResponseEntity.badRequest().build();
     }
 
-    @ApiOperation(value = "Pegar todas as candidaturas por pessoa")
+    @ApiOperation(value = "Retorna todas as candidaturas da pessoa")
     @GetMapping("/candidacy/{id}")
     public ArrayList<PersonCandidacyDTO> allCandidacyByPersonId(@PathVariable Long id){
         return candidacyService.getAllCandidacyByPersonId(id);
