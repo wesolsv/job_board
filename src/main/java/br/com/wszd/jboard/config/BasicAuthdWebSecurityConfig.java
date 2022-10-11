@@ -3,17 +3,21 @@ package br.com.wszd.jboard.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 @Configuration
-@EnableWebSecurity
-public class WebSecurity {
+public class BasicAuthdWebSecurityConfig {
+
+    @Autowired
+    private AppBasicAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -25,5 +29,19 @@ public class WebSecurity {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
+    }
+
+    @Bean
+    public InMemoryUserDetailsManager userDetailsManager(){
+        UserDetails user = User.withUsername("user")
+                .password("$2a$08$YepEcJpKLoUZzTuI1iqdlejcS9nQXgw0wmCpCOUonKYH.E0BHL.SK")
+                .roles("USER_ROLE")
+                .build();
+        return new InMemoryUserDetailsManager(user);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(8);
     }
 }
