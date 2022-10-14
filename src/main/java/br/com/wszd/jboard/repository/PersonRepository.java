@@ -11,12 +11,4 @@ import java.util.ArrayList;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
-    @Query("SELECT "
-            + "new br.com.wszd.jboard.dto.PersonDTO(p.email, p.password) "
-            + "FROM Person p "
-            + "WHERE email = :email "
-            + "AND password = :password")
-    PersonDTO findByEmail(
-            @Param("email") String email,
-            @Param("password") String password);
 }

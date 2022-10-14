@@ -3,6 +3,7 @@ package br.com.wszd.jboard.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,7 +23,9 @@ public class BasicAuthdWebSecurityConfig {
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/api/v1/person").permitAll()
+                .antMatchers("/api/v1/person/login").permitAll()
+                .antMatchers("/api/v1/person").hasAnyRole("USER")
+                .antMatchers(HttpMethod.POST,"/api/v1/company/").hasAnyRole("COMP")
                 .anyRequest().permitAll()
                 .and().httpBasic()
                 .and()
@@ -38,7 +41,17 @@ public class BasicAuthdWebSecurityConfig {
                 .roles("USER")
                 .build();
 
-        return new InMemoryUserDetailsManager(user);
+        UserDetails comp = User.withUsername("comp")
+                .password("$2a$08$YepEcJpKLoUZzTuI1iqdlejcS9nQXgw0wmCpCOUonKYH.E0BHL.SK")
+                .roles("COMP")
+                .build();
+
+        UserDetails admin = User.withUsername("admin")
+                .password("$2a$08$YepEcJpKLoUZzTuI1iqdlejcS9nQXgw0wmCpCOUonKYH.E0BHL.SK")
+                .roles("ADMIN")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, comp, admin);
     }
 
     @Bean
