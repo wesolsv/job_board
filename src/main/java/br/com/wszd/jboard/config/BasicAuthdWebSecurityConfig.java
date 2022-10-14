@@ -35,9 +35,15 @@ public class BasicAuthdWebSecurityConfig {
     public InMemoryUserDetailsManager userDetailsManager(){
         UserDetails user = User.withUsername("user")
                 .password("$2a$08$YepEcJpKLoUZzTuI1iqdlejcS9nQXgw0wmCpCOUonKYH.E0BHL.SK")
-                .roles("USER_ROLE")
+                .roles("USER")
                 .build();
-        return new InMemoryUserDetailsManager(user);
+
+        UserDetails wes = User.withUsername("wes")
+                .password("$2a$08$YepEcJpKLoUZzTuI1iqdlejcS9nQXgw0wmCpCOUonKYH.E0BHL.SK")
+                .roles("ADMIN")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, wes);
     }
 
     @Bean

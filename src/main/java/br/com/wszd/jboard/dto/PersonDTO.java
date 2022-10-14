@@ -1,5 +1,6 @@
-package br.com.wszd.jboard.model;
+package br.com.wszd.jboard.dto;
 
+import br.com.wszd.jboard.model.Job;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,23 +17,12 @@ import javax.validation.constraints.Size;
 @Table(name = "person", schema = "job_board")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person {
+public class PersonDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-
-    @NotNull
-    @Column(name = "name")
-    @NotBlank(message = "Nome é obrigatorio")
-    @Size(min = 3, message = "Nome tamnho min 3")
-    private String name;
-
-    @NotNull
-    @Column(name = "phone")
-    @Size(min = 10, max = 15, message = "Telefone tamanho permitido min 10 max 15")
-    private String phone;
 
     @NotNull
     @Column(name = "email")
@@ -44,56 +34,35 @@ public class Person {
     @Size(min = 6, max = 16, message = "Senha tamanho permitido min 6 max 16")
     private String password;
 
+    public PersonDTO(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
     //private String token;
-
-    @NotNull
-    @Column(name = "cpf")
-    @NotBlank(message = "CPF é obrigatorio")
-    private String cpf;
-
-    @OneToOne(mappedBy = "personId")
-    @JsonIgnoreProperties("personId")
-    private Job job;
 
     public static class Builder{
 
-        private String name;
-        private String phone;
         private String email;
-        private String cpf;
         private String password;
 
-        public Builder name(String name){
-            this.name = name;
-            return this;
-        }
-        public Builder phone(String phone){
-            this.phone = phone;
-            return this;
-        }
         public Builder email(String email){
             this.email = email;
             return this;
         }
-        public Builder cpf(String cpf){
-            this.cpf = cpf;
-            return this;
-        }
+
         public Builder password(String password){
             this.password = password;
             return this;
         }
 
-        public Person build(){
-            return new Person(this);
+        public PersonDTO build(){
+            return new PersonDTO(this);
         }
     }
 
-    private Person(Builder builder){
-        name = builder.name;
-        phone = builder.phone;
+    private PersonDTO(Builder builder){
         email = builder.email;
-        cpf = builder.cpf;
         password = builder.password;
     }
 }
