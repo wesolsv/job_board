@@ -36,6 +36,7 @@ public class PersonService {
                 .phone(novo.getPhone().replaceAll("\\D", ""))
                 .email(novo.getEmail())
                 .cpf(novo.getCpf().replaceAll("\\D", ""))
+                .password(novo.getPassword())
                 .build();
         try{
             repository.save(person);
