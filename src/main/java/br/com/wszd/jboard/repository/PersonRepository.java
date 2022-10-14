@@ -10,5 +10,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.ArrayList;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
-
+    @Query("SELECT p FROM Person p "
+            + "WHERE p.email = :email"
+    )
+    public Person findByEmail(@Param("email") String email);
 }

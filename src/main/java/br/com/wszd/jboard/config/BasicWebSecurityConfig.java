@@ -23,8 +23,9 @@ public class BasicWebSecurityConfig {
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/person").hasRole("USER")
-                .antMatchers("/api/v1/company").permitAll()
+                .antMatchers("/api/v1/person").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/v1/company").hasAnyRole("COMP", "ADMIN")
+                .antMatchers("/api/v1/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .and()

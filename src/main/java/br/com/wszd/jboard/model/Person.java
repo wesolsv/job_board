@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.model;
 
+import br.com.wszd.jboard.util.Roles;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 
 @Data
 @Entity
@@ -44,7 +46,10 @@ public class Person {
     @Size(min = 6, max = 16, message = "Senha tamanho permitido min 6 max 16")
     private String password;
 
-    //private String token;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "roles")
+    private ArrayList<Roles> roles;
 
     @NotNull
     @Column(name = "cpf")
@@ -62,6 +67,8 @@ public class Person {
         private String email;
         private String cpf;
         private String password;
+
+        private ArrayList<Roles> roles;
 
         public Builder name(String name){
             this.name = name;
@@ -83,6 +90,10 @@ public class Person {
             this.password = password;
             return this;
         }
+        public Builder roles(ArrayList<Roles> roles){
+            this.roles = roles;
+            return this;
+        }
 
         public Person build(){
             return new Person(this);
@@ -95,5 +106,6 @@ public class Person {
         email = builder.email;
         cpf = builder.cpf;
         password = builder.password;
+        roles = builder.roles;
     }
 }

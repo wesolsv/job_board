@@ -19,7 +19,11 @@ public class UserDetailServiceConfig {
                 .build());
         manager.createUser(User.withUsername("admin")
                 .password(bCryptPasswordEncoder.encode("uM3g^Yfi"))
-                .roles("ADMIN", "USER")
+                .roles("ADMIN", "USER", "COMP")
+                .build());
+        manager.createUser(User.withUsername("comp")
+                .password(bCryptPasswordEncoder.encode("uM3g^Yfi"))
+                .roles("COMP")
                 .build());
         return manager;
     }
