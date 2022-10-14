@@ -25,7 +25,7 @@ public class AppBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPo
 
     @Override
     public void afterPropertiesSet() {
-        setRealmName("howtodoinjava");
+        setRealmName("error message");
         super.afterPropertiesSet();
     }
 }
