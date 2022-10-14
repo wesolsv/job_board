@@ -2,11 +2,11 @@ SET search_path TO job_board;
 
 --PERSON
 INSERT INTO person(name, phone, email, cpf, password, roles)
-	VALUES('Carolina Ana da Cruz', '68995966027', 'carolina.ana.dacruz@rafaelsouza.com.br','54748498692', '123456', 'USER ADMIN');
+	VALUES('Carolina Ana da Cruz', '68995966027', 'carolina.ana.dacruz@rafaelsouza.com.br','54748498692', '123456', 'USER');
 INSERT INTO person(name, phone, email, cpf, password, roles)
-	VALUES('Bianca Juliana Ramos', '22986589348', 'bianca.juliana.ramos@hardquality.com.br','70513525980', '1234567' 'USER');
+	VALUES('Bianca Juliana Ramos', '22986589348', 'bianca.juliana.ramos@hardquality.com.br','70513525980', '1234567', 'USER');
 INSERT INTO person(name, phone, email, cpf, password, roles)
-	VALUES('Benedito Thomas Fábio Pires', '49998298745', 'benedito_pires@deca.com.br','12096205379', '12345678' 'USER');
+	VALUES('Benedito Thomas Fábio Pires', '49998298745', 'benedito_pires@deca.com.br','12096205379', '12345678', 'USER');
 
 --COMPANY
 INSERT INTO company(name, phone, email, cnpj)

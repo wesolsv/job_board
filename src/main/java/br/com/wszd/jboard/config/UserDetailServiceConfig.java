@@ -7,29 +7,29 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-@Configuration
+
 public class UserDetailServiceConfig {
 
-    @Bean
-    public UserDetailsService userDetailsService(BCryptPasswordEncoder bCryptPasswordEncoder) {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("user")
-                .password(bCryptPasswordEncoder.encode("uM3g^Yfi"))
-                .roles("USER")
-                .build());
-        manager.createUser(User.withUsername("admin")
-                .password(bCryptPasswordEncoder.encode("uM3g^Yfi"))
-                .roles("ADMIN", "USER", "COMP")
-                .build());
-        manager.createUser(User.withUsername("comp")
-                .password(bCryptPasswordEncoder.encode("uM3g^Yfi"))
-                .roles("COMP")
-                .build());
-        return manager;
-    }
-
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService(BCryptPasswordEncoder bCryptPasswordEncoder) {
+//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+//        manager.createUser(User.withUsername("user")
+//                .password(bCryptPasswordEncoder.encode("uM3g^Yfi"))
+//                .roles("USER")
+//                .build());
+//        manager.createUser(User.withUsername("admin")
+//                .password(bCryptPasswordEncoder.encode("uM3g^Yfi"))
+//                .roles("ADMIN", "USER", "COMP")
+//                .build());
+//        manager.createUser(User.withUsername("comp")
+//                .password(bCryptPasswordEncoder.encode("uM3g^Yfi"))
+//                .roles("COMP")
+//                .build());
+//        return manager;
+//    }
+//
+//    @Bean
+//    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 }
