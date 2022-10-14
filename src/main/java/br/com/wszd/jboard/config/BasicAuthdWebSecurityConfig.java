@@ -23,7 +23,7 @@ public class BasicAuthdWebSecurityConfig {
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/api/v1/person").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and().httpBasic()
                 .and()
                 .sessionManagement()
@@ -38,12 +38,7 @@ public class BasicAuthdWebSecurityConfig {
                 .roles("USER")
                 .build();
 
-        UserDetails wes = User.withUsername("wes")
-                .password("$2a$08$YepEcJpKLoUZzTuI1iqdlejcS9nQXgw0wmCpCOUonKYH.E0BHL.SK")
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(user, wes);
+        return new InMemoryUserDetailsManager(user);
     }
 
     @Bean

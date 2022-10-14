@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.controller;
 
+import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.service.PersonAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ public class AuthenticationController {
     private PersonAuthService personAuthService;
 
     @PostMapping("person/login")
-    public ResponseEntity<Person> autentitcar(@RequestBody Person dados){
-        Person person = personAuthService.authenticate(dados);
+    public ResponseEntity<PersonDTO> autentitcar(@RequestBody PersonDTO dados){
+        PersonDTO person = personAuthService.authenticate(dados);
 
         return ResponseEntity.ok(person);
     }

@@ -1,7 +1,7 @@
 package br.com.wszd.jboard.service;
 
+import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.exceptions.BadRequestException;
-import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,8 +14,8 @@ public class PersonAuthService {
 
     private TokenService tokenService;
 
-    public Person authenticate(Person dados){
-        Person person  = personRepository.findByEmail(dados.getEmail(), dados.getPassword());
+    public PersonDTO authenticate(PersonDTO dados){
+        PersonDTO person  = personRepository.findByEmail(dados.getEmail(), dados.getPassword());
 
         if(dados.getPassword().equals(person.getPassword())){
             String token = tokenService.genereteToken(person);
