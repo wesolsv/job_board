@@ -7,6 +7,8 @@ INSERT INTO person(name, phone, email, cpf, password)
 	VALUES('Bianca Juliana Ramos', '22986589348', 'bianca.juliana.ramos@hardquality.com.br','70513525980', '$2a$10$bb1Xlxma68BLKTsyNbTZlufxUcb6e6rmSpqilhLbAdpoKcSld9OeW');
 INSERT INTO person(name, phone, email, cpf, password)
 	VALUES('Benedito Thomas Fábio Pires', '49998298745', 'benedito_pires@deca.com.br','12096205379', '$2a$10$bb1Xlxma68BLKTsyNbTZlufxUcb6e6rmSpqilhLbAdpoKcSld9OeW');
+INSERT INTO person(name, phone, email, cpf, password)
+    VALUES('wes', '499123298745', 'wes@teste.com.br','12096105379', '$2a$08$sOOxkOE/arGYc6N1IBdzxO8kaWB7HWqlg/mhANhGeazRdDALX9vWK');
 
 --COMPANY
 INSERT INTO company(name, phone, email, cnpj)
@@ -23,6 +25,7 @@ INSERT INTO roles(name) VALUES('COMP');
 INSERT INTO person_roles(person_id, roles_id) VALUES(1,1);
 INSERT INTO person_roles(person_id, roles_id) VALUES(2,1);
 INSERT INTO person_roles(person_id, roles_id) VALUES(3,1);
+INSERT INTO person_roles(person_id, roles_id) VALUES(4,1);
 
 --JOB
 INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
