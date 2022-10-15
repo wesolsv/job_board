@@ -1,14 +1,14 @@
 package br.com.wszd.jboard.controller;
 
 import br.com.wszd.jboard.dto.PersonCandidacyDTO;
+import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.model.Candidacy;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.service.CandidacyService;
+import br.com.wszd.jboard.service.CreateRoleUserService;
 import br.com.wszd.jboard.service.PersonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +25,9 @@ public class PersonController {
 
     @Autowired
     private CandidacyService candidacyService;
+
+    @Autowired
+    private CreateRoleUserService createRoleUserService;
 
     @ApiOperation(value = "Retorna todas as pessoas")
     @GetMapping
@@ -85,5 +88,11 @@ public class PersonController {
     @GetMapping("/candidacy/{id}")
     public ArrayList<PersonCandidacyDTO> allCandidacyByPersonId(@PathVariable Long id){
         return candidacyService.getAllCandidacyByPersonId(id);
+    }
+
+    @PostMapping("/role")
+    public Person role(@RequestBody UserRoleDTO userRoleDTO){
+
+        return createRoleUserService.execute(userRoleDTO);
     }
 }

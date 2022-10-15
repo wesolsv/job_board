@@ -1,6 +1,5 @@
 package br.com.wszd.jboard.model;
 
-import br.com.wszd.jboard.util.UserRoles;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -43,11 +42,7 @@ public class Person {
 
     @NotNull
     @Column(name = "password")
-    @Size(min = 6, max = 16, message = "Senha tamanho permitido min 6 max 16")
     private String password;
-
-    @ManyToMany
-    private List<Role> roles;
 
     @NotNull
     @Column(name = "cpf")
@@ -57,6 +52,9 @@ public class Person {
     @OneToOne(mappedBy = "personId")
     @JsonIgnoreProperties("personId")
     private Job job;
+
+    @ManyToMany
+    private List<Role> roles;
 
     public static class Builder{
 

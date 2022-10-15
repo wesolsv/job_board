@@ -50,6 +50,11 @@ public class Company {
     @JsonIgnoreProperties("companyId")
     private List<Job> jobs;
 
+//    @ManyToMany
+//    @JoinTable(name = "company_roles", joinColumns = @JoinColumn(name = "company_id", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+//    private List<Role> roles;
+
     public static class Builder{
 
         private String name;

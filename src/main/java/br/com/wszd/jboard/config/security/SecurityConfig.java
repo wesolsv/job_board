@@ -1,4 +1,4 @@
-package br.com.wszd.jboard.config;
+package br.com.wszd.jboard.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,19 +17,19 @@ public class SecurityConfig {
     @Value("${spring.security.debug:false}")
     boolean securityDebug;
 
-    @Autowired
-    private SecurityDataBaseService securityService;
-
-    @Autowired
-    public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception{
-        auth.userDetailsService(securityService).passwordEncoder(NoOpPasswordEncoder.getInstance());
-    }
+//    @Autowired
+//    private SecurityDataBaseService securityService;
+//
+//    @Autowired
+//    public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception{
+//        auth.userDetailsService(securityService).passwordEncoder(NoOpPasswordEncoder.getInstance());
+//    }
 
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/person").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/v1/person").permitAll()//.hasAnyRole("USER", "ADMIN")
                 .antMatchers("/api/v1/company").hasAnyRole("COMP", "ADMIN")
                 .antMatchers("/api/v1/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
@@ -44,6 +44,6 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.debug(securityDebug)
                 .ignoring()
-                .antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico");
+                .antMatchers("/css/");
     }
 }

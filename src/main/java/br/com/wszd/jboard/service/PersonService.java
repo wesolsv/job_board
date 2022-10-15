@@ -6,6 +6,7 @@ import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.repository.PersonRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +17,10 @@ public class PersonService {
 
     @Autowired
     private PersonRepository repository;
+
+    private BCryptPasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
     public ArrayList<Person> getAllPerson(){
         log.info("Buscando todas as pessoas");
@@ -36,7 +41,7 @@ public class PersonService {
                 .phone(novo.getPhone().replaceAll("\\D", ""))
                 .email(novo.getEmail())
                 .cpf(novo.getCpf().replaceAll("\\D", ""))
-                .password(novo.getPassword())
+                .password(passwordEncoder().encode(novo.getPassword()))
                 .roles(novo.getRoles())
                 .build();
         try{

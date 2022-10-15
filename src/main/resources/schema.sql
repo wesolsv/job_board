@@ -4,24 +4,14 @@ CREATE SCHEMA IF NOT EXISTS job_board AUTHORIZATION postgres;
 
 SET search_path TO job_board;
 
-CREATE TABLE IF NOT EXISTS roles (
-        id INT GENERATED ALWAYS AS IDENTITY,
-        name VARCHAR(15) NOT NULL,
-        PRIMARY KEY(id)
-);
-
 CREATE TABLE IF NOT EXISTS person(
 	id INT GENERATED ALWAYS AS IDENTITY,
 	name VARCHAR(150) NOT NULL,
 	phone VARCHAR(15) UNIQUE NOT NULL,
 	email VARCHAR(100) UNIQUE NOT NULL,
 	cpf  VARCHAR(11) UNIQUE NOT NULL,
-	password  VARCHAR(16) NOT NULL,
-	roles_id INT NOT NULL,
-	PRIMARY KEY(id),
-	CONSTRAINT fk_roles
-    FOREIGN KEY (roles_id)
-    REFERENCES roles(id)
+	password  VARCHAR(100) NOT NULL,
+	PRIMARY KEY(id)
 );
 
 CREATE TABLE IF NOT EXISTS company(
@@ -31,6 +21,23 @@ CREATE TABLE IF NOT EXISTS company(
 	email VARCHAR(100) UNIQUE NOT NULL,
 	cnpj  VARCHAR(14) UNIQUE NOT NULL,
 	PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS roles (
+        id INT GENERATED ALWAYS AS IDENTITY,
+        name VARCHAR(15) NOT NULL,
+        PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS person_roles(
+    person_id INT,
+    roles_id INT,
+    CONSTRAINT fk_person
+    FOREIGN KEY (person_id)
+    REFERENCES person(id),
+    CONSTRAINT fk_roles
+    FOREIGN KEY (roles_id)
+    REFERENCES roles(id)
 );
 
 CREATE TABLE IF NOT EXISTS job(
