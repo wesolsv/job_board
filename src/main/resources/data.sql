@@ -2,11 +2,11 @@ SET search_path TO job_board;
 
 --PERSON
 INSERT INTO person(name, phone, email, cpf, password)
-	VALUES('Carolina Ana da Cruz', '68995966027', 'carolina.ana.dacruz@rafaelsouza.com.br','54748498692', '123456');
+	VALUES('Carolina Ana da Cruz', '68995966027', 'carolina.ana.dacruz@rafaelsouza.com.br','54748498692', '$2a$10$bb1Xlxma68BLKTsyNbTZlufxUcb6e6rmSpqilhLbAdpoKcSld9OeW');
 INSERT INTO person(name, phone, email, cpf, password)
-	VALUES('Bianca Juliana Ramos', '22986589348', 'bianca.juliana.ramos@hardquality.com.br','70513525980', '1234567');
+	VALUES('Bianca Juliana Ramos', '22986589348', 'bianca.juliana.ramos@hardquality.com.br','70513525980', '$2a$10$bb1Xlxma68BLKTsyNbTZlufxUcb6e6rmSpqilhLbAdpoKcSld9OeW');
 INSERT INTO person(name, phone, email, cpf, password)
-	VALUES('Benedito Thomas Fábio Pires', '49998298745', 'benedito_pires@deca.com.br','12096205379', '12345678');
+	VALUES('Benedito Thomas Fábio Pires', '49998298745', 'benedito_pires@deca.com.br','12096205379', '$2a$10$bb1Xlxma68BLKTsyNbTZlufxUcb6e6rmSpqilhLbAdpoKcSld9OeW');
 
 --COMPANY
 INSERT INTO company(name, phone, email, cnpj)
@@ -19,7 +19,10 @@ INSERT INTO roles(name) VALUES('USER');
 INSERT INTO roles(name) VALUES('ADMIN');
 INSERT INTO roles(name) VALUES('COMP');
 
-INSERT INTO person_roles(person_id, roles_id) VALUES(1,1 );
+--PERSON_ROLES
+INSERT INTO person_roles(person_id, roles_id) VALUES(1,1);
+INSERT INTO person_roles(person_id, roles_id) VALUES(2,1);
+INSERT INTO person_roles(person_id, roles_id) VALUES(3,1);
 
 --JOB
 INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
