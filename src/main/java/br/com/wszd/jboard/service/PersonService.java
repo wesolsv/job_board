@@ -1,16 +1,21 @@
 package br.com.wszd.jboard.service;
 
 import br.com.wszd.jboard.dto.PersonDTO;
+import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.exceptions.BadRequestException;
 import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
 import br.com.wszd.jboard.model.Person;
+import br.com.wszd.jboard.model.Role;
+import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
+import br.com.wszd.jboard.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -19,6 +24,12 @@ public class PersonService {
 
     @Autowired
     private PersonRepository repository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService createRoleUserService;
 
     private BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -38,10 +49,11 @@ public class PersonService {
     public PersonDTO createNewPerson(Person novo) {
         log.info("Adicionando nova pessoa");
 
+        List<Long> listIdRoles = Arrays.asList(1L);
+
         if(repository.findByEmail(novo.getEmail()) != null || repository.findByCpf(novo.getCpf()) != null){
             throw new BadRequestException("Email ou CPF já cadastrado, verfique seus dados");
         }
-
         Person person = repository.save(new Person.Builder()
                 .name(novo.getName())
                 .phone(novo.getPhone().replaceAll("\\D", ""))
@@ -49,6 +61,17 @@ public class PersonService {
                 .cpf(novo.getCpf().replaceAll("\\D", ""))
                 .password(passwordEncoder().encode(novo.getPassword()))
                 .user(novo.getUser())
+                .build());
+
+        //Criando atribuindo a role ao user
+        UserRoleDTO userRoleDTO = new UserRoleDTO(person.getId(), listIdRoles);
+        createRoleUserService.execute(userRoleDTO);
+
+        userRepository.save(new Users.Builder()
+                .email(person.getEmail())
+                .password(person.getPassword())
+                .personId(person)
+                .companyId(null)
                 .build());
 
         return new PersonDTO.Builder()

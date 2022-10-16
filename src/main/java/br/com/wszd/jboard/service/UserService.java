@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.service;
 
+import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.model.Role;
 import br.com.wszd.jboard.model.Users;
@@ -38,6 +39,10 @@ public class UserService {
     userRepository.save(users);
 
     return users;
-
   }
+
+//  public List<UserRoleDTO> getAllPerson(){
+//    log.info("Buscando todas as pessoas");
+//    return repository.listarPerson();
+//  }
 }

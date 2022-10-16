@@ -11,4 +11,8 @@ public class UserRoleDTO {
 
   private List<Long> idsRoles;
 
+  public UserRoleDTO(Long idUser, List<Long> idsRoles) {
+    this.idUser = idUser;
+    this.idsRoles = idsRoles;
+  }
 }

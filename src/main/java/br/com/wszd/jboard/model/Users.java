@@ -36,4 +36,45 @@ public class Users {
     @ManyToMany
     private List<Role> roles;
 
+    public static class Builder{
+        private String email;
+        private String password;
+        private Person personId;
+        private Company companyId;
+        private List<Role> roles;
+
+        public Users.Builder email(String email){
+            this.email = email;
+            return this;
+        }
+        public Users.Builder password(String password){
+            this.password = password;
+            return this;
+        }
+        public Users.Builder personId(Person personId){
+            this.personId = personId;
+            return this;
+        }
+        public Users.Builder companyId(Company companyId){
+            this.companyId = companyId;
+            return this;
+        }
+        public Users.Builder roles(List<Role> roles){
+            this.roles = roles;
+            return this;
+        }
+
+        public Users build(){
+            return new Users(this);
+        }
+    }
+
+    private Users(Users.Builder builder){
+        email = builder.email;
+        password = builder.password;
+        personId = builder.personId;
+        companyId = builder.companyId;
+        roles = builder.roles;
+    }
+
 }
