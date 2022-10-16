@@ -61,6 +61,8 @@ public class CompanyService {
                 .phone(novo.getPhone().replaceAll("\\D", ""))
                 .email(novo.getEmail())
                 .cnpj(novo.getCnpj().replaceAll("\\D", ""))
+                .password(novo.getPassword())
+                .user(novo.getUser())
                 .build();
         try{
             repository.save(company);

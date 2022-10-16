@@ -1,6 +1,5 @@
 package br.com.wszd.jboard.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -54,8 +53,9 @@ public class Person{
     @JsonIgnoreProperties("personId")
     private Job job;
 
-    @ManyToMany
-    private List<Role> roles;
+    @OneToOne(mappedBy = "personId")
+    @JsonIgnoreProperties("personId")
+    private Users user;
 
     public static class Builder{
 
@@ -64,8 +64,7 @@ public class Person{
         private String email;
         private String cpf;
         private String password;
-
-        private List<Role>  roles;
+        private Users user;
 
         public Builder name(String name){
             this.name = name;
@@ -87,8 +86,8 @@ public class Person{
             this.password = password;
             return this;
         }
-        public Builder roles(List<Role>  roles){
-            this.roles = roles;
+        public Builder user(Users user){
+            this.user = user;
             return this;
         }
 
@@ -103,6 +102,6 @@ public class Person{
         email = builder.email;
         cpf = builder.cpf;
         password = builder.password;
-        roles = builder.roles;
+        user = builder.user;
     }
 }

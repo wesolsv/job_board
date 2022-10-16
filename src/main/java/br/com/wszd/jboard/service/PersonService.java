@@ -48,7 +48,7 @@ public class PersonService {
                 .email(novo.getEmail())
                 .cpf(novo.getCpf().replaceAll("\\D", ""))
                 .password(passwordEncoder().encode(novo.getPassword()))
-                .roles(novo.getRoles())
+                .user(novo.getUser())
                 .build());
 
         return new PersonDTO.Builder()

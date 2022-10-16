@@ -45,18 +45,17 @@ public class Company{
     @Column(name = "cnpj")
     @NotBlank(message = "CNPJ é obrigatorio")
     private String cnpj;
-
     @NotNull
     @Column(name = "password")
     private String password;
-
-    @ManyToMany
-    private List<Role> roles;
 
     @OneToMany(mappedBy = "companyId")
     @JsonIgnoreProperties("companyId")
     private List<Job> jobs;
 
+    @OneToOne(mappedBy = "companyId")
+    @JsonIgnoreProperties("companyId")
+    private Users user;
 
     public static class Builder{
 
@@ -64,10 +63,8 @@ public class Company{
         private String phone;
         private String email;
         private String cnpj;
-
         private String password;
-
-        private List<Role> roles;
+        private Users user;
 
         public Company.Builder name(String name){
             this.name = name;
@@ -89,8 +86,8 @@ public class Company{
             this.password = password;
             return this;
         }
-        public Company.Builder roles(List<Role> roles){
-            this.roles = roles;
+        public Company.Builder user(Users user){
+            this.user = user;
             return this;
         }
 
@@ -105,6 +102,6 @@ public class Company{
         email = builder.email;
         cnpj = builder.cnpj;
         password = builder.password;
-        roles = builder.roles;
+        user = builder.user;
     }
 }

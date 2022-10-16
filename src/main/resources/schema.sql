@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS company(
 	phone VARCHAR(15) UNIQUE NOT NULL,
 	email VARCHAR(100) UNIQUE NOT NULL,
 	cnpj  VARCHAR(14) UNIQUE NOT NULL,
+	password  VARCHAR(100) NOT NULL,
 	PRIMARY KEY(id)
 );
 
@@ -27,7 +28,15 @@ CREATE TABLE IF NOT EXISTS users(
 	id INT GENERATED ALWAYS AS IDENTITY,
 	email VARCHAR(100) UNIQUE NOT NULL,
 	password  VARCHAR(100) NOT NULL,
-	PRIMARY KEY(id)
+	person_id INT NULL,
+    company_id INT NULL,
+      PRIMARY KEY(id),
+      CONSTRAINT fk_person
+      FOREIGN KEY (person_id)
+      REFERENCES person(id),
+      CONSTRAINT fk_company
+      FOREIGN KEY (company_id)
+      REFERENCES company(id)
 );
 
 CREATE TABLE IF NOT EXISTS roles (

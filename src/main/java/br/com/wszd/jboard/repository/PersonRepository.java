@@ -9,11 +9,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
-    Person findByEmail(String email);
 
     @Query("SELECT u "
-            + "FROM Person u JOIN FETCH u.roles WHERE u.email = :email")
-    Person findByEmailFetchRoles(@Param("email") String email);
+            + "FROM Person u WHERE u.email = :email")
+    Person findByEmail(@Param("email") String email);
 
     @Query("SELECT u "
             + "FROM Person u WHERE u.cpf = :cpf")
