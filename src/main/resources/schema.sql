@@ -23,18 +23,25 @@ CREATE TABLE IF NOT EXISTS company(
 	PRIMARY KEY(id)
 );
 
+CREATE TABLE IF NOT EXISTS users(
+	id INT GENERATED ALWAYS AS IDENTITY,
+	email VARCHAR(100) UNIQUE NOT NULL,
+	password  VARCHAR(100) NOT NULL,
+	PRIMARY KEY(id)
+);
+
 CREATE TABLE IF NOT EXISTS roles (
         id INT GENERATED ALWAYS AS IDENTITY,
         name VARCHAR(15) NOT NULL,
         PRIMARY KEY(id)
 );
 
-CREATE TABLE IF NOT EXISTS person_roles(
-    person_id INT,
+CREATE TABLE IF NOT EXISTS users_roles(
+    users_id INT,
     roles_id INT,
-    CONSTRAINT fk_person
-    FOREIGN KEY (person_id)
-    REFERENCES person(id),
+    CONSTRAINT fk_users
+    FOREIGN KEY (users_id)
+    REFERENCES users(id),
     CONSTRAINT fk_roles
     FOREIGN KEY (roles_id)
     REFERENCES roles(id)

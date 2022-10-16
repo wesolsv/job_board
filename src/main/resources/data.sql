@@ -12,7 +12,7 @@ INSERT INTO person(name, phone, email, cpf, password)
 
 --COMPANY
 INSERT INTO company(name, phone, email, cnpj)
-	VALUES('Benício Informática Ltda', '3135824237', 'producao@leandroemaiterestauranteltda.com.br','09028195000152');
+	VALUES('Benício Informática Ltda', '3135824237', 'producao@leateltda.com.br','09028195000152');
 INSERT INTO company(name, phone, email, cnpj)
 	VALUES('Laticinios Petter Parker', '38981133588', 'latprod@fojsc.br','05024237000140');
 
@@ -21,12 +21,22 @@ INSERT INTO roles(name) VALUES('USER');
 INSERT INTO roles(name) VALUES('ADMIN');
 INSERT INTO roles(name) VALUES('COMP');
 
---PERSON_ROLES
-INSERT INTO person_roles(person_id, roles_id) VALUES(1,1);
-INSERT INTO person_roles(person_id, roles_id) VALUES(2,1);
-INSERT INTO person_roles(person_id, roles_id) VALUES(3,1);
-INSERT INTO person_roles(person_id, roles_id) VALUES(4,1);
-INSERT INTO person_roles(person_id, roles_id) VALUES(4,2);
+--USERS
+INSERT INTO users(email, password) VALUES('carolina@rafaelsouza.com.br', '$2a$08$QP.Z/n7WxJ5.92JxowU7l.oD8IPAbu7EEVAEakWeQFn7P6yAAYXim');
+INSERT INTO users(email, password) VALUES('bianca@hardquality.com.br', '$2a$08$QP.Z/n7WxJ5.92JxowU7l.oD8IPAbu7EEVAEakWeQFn7P6yAAYXim');
+INSERT INTO users(email, password) VALUES('beneditopires@deca.com.br', '$2a$08$QP.Z/n7WxJ5.92JxowU7l.oD8IPAbu7EEVAEakWeQFn7P6yAAYXim');
+INSERT INTO users(email, password) VALUES('wes@teste.com.br', '$2a$08$QP.Z/n7WxJ5.92JxowU7l.oD8IPAbu7EEVAEakWeQFn7P6yAAYXim');
+INSERT INTO users(email, password) VALUES('producao@leateltda.com.br', '$2a$08$QP.Z/n7WxJ5.92JxowU7l.oD8IPAbu7EEVAEakWeQFn7P6yAAYXim');
+INSERT INTO users(email, password) VALUES('latprod@fojsc.br', '$2a$08$QP.Z/n7WxJ5.92JxowU7l.oD8IPAbu7EEVAEakWeQFn7P6yAAYXim');
+
+--USERS_ROLES
+INSERT INTO users_roles(users_id, roles_id) VALUES(1,1);
+INSERT INTO users_roles(users_id, roles_id) VALUES(2,1);
+INSERT INTO users_roles(users_id, roles_id) VALUES(3,1);
+INSERT INTO users_roles(users_id, roles_id) VALUES(4,1);
+INSERT INTO users_roles(users_id, roles_id) VALUES(4,2);
+INSERT INTO users_roles(users_id, roles_id) VALUES(1,3);
+INSERT INTO users_roles(users_id, roles_id) VALUES(2,3);
 
 --JOB
 INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)

@@ -1,6 +1,6 @@
 package br.com.wszd.jboard.config.security;
 
-import br.com.wszd.jboard.model.Person;
+import br.com.wszd.jboard.model.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,22 +16,22 @@ public class UserPrincipal implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal (Person person){
-        this.email = person.getEmail();
-        this.password = person.getPassword();
+    public UserPrincipal (Users users){
+        this.email = users.getEmail();
+        this.password = users.getPassword();
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
         // ROLE_ADMIN, ROLE_USER
-        authorities = person.getRoles().stream().map(role -> {
+        authorities = users.getRoles().stream().map(role -> {
             return new SimpleGrantedAuthority("ROLE_" + role.getName());
         }).collect(Collectors.toList());
 
         this.authorities = authorities;
     }
 
-    public static UserPrincipal create(Person person){
-        return new UserPrincipal(person);
+    public static UserPrincipal create(Users users){
+        return new UserPrincipal(users);
     }
 
     @Override

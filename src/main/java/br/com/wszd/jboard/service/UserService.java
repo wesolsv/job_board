@@ -1,9 +1,9 @@
 package br.com.wszd.jboard.service;
 
 import br.com.wszd.jboard.dto.UserRoleDTO;
-import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Role;
-import br.com.wszd.jboard.repository.PersonRepository;
+import br.com.wszd.jboard.model.Users;
+import br.com.wszd.jboard.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +13,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class CreateRoleUserService {
+public class UserService {
 
   @Autowired
-  PersonRepository personRepository;
+  UserRepository userRepository;
 
-  public Person execute(UserRoleDTO userRoleDTO) {
+  public Users execute(UserRoleDTO userRoleDTO) {
 
-    Optional<Person> userExists = personRepository.findById(userRoleDTO.getIdUser());
+    Optional<Users> userExists = userRepository.findById(userRoleDTO.getIdUser());
     List<Role> roles = new ArrayList<>();
 
     if (userExists.isEmpty()) {
@@ -31,13 +31,13 @@ public class CreateRoleUserService {
       return new Role(role);
     }).collect(Collectors.toList());
 
-    Person user = userExists.get();
+    Users users = userExists.get();
 
-    user.setRoles(roles);
+    users.setRoles(roles);
 
-    personRepository.save(user);
+    userRepository.save(users);
 
-    return user;
+    return users;
 
   }
 }

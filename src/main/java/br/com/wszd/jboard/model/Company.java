@@ -18,7 +18,7 @@ import java.util.List;
 @Table(name = "company", schema = "job_board")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Company {
+public class Company{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,14 +46,17 @@ public class Company {
     @NotBlank(message = "CNPJ é obrigatorio")
     private String cnpj;
 
+    @NotNull
+    @Column(name = "password")
+    private String password;
+
+    @ManyToMany
+    private List<Role> roles;
+
     @OneToMany(mappedBy = "companyId")
     @JsonIgnoreProperties("companyId")
     private List<Job> jobs;
 
-//    @ManyToMany
-//    @JoinTable(name = "company_roles", joinColumns = @JoinColumn(name = "company_id", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-//    private List<Role> roles;
 
     public static class Builder{
 
@@ -61,6 +64,10 @@ public class Company {
         private String phone;
         private String email;
         private String cnpj;
+
+        private String password;
+
+        private List<Role> roles;
 
         public Company.Builder name(String name){
             this.name = name;
@@ -78,6 +85,14 @@ public class Company {
             this.cnpj = cnpj;
             return this;
         }
+        public Company.Builder password(String password){
+            this.password = password;
+            return this;
+        }
+        public Company.Builder roles(List<Role> roles){
+            this.roles = roles;
+            return this;
+        }
 
         public Company build(){
             return new Company(this);
@@ -89,5 +104,7 @@ public class Company {
         phone = builder.phone;
         email = builder.email;
         cnpj = builder.cnpj;
+        password = builder.password;
+        roles = builder.roles;
     }
 }

@@ -1,7 +1,7 @@
 package br.com.wszd.jboard.config.security;
 
-import br.com.wszd.jboard.model.Person;
-import br.com.wszd.jboard.repository.PersonRepository;
+import br.com.wszd.jboard.model.Users;
+import br.com.wszd.jboard.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
-    PersonRepository personRepository;
+    UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        Person personExists = personRepository.findByEmailFetchRoles(email);
+        Users usersExists = userRepository.findByEmailFetchRoles(email);
 
-        return UserPrincipal.create(personExists);
+        return UserPrincipal.create(usersExists);
     }
 }

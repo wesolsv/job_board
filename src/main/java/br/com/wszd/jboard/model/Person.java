@@ -18,7 +18,7 @@ import java.util.List;
 @Table(name = "person", schema = "job_board")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person {
+public class Person{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
