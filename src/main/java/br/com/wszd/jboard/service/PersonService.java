@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -23,15 +24,15 @@ public class PersonService {
         return new BCryptPasswordEncoder();
     }
 
-    public ArrayList<Person> getAllPerson(){
+    public List<PersonDTO> getAllPerson(){
         log.info("Buscando todas as pessoas");
-       return (ArrayList<Person>) repository.findAll();
+       return repository.listarPerson();
     }
 
     public Person getPerson(Long id){
         log.info("Buscando pessoa");
         return repository.findById(id).orElseThrow(
-                () ->  new ObjectNotFoundException("Objeto não encontrado com o id = " + id));
+                () ->  new ObjectNotFoundException("Não encontrado id = " + id));
     }
 
     public PersonDTO createNewPerson(Person novo) {
@@ -41,18 +42,17 @@ public class PersonService {
             throw new BadRequestException("Email ou CPF já cadastrado, verfique seus dados");
         }
 
-        Person person = new Person.Builder()
+        Person person = repository.save(new Person.Builder()
                 .name(novo.getName())
                 .phone(novo.getPhone().replaceAll("\\D", ""))
                 .email(novo.getEmail())
                 .cpf(novo.getCpf().replaceAll("\\D", ""))
                 .password(passwordEncoder().encode(novo.getPassword()))
                 .roles(novo.getRoles())
-                .build();
-
-        repository.save(person);
+                .build());
 
         return new PersonDTO.Builder()
+                .id(person.getId())
                 .name(person.getName())
                 .phone(person.getPhone())
                 .email(person.getEmail())
@@ -60,11 +60,20 @@ public class PersonService {
                 .build();
     }
 
-    public Person editPerson(Long id, Person novo){
+    public PersonDTO editPerson(Long id, Person novo){
         log.info("Editando pessoa");
         getPerson(id);
         novo.setId(id);
-        return repository.save(novo);
+
+        repository.save(novo);
+
+        return new PersonDTO.Builder()
+                .id(novo.getId())
+                .name(novo.getName())
+                .phone(novo.getPhone())
+                .email(novo.getEmail())
+                .cpf(novo.getCpf())
+                .build();
     }
 
     public void deletePerson(Long id){

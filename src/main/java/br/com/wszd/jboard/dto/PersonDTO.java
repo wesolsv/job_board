@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 public class PersonDTO {
 
+    private Long id;
     private String name;
 
     private String phone;
@@ -19,12 +20,26 @@ public class PersonDTO {
 
     private String cpf;
 
+    public PersonDTO(Long id, String name, String phone, String email, String cpf) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.cpf = cpf;
+    }
+
     public static class Builder{
 
+        private static Long id;
         private String name;
         private String phone;
         private String email;
         private String cpf;
+
+        public Builder id(Long id){
+            this.id = id;
+            return this;
+        }
 
         public Builder name(String name){
             this.name = name;
@@ -49,6 +64,7 @@ public class PersonDTO {
     }
 
     public PersonDTO(Builder builder){
+        id = Builder.id;
         name = builder.name;
         phone = builder.phone;
         email = builder.email;

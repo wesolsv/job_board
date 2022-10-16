@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/person")
@@ -32,7 +33,7 @@ public class PersonController {
 
     @ApiOperation(value = "Retorna todas as pessoas")
     @GetMapping
-    public ArrayList<Person> getAllPeople(){
+    public List<PersonDTO> getAllPeople(){
         return service.getAllPerson();
     }
 
@@ -57,8 +58,8 @@ public class PersonController {
 
     @ApiOperation(value = "Altera uma pessoa")
     @PutMapping("/{id}")
-    public ResponseEntity<Person> editPerson(@PathVariable Long id, @RequestBody Person novo){
-        Person res = service.editPerson(id, novo);
+    public ResponseEntity<PersonDTO> editPerson(@PathVariable Long id, @RequestBody Person novo){
+        PersonDTO res = service.editPerson(id, novo);
 
         if(res != null){
             return ResponseEntity.ok(res);

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,7 +36,9 @@ public class SecurityConfig {
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/person").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/v1/person/**").hasAnyRole( "ADMIN")
+                .antMatchers(HttpMethod.POST,"/api/v1/person/candidacy").hasAnyRole( "USER")
+                .antMatchers(HttpMethod.POST,"/api/v1/person").hasAnyRole( "USER")
                 .antMatchers("/api/v1/company").hasAnyRole("COMP", "ADMIN")
                 .antMatchers("/api/v1/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
