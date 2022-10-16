@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.service;
 
+import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.exceptions.BadRequestException;
 import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
 import br.com.wszd.jboard.model.Person;
@@ -33,8 +34,12 @@ public class PersonService {
                 () ->  new ObjectNotFoundException("Objeto não encontrado com o id = " + id));
     }
 
-    public Person createNewPerson(Person novo) {
+    public PersonDTO createNewPerson(Person novo) {
         log.info("Adicionando nova pessoa");
+
+        if(repository.findByEmail(novo.getEmail()) != null || repository.findByCpf(novo.getCpf()) != null){
+            throw new BadRequestException("Email ou CPF já cadastrado, verfique seus dados");
+        }
 
         Person person = new Person.Builder()
                 .name(novo.getName())
@@ -44,12 +49,15 @@ public class PersonService {
                 .password(passwordEncoder().encode(novo.getPassword()))
                 .roles(novo.getRoles())
                 .build();
-        try{
-            repository.save(person);
-        }catch(BadRequestException e){
-            throw new BadRequestException("Falha ao criar pessoa");
-        }
-        return person;
+
+        repository.save(person);
+
+        return new PersonDTO.Builder()
+                .name(person.getName())
+                .phone(person.getPhone())
+                .email(person.getEmail())
+                .cpf(person.getCpf())
+                .build();
     }
 
     public Person editPerson(Long id, Person novo){

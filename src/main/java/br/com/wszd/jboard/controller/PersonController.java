@@ -1,6 +1,7 @@
 package br.com.wszd.jboard.controller;
 
 import br.com.wszd.jboard.dto.PersonCandidacyDTO;
+import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.model.Candidacy;
 import br.com.wszd.jboard.model.Person;
@@ -46,8 +47,8 @@ public class PersonController {
     }
     @ApiOperation(value = "Cria nova pessoa")
     @PostMapping
-    public ResponseEntity<Person> createPerson(@RequestBody Person novo){
-        Person res = service.createNewPerson(novo);
+    public ResponseEntity<PersonDTO> createPerson(@RequestBody Person novo){
+        PersonDTO res = service.createNewPerson(novo);
         if(res != null){
             return ResponseEntity.ok(res);
         }
