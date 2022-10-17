@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.controller;
 
+import br.com.wszd.jboard.dto.CompanyDTO;
 import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.service.CompanyService;
@@ -39,8 +40,8 @@ public class CompanyController {
 
     @ApiOperation(value = "Cria nova empresa")
     @PostMapping
-    public ResponseEntity<Company> createCompany(@RequestBody Company novo){
-        Company res = service.createNewCompany(novo);
+    public ResponseEntity<CompanyDTO> createCompany(@RequestBody Company novo){
+        CompanyDTO res = service.createNewCompany(novo);
         if(res != null){
             return ResponseEntity.ok(res);
         }

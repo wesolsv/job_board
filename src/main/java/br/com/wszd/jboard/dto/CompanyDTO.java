@@ -12,14 +12,14 @@ public class CompanyDTO {
 
     private String email;
 
-    private String cpf;
+    private String cnpj;
 
     public CompanyDTO(Long id, String name, String phone, String email, String cpf) {
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.email = email;
-        this.cpf = cpf;
+        this.cnpj = cnpj;
     }
 
     public static class Builder{
@@ -28,7 +28,7 @@ public class CompanyDTO {
         private String name;
         private String phone;
         private String email;
-        private String cpf;
+        private String cnpj;
 
         public Builder id(Long id){
             this.id = id;
@@ -47,8 +47,8 @@ public class CompanyDTO {
             this.email = email;
             return this;
         }
-        public Builder cpf(String cpf){
-            this.cpf = cpf;
+        public Builder cnpj(String cnpj){
+            this.cnpj = cnpj;
             return this;
         }
 
@@ -62,6 +62,6 @@ public class CompanyDTO {
         name = builder.name;
         phone = builder.phone;
         email = builder.email;
-        cpf = builder.cpf;
+        cnpj = builder.cnpj;
     }
 }

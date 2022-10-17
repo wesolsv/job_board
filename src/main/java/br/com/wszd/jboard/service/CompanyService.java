@@ -1,21 +1,18 @@
 package br.com.wszd.jboard.service;
 
+import br.com.wszd.jboard.dto.CompanyDTO;
+import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.exceptions.BadRequestException;
 import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
-import br.com.wszd.jboard.model.Candidacy;
-import br.com.wszd.jboard.model.Company;
-import br.com.wszd.jboard.model.Job;
-import br.com.wszd.jboard.model.Person;
-import br.com.wszd.jboard.repository.CandidacyRepository;
-import br.com.wszd.jboard.repository.CompanyRepository;
-import br.com.wszd.jboard.repository.JobRepository;
-import br.com.wszd.jboard.repository.PersonRepository;
+import br.com.wszd.jboard.model.*;
+import br.com.wszd.jboard.repository.*;
 import br.com.wszd.jboard.util.JobStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +39,12 @@ public class CompanyService {
     @Autowired
     private JobRepository jobRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService createRoleUserService;
+
     public ArrayList<Company> getAllCompany(){
         log.info("Buscando todas as empresas");
        return (ArrayList<Company>) repository.findAll();
@@ -53,8 +56,10 @@ public class CompanyService {
                 () ->  new ObjectNotFoundException("Objeto não encontrado com o id = " + id));
     }
 
-    public Company createNewCompany(Company novo) {
+    public CompanyDTO createNewCompany(Company novo) {
         log.info("Adicionando nova empresa");
+
+        List<Long> listIdRoles = Arrays.asList(1L);
 
         Company company = new Company.Builder()
                 .name(novo.getName())
@@ -64,12 +69,25 @@ public class CompanyService {
                 .password(novo.getPassword())
                 .user(novo.getUser())
                 .build();
-        try{
-            repository.save(company);
-        }catch(BadRequestException e){
-            throw new BadRequestException("Falha ao criar empresa");
-        }
-        return company;
+
+        //Criando atribuindo a role ao user
+        UserRoleDTO userRoleDTO = new UserRoleDTO(company.getId(), listIdRoles);
+        createRoleUserService.execute(userRoleDTO);
+
+        userRepository.save(new Users.Builder()
+                .email(company.getEmail())
+                .password(company.getPassword())
+                .personId(null)
+                .companyId(company)
+                .build());
+
+        return new CompanyDTO.Builder()
+                .id(company.getId())
+                .name(company.getName())
+                .phone(company.getPhone())
+                .email(company.getEmail())
+                .cnpj(company.getCnpj())
+                .build();
     }
 
     public Company editCompany(Long id, Company novo){
