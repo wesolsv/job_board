@@ -9,6 +9,7 @@ import br.com.wszd.jboard.repository.*;
 import br.com.wszd.jboard.util.JobStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -45,6 +46,10 @@ public class CompanyService {
     @Autowired
     private UserService createRoleUserService;
 
+    private BCryptPasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
     public ArrayList<Company> getAllCompany(){
         log.info("Buscando todas as empresas");
        return (ArrayList<Company>) repository.findAll();
@@ -59,16 +64,19 @@ public class CompanyService {
     public CompanyDTO createNewCompany(Company novo) {
         log.info("Adicionando nova empresa");
 
-        List<Long> listIdRoles = Arrays.asList(1L);
+        List<Long> listIdRoles = Arrays.asList(3L);
 
-        Company company = new Company.Builder()
+        if(repository.findByEmail(novo.getEmail()) != null || repository.findByCnpj(novo.getCnpj()) != null){
+            throw new BadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
+        }
+        Company company = repository.save(new Company.Builder()
                 .name(novo.getName())
                 .phone(novo.getPhone().replaceAll("\\D", ""))
                 .email(novo.getEmail())
                 .cnpj(novo.getCnpj().replaceAll("\\D", ""))
-                .password(novo.getPassword())
+                .password(passwordEncoder().encode(novo.getPassword()))
                 .user(novo.getUser())
-                .build();
+                .build());
 
         //Criando atribuindo a role ao user
         UserRoleDTO userRoleDTO = new UserRoleDTO(company.getId(), listIdRoles);
