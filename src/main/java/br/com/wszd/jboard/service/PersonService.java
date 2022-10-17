@@ -51,9 +51,16 @@ public class PersonService {
 
         List<Long> listIdRoles = Arrays.asList(1L);
 
-        if(repository.findByEmail(novo.getEmail()) != null || repository.findByCpf(novo.getCpf()) != null){
-            throw new BadRequestException("Email ou CPF já cadastrado, verfique seus dados");
+        try{
+            //Validando a existencia do email ou cnpj nas tabelas de company ou users
+            repository.findByEmail(novo.getEmail());
+            repository.findByCpf(novo.getCpf());
+            userRepository.findByEmail(novo.getEmail());
+
+        }catch (BadRequestException e){
+            throw new BadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
         }
+
         Person person = repository.save(new Person.Builder()
                 .name(novo.getName())
                 .phone(novo.getPhone().replaceAll("\\D", ""))
@@ -67,6 +74,7 @@ public class PersonService {
         UserRoleDTO userRoleDTO = new UserRoleDTO(person.getId(), listIdRoles);
         createRoleUserService.execute(userRoleDTO);
 
+        //Criando usuário no repositorio
         userRepository.save(new Users.Builder()
                 .email(person.getEmail())
                 .password(person.getPassword())

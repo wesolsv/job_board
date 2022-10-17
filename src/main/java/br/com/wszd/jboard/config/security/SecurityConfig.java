@@ -37,7 +37,7 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/api/v1/person").anonymous()
-                .antMatchers(HttpMethod.POST,"/api/v1/company").hasAnyRole("COMP")
+                .antMatchers(HttpMethod.POST,"/api/v1/company").anonymous()
                 .antMatchers(HttpMethod.POST,"/api/v1/person/candidacy").hasAnyRole( "USER")
                 .antMatchers(HttpMethod.PUT,"/api/v1/person/{id}").hasAnyRole( "USER")
                 .antMatchers(HttpMethod.PUT,"/api/v1/company/{id}").hasAnyRole("COMP")

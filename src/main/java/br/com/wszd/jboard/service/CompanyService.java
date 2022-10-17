@@ -66,9 +66,16 @@ public class CompanyService {
 
         List<Long> listIdRoles = Arrays.asList(3L);
 
-        if(repository.findByEmail(novo.getEmail()) != null || repository.findByCnpj(novo.getCnpj()) != null){
+        try{
+            //Validando a existencia do email ou cnpj nas tabelas de company ou users
+            repository.findByEmail(novo.getEmail());
+            repository.findByCnpj(novo.getCnpj());
+            userRepository.findByEmail(novo.getEmail());
+
+        }catch (BadRequestException e){
             throw new BadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
         }
+
         Company company = repository.save(new Company.Builder()
                 .name(novo.getName())
                 .phone(novo.getPhone().replaceAll("\\D", ""))
@@ -82,6 +89,7 @@ public class CompanyService {
         UserRoleDTO userRoleDTO = new UserRoleDTO(company.getId(), listIdRoles);
         createRoleUserService.execute(userRoleDTO);
 
+        //Criando usuário no repositorio
         userRepository.save(new Users.Builder()
                 .email(company.getEmail())
                 .password(company.getPassword())
