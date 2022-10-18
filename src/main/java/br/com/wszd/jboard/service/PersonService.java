@@ -70,17 +70,17 @@ public class PersonService {
                 .user(novo.getUser())
                 .build());
 
-        //Criando atribuindo a role ao user
-        UserRoleDTO userRoleDTO = new UserRoleDTO(person.getId(), listIdRoles);
-        createRoleUserService.execute(userRoleDTO);
-
         //Criando usuário no repositorio
-        userRepository.save(new Users.Builder()
+        Users user = userRepository.save(new Users.Builder()
                 .email(person.getEmail())
                 .password(person.getPassword())
                 .personId(person)
                 .companyId(null)
                 .build());
+
+        //Criando atribuindo a role ao user
+        UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
+        createRoleUserService.execute(userRoleDTO);
 
         return new PersonDTO.Builder()
                 .id(person.getId())

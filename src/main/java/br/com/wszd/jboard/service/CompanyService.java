@@ -86,17 +86,17 @@ public class CompanyService {
                 .user(novo.getUser())
                 .build());
 
-        //Criando atribuindo a role ao user
-        UserRoleDTO userRoleDTO = new UserRoleDTO(company.getId(), listIdRoles);
-        createRoleUserService.execute(userRoleDTO);
-
         //Criando usuário no repositorio
-        userRepository.save(new Users.Builder()
+        Users user = userRepository.save(new Users.Builder()
                 .email(company.getEmail())
                 .password(company.getPassword())
                 .personId(null)
                 .companyId(company)
                 .build());
+
+        //Criando atribuindo a role ao user
+        UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
+        createRoleUserService.execute(userRoleDTO);
 
         return new CompanyDTO.Builder()
                 .id(company.getId())
