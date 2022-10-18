@@ -30,8 +30,8 @@ public class JobController {
 
     @ApiOperation(value = "Retorna um emprego")
     @GetMapping("/{id}")
-    public ResponseEntity<Job> getOneJob(@PathVariable Long id){
-        Job res = service.getJob(id);
+    public ResponseEntity<JobDTO> getOneJob(@PathVariable Long id){
+        JobDTO res = service.getJobDTO(id);
         if(res != null){
             return ResponseEntity.ok(res);
         }
@@ -51,8 +51,8 @@ public class JobController {
 
     @ApiOperation(value = "Altera um emprego")
     @PutMapping("/{id}")
-    public ResponseEntity<Job> editJob(@PathVariable Long id, @RequestBody Job novo){
-        Job res = service.editJob(id,novo);
+    public ResponseEntity<JobDTO> editJob(@PathVariable Long id, @RequestBody Job novo){
+        JobDTO res = service.editJob(id,novo);
 
         if(res != null){
             return ResponseEntity.ok(res);
