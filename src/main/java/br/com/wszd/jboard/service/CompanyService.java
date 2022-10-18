@@ -56,7 +56,21 @@ public class CompanyService {
        return repository.listCompany();
     }
 
-    public Company getCompany(Long id){
+    public CompanyDTO getCompanyDTO(Long id){
+        log.info("Buscando empresa");
+        Company realCompany = repository.findById(id).orElseThrow(
+                () ->  new ObjectNotFoundException("Objeto não encontrado com o id = " + id));
+
+        return new CompanyDTO.Builder()
+                .id(realCompany.getId())
+                .name(realCompany.getName())
+                .phone(realCompany.getPhone())
+                .email(realCompany.getEmail())
+                .cnpj(realCompany.getCnpj())
+                .build();
+    }
+
+    private Company getCompany(Long id){
         log.info("Buscando empresa");
         return repository.findById(id).orElseThrow(
                 () ->  new ObjectNotFoundException("Objeto não encontrado com o id = " + id));

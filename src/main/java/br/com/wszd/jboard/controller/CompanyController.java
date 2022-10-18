@@ -33,8 +33,8 @@ public class CompanyController {
 
     @ApiOperation(value = "Retorna uma empresa")
     @GetMapping("/{id}")
-    public ResponseEntity<Company> getOneCompany(@PathVariable Long id){
-        Company res = service.getCompany(id);
+    public ResponseEntity<CompanyDTO> getOneCompany(@PathVariable Long id){
+        CompanyDTO res = service.getCompanyDTO(id);
         if(res != null){
             return ResponseEntity.ok(res);
         }

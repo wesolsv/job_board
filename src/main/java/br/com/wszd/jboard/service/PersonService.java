@@ -40,6 +40,20 @@ public class PersonService {
        return repository.listPerson();
     }
 
+    public PersonDTO getPersonDTO(Long id){
+        log.info("Buscando pessoa");
+        Person realPerson = repository.findById(id).orElseThrow(
+                () ->  new ObjectNotFoundException("Não encontrado id = " + id));
+
+        return new PersonDTO.Builder()
+                .id(realPerson.getId())
+                .name(realPerson.getName())
+                .phone(realPerson.getPhone())
+                .email(realPerson.getEmail())
+                .cpf(realPerson.getCpf())
+                .build();
+    }
+
     public Person getPerson(Long id){
         log.info("Buscando pessoa");
         return repository.findById(id).orElseThrow(

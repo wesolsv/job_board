@@ -36,8 +36,8 @@ public class PersonController {
 
     @ApiOperation(value = "Retorna uma pessoa")
     @GetMapping("/{id}")
-    public ResponseEntity<Person> getOnePerson(@PathVariable Long id){
-        Person res = service.getPerson(id);
+    public ResponseEntity<PersonDTO> getOnePerson(@PathVariable Long id){
+        PersonDTO res = service.getPersonDTO(id);
         if(res != null){
             return ResponseEntity.ok(res);
         }
