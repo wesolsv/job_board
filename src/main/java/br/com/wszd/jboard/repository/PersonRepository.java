@@ -19,11 +19,11 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             + "FROM Person u WHERE u.cpf = :cpf")
     Object findByCpf(@Param("cpf")String cpf);
 
-    @Query("SELECT new br.com.wszd.jboard.dto.PersonDTO(p.id, p.name, p.phone, p.email, p.cpf )" +
+    @Query("SELECT new br.com.wszd.jboard.dto.PersonDTO(p.id, p.name, p.phone, p.email, p.cpf ) " +
             "FROM Person p")
     List<PersonDTO> listPerson();
 
-    @Query("SELECT new br.com.wszd.jboard.dto.PersonDTO(p.id, p.name, p.phone, p.email, p.cpf )" +
+    @Query("SELECT new br.com.wszd.jboard.dto.PersonDTO(p.id, p.name, p.phone, p.email, p.cpf ) " +
             "FROM Person p " +
             "WHERE p.id = :id")
     Optional<PersonDTO> listPersonByCandidacyJobId(@Param("id") Long id);

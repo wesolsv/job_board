@@ -65,7 +65,6 @@ public class Job {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape= JsonFormat.Shape.STRING)
     private LocalDateTime datePublish;
 
-
     public static class Builder{
 
         private String opportunity;

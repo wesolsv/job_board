@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.service;
 
+import br.com.wszd.jboard.dto.JobDTO;
 import br.com.wszd.jboard.exceptions.BadRequestException;
 import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
 import br.com.wszd.jboard.model.Job;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -19,9 +21,9 @@ public class JobService {
     @Autowired
     private JobRepository repository;
 
-    public ArrayList<Job> getAllJobs(){
+    public List<JobDTO> getAllJobs(){
         log.info("Buscando todas os jobs");
-       return (ArrayList<Job>) repository.findAll();
+       return repository.listJobs();
     }
 
     public Job getJob(Long id){
@@ -33,18 +35,18 @@ public class JobService {
     public Job createNewJob(Job novo) {
         log.info("Adicionando nova job");
 
-        Job job = new Job.Builder()
-                .opportunity(novo.getOpportunity())
-                .description(novo.getDescription())
-                .type(novo.getType())
-                .salary(novo.getSalary())
-                .benefits(novo.getBenefits())
-                .status(novo.getStatus())
-                .personId(novo.getPersonId())
-                .companyId(novo.getCompanyId())
-                .build();
+        Job job;
         try{
-            repository.save(job);
+            job = repository.save(new Job.Builder()
+                    .opportunity(novo.getOpportunity())
+                    .description(novo.getDescription())
+                    .type(novo.getType())
+                    .salary(novo.getSalary())
+                    .benefits(novo.getBenefits())
+                    .status(novo.getStatus())
+                    .personId(novo.getPersonId())
+                    .companyId(novo.getCompanyId())
+                    .build());
         }catch(BadRequestException e){
             throw new BadRequestException("Falha ao criar job");
         }
