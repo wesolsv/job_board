@@ -37,7 +37,7 @@ public class PersonService {
 
     public List<PersonDTO> getAllPerson(){
         log.info("Buscando todas as pessoas");
-       return repository.listarPerson();
+       return repository.listPerson();
     }
 
     public Person getPerson(Long id){

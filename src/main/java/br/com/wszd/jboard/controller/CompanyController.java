@@ -1,6 +1,7 @@
 package br.com.wszd.jboard.controller;
 
 import br.com.wszd.jboard.dto.CompanyDTO;
+import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.service.CompanyService;
@@ -24,7 +25,7 @@ public class CompanyController {
 
     @ApiOperation(value = "Retorna todas as empresas")
     @GetMapping
-    public ArrayList<Company> getAllCompany(){
+    public List<CompanyDTO> getAllCompany(){
         return service.getAllCompany();
     }
 
@@ -50,8 +51,8 @@ public class CompanyController {
 
     @ApiOperation(value = "Altera uma empresa")
     @PutMapping("/{id}")
-    public ResponseEntity<Company> editCompany(@PathVariable Long id, @RequestBody Company novo){
-        Company res = service.editCompany(id,novo);
+    public ResponseEntity<CompanyDTO> editCompany(@PathVariable Long id, @RequestBody Company novo){
+        CompanyDTO res = service.editCompany(id,novo);
 
         if(res != null){
             return ResponseEntity.ok(res);
@@ -67,7 +68,7 @@ public class CompanyController {
 
     @ApiOperation(value = "Retorna todos os candidatos de uma vaga")
     @GetMapping("/candidate/{id}")
-    public List<Optional<Person>> getAllPersonByJob(@PathVariable Long id ){
+    public List<Optional<PersonDTO>> getAllPersonByJob(@PathVariable Long id ){
         return service.getAllPersonByJob(id);
     }
 

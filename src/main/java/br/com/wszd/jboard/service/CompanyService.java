@@ -1,6 +1,7 @@
 package br.com.wszd.jboard.service;
 
 import br.com.wszd.jboard.dto.CompanyDTO;
+import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.exceptions.BadRequestException;
 import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
@@ -50,9 +51,9 @@ public class CompanyService {
         return new BCryptPasswordEncoder();
     }
 
-    public ArrayList<Company> getAllCompany(){
+    public List<CompanyDTO> getAllCompany(){
         log.info("Buscando todas as empresas");
-       return (ArrayList<Company>) repository.findAll();
+       return repository.listCompany();
     }
 
     public Company getCompany(Long id){
@@ -106,11 +107,18 @@ public class CompanyService {
                 .build();
     }
 
-    public Company editCompany(Long id, Company novo){
+    public CompanyDTO editCompany(Long id, Company novo){
         log.info("Editando empresa");
         getCompany(id);
         novo.setId(id);
-        return repository.save(novo);
+        repository.save(novo);
+        return new CompanyDTO.Builder()
+                .id(novo.getId())
+                .name(novo.getName())
+                .phone(novo.getPhone())
+                .email(novo.getEmail())
+                .cnpj(novo.getCnpj())
+                .build();
     }
 
     public void deleteCompany(Long id){
@@ -119,16 +127,16 @@ public class CompanyService {
         repository.deleteById(id);
     }
 
-    public List<Optional<Person>> getAllPersonByJob(Long jobId) {
+    public List<Optional<PersonDTO>> getAllPersonByJob(Long jobId) {
         log.info("Buscando todas as pessoas da vaga de id " + jobId);
 
-        List<Optional<Person>> pessoas = new ArrayList<>();
+        List<Optional<PersonDTO>> pessoas = new ArrayList<>();
         List<Candidacy> candidaturas =candidacyRepository.findAll();
 
         try {
             for(Candidacy cd : candidaturas){
                 if(cd.getJob().getId() == jobId){
-                    pessoas.add(personRepository.findById(cd.getPersonId().getId()));
+                    pessoas.add(personRepository.listPersonByCandidacyJobId(cd.getPersonId().getId()));
                 }
             }
         }catch (BadRequestException e){
@@ -139,10 +147,10 @@ public class CompanyService {
     }
 
     public void hirePerson(Long personId, Long jobId) {
-        List<Optional<Person>> pessoas = getAllPersonByJob(jobId);
+        List<Optional<PersonDTO>> pessoas = getAllPersonByJob(jobId);
 
         try{
-            for(Optional<Person> p : pessoas){
+            for(Optional<PersonDTO> p : pessoas){
                 if(p.get().getId() == personId){
                     Job job = jobService.getJob(jobId);
 

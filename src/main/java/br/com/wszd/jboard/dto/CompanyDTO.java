@@ -14,7 +14,7 @@ public class CompanyDTO {
 
     private String cnpj;
 
-    public CompanyDTO(Long id, String name, String phone, String email, String cpf) {
+    public CompanyDTO(Long id, String name, String phone, String email, String cnpj) {
         this.id = id;
         this.name = name;
         this.phone = phone;

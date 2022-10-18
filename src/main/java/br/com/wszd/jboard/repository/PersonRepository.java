@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
@@ -19,8 +20,13 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     Object findByCpf(@Param("cpf")String cpf);
 
     @Query("SELECT new br.com.wszd.jboard.dto.PersonDTO(p.id, p.name, p.phone, p.email, p.cpf )" +
-            " FROM Person p")
-    List<PersonDTO> listarPerson();
+            "FROM Person p")
+    List<PersonDTO> listPerson();
+
+    @Query("SELECT new br.com.wszd.jboard.dto.PersonDTO(p.id, p.name, p.phone, p.email, p.cpf )" +
+            "FROM Person p " +
+            "WHERE p.id = :id")
+    Optional<PersonDTO> listPersonByCandidacyJobId(@Param("id") Long id);
 
     //"SELECT "
     //            + "new br.com.wszd.jboard.dto.PersonCandidacyDTO(cd.dateCandidacy, cd.status, cd.personId, cd.job) "

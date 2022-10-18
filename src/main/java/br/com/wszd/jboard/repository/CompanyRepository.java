@@ -1,10 +1,12 @@
 package br.com.wszd.jboard.repository;
 
+import br.com.wszd.jboard.dto.CompanyDTO;
 import br.com.wszd.jboard.model.Company;
-import br.com.wszd.jboard.model.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
@@ -16,4 +18,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             + "FROM Company u WHERE u.cnpj = :cnpj")
     Object findByCnpj(@Param("cnpj")String cnpj);
 
+    @Query("SELECT new br.com.wszd.jboard.dto.CompanyDTO(c.id, c.name, c.phone, c.email, c.cnpj )" +
+            " FROM Company c")
+    List<CompanyDTO> listCompany();
 }
