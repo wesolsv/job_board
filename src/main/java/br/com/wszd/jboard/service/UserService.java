@@ -1,6 +1,5 @@
 package br.com.wszd.jboard.service;
 
-import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.model.Role;
 import br.com.wszd.jboard.model.Users;

@@ -3,7 +3,6 @@ package br.com.wszd.jboard.controller;
 import br.com.wszd.jboard.dto.CompanyDTO;
 import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.model.Company;
-import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.service.CompanyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
