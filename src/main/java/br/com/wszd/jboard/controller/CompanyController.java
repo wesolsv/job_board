@@ -78,7 +78,6 @@ public class CompanyController {
     @PostMapping("/candidate/hire")
     public String hirePerson(@RequestParam Long personId, Long jobId ){
        service.hirePerson(personId, jobId);
-
        return "Pessoa contratada";
     }
 }

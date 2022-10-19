@@ -161,15 +161,20 @@ public class CompanyService {
     }
 
     public void hirePerson(Long personId, Long jobId) {
+        //validando se pessoa existe e se job existe
+
+        personService.getPerson(personId);
+        Job job = jobService.getJob(jobId);
+
         List<Optional<PersonDTO>> pessoas = getAllPersonByJob(jobId);
 
         try{
             for(Optional<PersonDTO> p : pessoas){
                 if(p.get().getId() == personId){
-                    Job job = jobService.getJob(jobId);
-
+                    job = jobService.getJob(jobId);
                     job.setPersonId(personService.getPerson(personId));
                     job.setStatus(JobStatus.COMPLETED);
+
                     candidacyService.deleteAllCandidacy(jobId);
                     jobRepository.save(job);
                 }

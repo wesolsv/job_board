@@ -55,7 +55,7 @@ public class PersonService {
     public Person getPerson(Long id){
         log.info("Buscando pessoa");
         return repository.findById(id).orElseThrow(
-                () ->  new ResourceObjectNotFoundException("Não encontrado id = " + id));
+                () ->  new ResourceObjectNotFoundException("Pessoa não encontrada com id = " + id));
     }
 
     public PersonDTO createNewPerson(Person novo) {

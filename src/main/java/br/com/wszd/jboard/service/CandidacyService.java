@@ -35,7 +35,7 @@ public class CandidacyService {
 
     public ArrayList<PersonCandidacyDTO> getAllCandidacyByPersonId(Long id){
         log.info("Buscando todas as candidaturas pelo id");
-        return (ArrayList<PersonCandidacyDTO>) repository.returnCandidacyByPerson(id);
+        return repository.returnCandidacyByPerson(id);
     }
 
     public Candidacy getCandidacy(Long id){
@@ -47,22 +47,16 @@ public class CandidacyService {
     public Candidacy createNewCandidacy(Candidacy novo) {
         log.info("Adicionando nova candidatura");
 
-        //Validar se o status do job é completed, caso for não é possível me candidatar
-
+        //Validar se job e pessoa existe e se o status do job é completed, caso for, não é possível me candidatar
+        Person p = personService.getPerson(novo.getPersonId().getId());
         Job job = jobService.getJob(novo.getJob().getId());
         if(job.getStatus() == JobStatus.COMPLETED){
             throw new ResourceBadRequestException("Esta vaga não está disponível");
-        }
-        try{
-          Person p = personService.getPerson(novo.getPersonId().getId());
-        }catch (Exception e){
-            throw new ResourceObjectNotFoundException("Objeto não encontrado");
         }
 
         //Validando se a pessoa e a vaga já tem a mesma combinação de registros
 
         ArrayList<Candidacy> lista = (ArrayList<Candidacy>) repository.findAll();
-
         for(Candidacy cd : lista){
             if(cd.getJob().getId() == novo.getJob().getId() && cd.getPersonId().getId() == novo.getPersonId().getId()){
                 throw  new ResourceBadRequestException(cd.getPersonId().getName() +" já está se candidatou a esta vaga ");
