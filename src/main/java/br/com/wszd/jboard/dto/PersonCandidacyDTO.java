@@ -22,13 +22,13 @@ public class PersonCandidacyDTO {
     @Enumerated(EnumType.STRING)
     private CandidacyStatus status;
 
-    @JsonIgnoreProperties(ignoreUnknown = true, value = {"id", "email", "job"})
+    @JsonIgnoreProperties(ignoreUnknown = true, value = {"id", "email", "job", "password", "user"})
     private Person person;
 
     @JsonIgnoreProperties(ignoreUnknown = true, value = {"id","personId","companyId"})
     private Optional<Job> job;
 
-    @JsonIgnoreProperties(ignoreUnknown = true, value =  {"id", "phone", "cnpj", "jobs"})
+    @JsonIgnoreProperties(ignoreUnknown = true, value =  {"id", "phone", "cnpj", "jobs", "password" ,"user"})
     private Optional<Company> company;
 
     public static class Builder{
