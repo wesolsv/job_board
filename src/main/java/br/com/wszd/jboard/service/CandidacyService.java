@@ -1,9 +1,11 @@
 package br.com.wszd.jboard.service;
 
 import br.com.wszd.jboard.dto.PersonCandidacyDTO;
-import br.com.wszd.jboard.exceptions.BadRequestException;
-import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
+import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
+import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.Candidacy;
+import br.com.wszd.jboard.model.Job;
+import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.repository.CandidacyRepository;
 import br.com.wszd.jboard.util.CandidacyStatus;
 import br.com.wszd.jboard.util.JobStatus;
@@ -20,6 +22,12 @@ public class CandidacyService {
     @Autowired
     private CandidacyRepository repository;
 
+    @Autowired
+    private PersonService personService;
+
+    @Autowired
+    private JobService jobService;
+
     public ArrayList<Candidacy> getAllCandidacy(){
         log.info("Buscando todas as candidaturas");
        return (ArrayList<Candidacy>) repository.findAll();
@@ -33,7 +41,7 @@ public class CandidacyService {
     public Candidacy getCandidacy(Long id){
         log.info("Buscando candidatura");
         return repository.findById(id).orElseThrow(
-                () ->  new ObjectNotFoundException("Objeto não encontrado com o id = " + id));
+                () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
     }
 
     public Candidacy createNewCandidacy(Candidacy novo) {
@@ -41,8 +49,14 @@ public class CandidacyService {
 
         //Validar se o status do job é completed, caso for não é possível me candidatar
 
-        if(novo.getJob().getStatus() == JobStatus.COMPLETED){
-            throw new BadRequestException("Esta vaga não está disponível");
+        Job job = jobService.getJob(novo.getJob().getId());
+        if(job.getStatus() == JobStatus.COMPLETED){
+            throw new ResourceBadRequestException("Esta vaga não está disponível");
+        }
+        try{
+          Person p = personService.getPerson(novo.getPersonId().getId());
+        }catch (Exception e){
+            throw new ResourceObjectNotFoundException("Objeto não encontrado");
         }
 
         //Validando se a pessoa e a vaga já tem a mesma combinação de registros
@@ -51,7 +65,7 @@ public class CandidacyService {
 
         for(Candidacy cd : lista){
             if(cd.getJob().getId() == novo.getJob().getId() && cd.getPersonId().getId() == novo.getPersonId().getId()){
-                throw  new BadRequestException(cd.getPersonId().getName() +" já está se candidatou a esta vaga ");
+                throw  new ResourceBadRequestException(cd.getPersonId().getName() +" já está se candidatou a esta vaga ");
             }
         }
 
@@ -65,8 +79,8 @@ public class CandidacyService {
                     .build();
 
             repository.save(candidacy);
-        }catch(BadRequestException e){
-            throw new BadRequestException("Falha ao criar candidatura");
+        }catch(ResourceBadRequestException e){
+            throw new ResourceBadRequestException("Falha ao criar candidatura");
         }
         return candidacy;
     }

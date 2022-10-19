@@ -78,11 +78,12 @@ public class PersonController {
     @PostMapping("/candidacy")
     public ResponseEntity<Candidacy> candidacyPerson(@RequestBody Candidacy candidacy){
         Candidacy cand = candidacyService.createNewCandidacy(candidacy);
-        if(cand != null){
-            return ResponseEntity.ok(cand);
-        }
-
-        return ResponseEntity.badRequest().build();
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(cand.getId())
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @ApiOperation(value = "Retorna todas as candidaturas da pessoa")

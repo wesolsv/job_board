@@ -3,8 +3,8 @@ package br.com.wszd.jboard.service;
 import br.com.wszd.jboard.dto.CompanyDTO;
 import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.dto.UserRoleDTO;
-import br.com.wszd.jboard.exceptions.BadRequestException;
-import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
+import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
+import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.*;
 import br.com.wszd.jboard.repository.*;
 import br.com.wszd.jboard.util.JobStatus;
@@ -59,7 +59,7 @@ public class CompanyService {
     public CompanyDTO getCompanyDTO(Long id){
         log.info("Buscando empresa");
         Company realCompany = repository.findById(id).orElseThrow(
-                () ->  new ObjectNotFoundException("Objeto não encontrado com o id = " + id));
+                () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
 
         return new CompanyDTO.Builder()
                 .id(realCompany.getId())
@@ -73,7 +73,7 @@ public class CompanyService {
     private Company getCompany(Long id){
         log.info("Buscando empresa");
         return repository.findById(id).orElseThrow(
-                () ->  new ObjectNotFoundException("Objeto não encontrado com o id = " + id));
+                () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
     }
 
     public CompanyDTO createNewCompany(Company novo) {
@@ -87,8 +87,8 @@ public class CompanyService {
             repository.findByCnpj(novo.getCnpj());
             userRepository.findByEmail(novo.getEmail());
 
-        }catch (BadRequestException e){
-            throw new BadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
+        }catch (ResourceBadRequestException e){
+            throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
         }
 
         Company company = repository.save(new Company.Builder()
@@ -153,8 +153,8 @@ public class CompanyService {
                     pessoas.add(personRepository.listPersonByCandidacyJobId(cd.getPersonId().getId()));
                 }
             }
-        }catch (BadRequestException e){
-            throw new BadRequestException("O job id " + jobId + " não existe");
+        }catch (ResourceBadRequestException e){
+            throw new ResourceBadRequestException("O job id " + jobId + " não existe");
         }
 
        return pessoas;
@@ -174,8 +174,8 @@ public class CompanyService {
                     jobRepository.save(job);
                 }
             }
-        }catch(BadRequestException e){
-            throw new BadRequestException("Não foi encontrada candidatura para a pessoa id " +personId);
+        }catch(ResourceBadRequestException e){
+            throw new ResourceBadRequestException("Não foi encontrada candidatura para a pessoa id " +personId);
         }
     }
 }

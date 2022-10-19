@@ -2,10 +2,9 @@ package br.com.wszd.jboard.service;
 
 import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.dto.UserRoleDTO;
-import br.com.wszd.jboard.exceptions.BadRequestException;
-import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
+import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
+import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.Person;
-import br.com.wszd.jboard.model.Role;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
 import br.com.wszd.jboard.repository.UserRepository;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,7 +41,7 @@ public class PersonService {
     public PersonDTO getPersonDTO(Long id){
         log.info("Buscando pessoa");
         Person realPerson = repository.findById(id).orElseThrow(
-                () ->  new ObjectNotFoundException("Não encontrado id = " + id));
+                () ->  new ResourceObjectNotFoundException("Não encontrado id = " + id));
 
         return new PersonDTO.Builder()
                 .id(realPerson.getId())
@@ -57,7 +55,7 @@ public class PersonService {
     public Person getPerson(Long id){
         log.info("Buscando pessoa");
         return repository.findById(id).orElseThrow(
-                () ->  new ObjectNotFoundException("Não encontrado id = " + id));
+                () ->  new ResourceObjectNotFoundException("Não encontrado id = " + id));
     }
 
     public PersonDTO createNewPerson(Person novo) {
@@ -71,8 +69,8 @@ public class PersonService {
             repository.findByCpf(novo.getCpf());
             userRepository.findByEmail(novo.getEmail());
 
-        }catch (BadRequestException e){
-            throw new BadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
+        }catch (ResourceBadRequestException e){
+            throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
         }
 
         Person person = repository.save(new Person.Builder()

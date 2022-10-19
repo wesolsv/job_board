@@ -1,8 +1,8 @@
 package br.com.wszd.jboard.service;
 
 import br.com.wszd.jboard.dto.JobDTO;
-import br.com.wszd.jboard.exceptions.BadRequestException;
-import br.com.wszd.jboard.exceptions.ObjectNotFoundException;
+import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
+import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.repository.JobRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class JobService {
         log.info("Buscando job");
 
         Job realJob =  repository.findById(id).orElseThrow(
-                () ->  new ObjectNotFoundException("Objeto não encontrado com o id = " + id));
+                () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
 
         JobDTO job = new JobDTO.Builder()
                         .id(realJob.getId())
@@ -47,7 +47,7 @@ public class JobService {
         log.info("Buscando JOB FULL");
 
         return repository.findById(id).orElseThrow(
-                () ->  new ObjectNotFoundException("Objeto não encontrado com o id = " + id));
+                () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
     }
 
     public Job createNewJob(Job novo) {
@@ -65,8 +65,8 @@ public class JobService {
                     .personId(novo.getPersonId())
                     .companyId(novo.getCompanyId())
                     .build());
-        }catch(BadRequestException e){
-            throw new BadRequestException("Falha ao criar job");
+        }catch(ResourceBadRequestException e){
+            throw new ResourceBadRequestException("Falha ao criar job");
         }
         return job;
     }
