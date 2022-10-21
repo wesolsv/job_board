@@ -24,26 +24,14 @@ public class CompanyService {
 
     @Autowired
     private CompanyRepository repository;
-
-    @Autowired
-    private CandidacyRepository candidacyRepository;
-
     @Autowired
     private CandidacyService candidacyService;
     @Autowired
-    private PersonRepository personRepository;
-    @Autowired
     private PersonService personService;
-
     @Autowired
     private JobService jobService;
-
-    @Autowired
-    private JobRepository jobRepository;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private UserService createRoleUserService;
 
@@ -149,12 +137,12 @@ public class CompanyService {
         log.info("Buscando todas as pessoas da vaga de id " + jobId);
 
         List<Optional<PersonDTO>> pessoas = new ArrayList<>();
-        List<Candidacy> candidaturas =candidacyRepository.findAll();
+        List<Candidacy> candidaturas = candidacyService.getAllCandidacy();
 
         try {
             for(Candidacy cd : candidaturas){
                 if(cd.getJob().getId() == jobId){
-                    pessoas.add(personRepository.listPersonByCandidacyJobId(cd.getPersonId().getId()));
+                    pessoas.add(personService.listPersonByCandidacyJobId(cd.getPersonId().getId()));
                 }
             }
         }catch (ResourceBadRequestException e){
@@ -180,7 +168,7 @@ public class CompanyService {
                     job.setStatus(JobStatus.COMPLETED);
 
                     candidacyService.deleteAllCandidacy(jobId);
-                    jobRepository.save(job);
+                    jobService.createNewJob(job);
                 }
             }
         }catch(ResourceBadRequestException e){

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -125,5 +126,9 @@ public class PersonService {
         userService.deleteUser(user.getId());
 
         repository.deleteById(id);
+    }
+
+    public Optional<PersonDTO> listPersonByCandidacyJobId(Long id) {
+        return repository.listPersonByCandidacyJobId(id);
     }
 }
