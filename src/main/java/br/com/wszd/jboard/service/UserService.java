@@ -1,6 +1,7 @@
 package br.com.wszd.jboard.service;
 
 import br.com.wszd.jboard.dto.UserRoleDTO;
+import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Role;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.UserRepository;
@@ -40,8 +41,19 @@ public class UserService {
     return users;
   }
 
-//  public List<UserRoleDTO> getAllPerson(){
-//    log.info("Buscando todas as pessoas");
-//    return repository.listarPerson();
-//  }
+  public void deleteUser(Long id) {
+    userRepository.deleteById(id);
+  }
+
+  public Users findByEmail(String email) {
+    return userRepository.findByEmail(email);
+  }
+
+  public Users createUser(Users user) {
+    return userRepository.save(user);
+  }
+
+  public Users getUserByPersonId(Person id) {
+    return userRepository.findByPersonId(id);
+  }
 }

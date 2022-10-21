@@ -22,4 +22,10 @@ public class UserController {
 
         return createRoleUserService.execute(userRoleDTO);
     }
+
+    @ApiOperation(value = "Deletando um usuario")
+    @DeleteMapping("/{id}")
+    public void deletePerson(@PathVariable Long id){
+        createRoleUserService.deleteUser(id);
+    }
 }

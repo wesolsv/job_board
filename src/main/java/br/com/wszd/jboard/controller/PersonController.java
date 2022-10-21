@@ -59,11 +59,12 @@ public class PersonController {
     @PutMapping("/{id}")
     public ResponseEntity<PersonDTO> editPerson(@PathVariable Long id, @RequestBody Person novo){
         PersonDTO res = service.editPerson(id, novo);
-
-        if(res != null){
-            return ResponseEntity.ok(res);
-        }
-        return ResponseEntity.notFound().build();
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(res.getId())
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @ApiOperation(value = "Deletando uma pessoa")

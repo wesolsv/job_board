@@ -7,7 +7,6 @@ import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
-import br.com.wszd.jboard.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,7 +23,7 @@ public class PersonService {
     private PersonRepository repository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private UserService createRoleUserService;
@@ -67,7 +66,7 @@ public class PersonService {
             //Validando a existencia do email ou cnpj nas tabelas de company ou users
             repository.findByEmail(novo.getEmail());
             repository.findByCpf(novo.getCpf());
-            userRepository.findByEmail(novo.getEmail());
+            userService.findByEmail(novo.getEmail());
 
         }catch (ResourceBadRequestException e){
             throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
@@ -83,7 +82,7 @@ public class PersonService {
                 .build());
 
         //Criando usuário no repositorio
-        Users user = userRepository.save(new Users.Builder()
+        Users user = userService.createUser(new Users.Builder()
                 .email(person.getEmail())
                 .password(person.getPassword())
                 .personId(person)
@@ -121,7 +120,10 @@ public class PersonService {
 
     public void deletePerson(Long id){
         log.info("Deletando pessoa");
-        getPerson(id);
+        Person person = getPerson(id);
+        Users user = userService.getUserByPersonId(person);
+        userService.deleteUser(user.getId());
+
         repository.deleteById(id);
     }
 }
