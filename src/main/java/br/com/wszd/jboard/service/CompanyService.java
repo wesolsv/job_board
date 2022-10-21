@@ -42,7 +42,7 @@ public class CompanyService {
     private JobRepository jobRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private UserService createRoleUserService;
@@ -85,7 +85,7 @@ public class CompanyService {
             //Validando a existencia do email ou cnpj nas tabelas de company ou users
             repository.findByEmail(novo.getEmail());
             repository.findByCnpj(novo.getCnpj());
-            userRepository.findByEmail(novo.getEmail());
+            userService.findByEmail(novo.getEmail());
 
         }catch (ResourceBadRequestException e){
             throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
@@ -101,7 +101,7 @@ public class CompanyService {
                 .build());
 
         //Criando usuário no repositorio
-        Users user = userRepository.save(new Users.Builder()
+        Users user = userService.createUser(new Users.Builder()
                 .email(company.getEmail())
                 .password(company.getPassword())
                 .personId(null)
@@ -137,7 +137,11 @@ public class CompanyService {
 
     public void deleteCompany(Long id){
         log.info("Deletando empresa");
-        getCompany(id);
+
+        Company company = getCompany(id);
+        Users user = userService.getUserByCompanyId(company);
+        userService.deleteUser(user.getId());
+
         repository.deleteById(id);
     }
 

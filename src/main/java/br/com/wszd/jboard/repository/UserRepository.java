@@ -19,5 +19,9 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     @Query("SELECT u "
             + "FROM Users u WHERE u.personId = :person")
-    Users findByPersonId(Person id);
+    Users findByPersonId(Person person);
+
+    @Query("SELECT u "
+            + "FROM Users u WHERE u.companyId = :company")
+    Users findByCompanyId(Company company);
 }

@@ -1,6 +1,7 @@
 package br.com.wszd.jboard.service;
 
 import br.com.wszd.jboard.dto.UserRoleDTO;
+import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Role;
 import br.com.wszd.jboard.model.Users;
@@ -53,7 +54,11 @@ public class UserService {
     return userRepository.save(user);
   }
 
-  public Users getUserByPersonId(Person id) {
-    return userRepository.findByPersonId(id);
+  public Users getUserByPersonId(Person person) {
+    return userRepository.findByPersonId(person);
+  }
+
+  public Users getUserByCompanyId(Company company) {
+    return userRepository.findByCompanyId(company);
   }
 }
