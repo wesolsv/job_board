@@ -12,23 +12,17 @@ public class JWTObject {
     private String email;
     private Date issuedAt;
     private Date expiration;
-    private List<String> roles;
+    private List<Role> roles;
 
-
-    public void setRoles(String... roles){
-        this.roles = Arrays.asList(roles);
-    }
-    public List<String> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
-    public void setRoles(List<String> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
-
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
