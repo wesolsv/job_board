@@ -1,9 +1,7 @@
-package br.com.wszd.jboard.config.security;
+package br.com.wszd.jboard.security;
 
 import io.jsonwebtoken.*;
 
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +10,7 @@ public class JWTCreator {
     public static final String ROLES_AUTHORITIES = "authorities";
 
     public static String create(String prefix,String key, JWTObject jwtObject) {
-        String token = Jwts.builder().setSubject(jwtObject.getSubject()).setIssuedAt(jwtObject.getIssuedAt()).setExpiration(jwtObject.getExpiration())
+        String token = Jwts.builder().setSubject(jwtObject.getEmail()).setIssuedAt(jwtObject.getIssuedAt()).setExpiration(jwtObject.getExpiration())
                 .claim(ROLES_AUTHORITIES, checkRoles(jwtObject.getRoles())).signWith(SignatureAlgorithm.HS512, key).compact();
         return prefix + " " + token;
     }
@@ -21,7 +19,7 @@ public class JWTCreator {
         JWTObject object = new JWTObject();
         token = token.replace(prefix, "");
         Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
-        object.setSubject(claims.getSubject());
+        object.setEmail(claims.getSubject());
         object.setExpiration(claims.getExpiration());
         object.setIssuedAt(claims.getIssuedAt());
         object.setRoles((List) claims.get(ROLES_AUTHORITIES));

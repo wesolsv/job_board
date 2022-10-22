@@ -1,12 +1,15 @@
-package br.com.wszd.jboard.config.security;
+package br.com.wszd.jboard.security;
 
+import br.com.wszd.jboard.model.Role;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 public class JWTObject {
 
-    private String subject;
+    private String email;
     private Date issuedAt;
     private Date expiration;
     private List<String> roles;
@@ -15,13 +18,19 @@ public class JWTObject {
     public void setRoles(String... roles){
         this.roles = Arrays.asList(roles);
     }
-
-    public String getSubject() {
-        return subject;
+    public List<String> getRoles() {
+        return roles;
+    }
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Date getIssuedAt() {
@@ -39,13 +48,4 @@ public class JWTObject {
     public void setExpiration(Date expiration) {
         this.expiration = expiration;
     }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
-    }
-
 }

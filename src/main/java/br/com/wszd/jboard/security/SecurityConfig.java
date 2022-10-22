@@ -1,4 +1,4 @@
-package br.com.wszd.jboard.config.security;
+package br.com.wszd.jboard.security;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

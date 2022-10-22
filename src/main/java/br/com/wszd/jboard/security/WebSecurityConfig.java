@@ -1,18 +1,18 @@
-package br.com.wszd.jboard.config.security;
+package br.com.wszd.jboard.security;
 
+import br.com.wszd.jboard.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -22,7 +22,7 @@ public class WebSecurityConfig {
     boolean securityDebug;
 
     @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
     @Bean
     public BCryptPasswordEncoder encoder(){
@@ -33,6 +33,16 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    private static final String[] SWAGGER_WHITELIST = {
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**"
+    };
+
     @Autowired
     public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception{
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
@@ -41,7 +51,9 @@ public class WebSecurityConfig {
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
+                .addFilterAfter(new JWTFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
+                .antMatchers(SWAGGER_WHITELIST).permitAll()
                 .antMatchers(HttpMethod.POST,"/api/v1/person").anonymous()
                 .antMatchers(HttpMethod.POST,"/api/v1/company").anonymous()
                 .antMatchers(HttpMethod.POST,"/api/v1/users/login").anonymous()
@@ -49,22 +61,9 @@ public class WebSecurityConfig {
                 .antMatchers(HttpMethod.PUT,"/api/v1/person/{id}").hasAnyRole( "USER", "ADMIN")
                 .antMatchers(HttpMethod.PUT,"/api/v1/company/{id}").hasAnyRole("COMP", "ADMIN")
                 .anyRequest().hasAnyRole("ADMIN")
-                .and().httpBasic().and()
-                .sessionManagement()
+                .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .build();
+                .and().build();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.debug(securityDebug)
-                .ignoring()
-                .antMatchers("/v2/api-docs",
-                        "/configuration/ui",
-                        "/swagger-resources/**",
-                        "/configuration/security",
-                        "/swagger-ui.html",
-                        "/webjars/**");
-    }
 }

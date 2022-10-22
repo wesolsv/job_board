@@ -1,8 +1,8 @@
 package br.com.wszd.jboard.controller;
 
-import br.com.wszd.jboard.config.security.JWTCreator;
-import br.com.wszd.jboard.config.security.JWTObject;
-import br.com.wszd.jboard.config.security.SecurityConfig;
+import br.com.wszd.jboard.security.JWTCreator;
+import br.com.wszd.jboard.security.JWTObject;
+import br.com.wszd.jboard.security.SecurityConfig;
 import br.com.wszd.jboard.dto.Login;
 import br.com.wszd.jboard.dto.Sessao;
 import br.com.wszd.jboard.exceptions.ResourceBadRequestException;

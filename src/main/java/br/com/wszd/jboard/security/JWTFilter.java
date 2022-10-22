@@ -1,6 +1,7 @@
-package br.com.wszd.jboard.config.security;
+package br.com.wszd.jboard.security;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,9 +34,15 @@ public class JWTFilter extends OncePerRequestFilter {
 
                 List<SimpleGrantedAuthority> authorities = authorities(tokenObject.getRoles());
 
+                //[ROLE_[Role(id=2, name=ADMIN)]]
+                System.out.println(authorities);
+//                authorities = user.get().getRoles().stream().map(role -> {
+//                    return new SimpleGrantedAuthority("ROLE_" + role.getName());
+//                }).collect(Collectors.toList());
+
                 UsernamePasswordAuthenticationToken userToken =
                         new UsernamePasswordAuthenticationToken(
-                                tokenObject.getSubject(),
+                                tokenObject.getEmail(),
                                 null,
                                 authorities);
 
