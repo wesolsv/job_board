@@ -33,8 +33,6 @@ public class JWTFilter extends OncePerRequestFilter {
             if(token!=null && !token.isEmpty()) {
                 JWTObject tokenObject = JWTCreator.create(token, SecurityConfig.PREFIX, SecurityConfig.KEY);
 
-                System.out.println(tokenObject.getRoles());
-
                 List<SimpleGrantedAuthority> authorities = authorities(tokenObject.getRoles());
 
                 UsernamePasswordAuthenticationToken userToken =
@@ -55,18 +53,16 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
     }
-    private List<SimpleGrantedAuthority> authorities(List<Role> role){
+    private List<SimpleGrantedAuthority> authorities(List<Role> roles){
 
-        ArrayList<String> e = new ArrayList<>();
+        ArrayList<String> rolesRetorno = new ArrayList<>();
 
-        System.out.println(role.get(1));
-
-        for(int i = 0; i < role.size(); i++) {
-            String j = role.get(i) +"";
-            e.add(j);
+        for(int i = 0; i < roles.size(); i++) {
+            String j = roles.get(i) + "";
+            rolesRetorno.add(j);
         }
 
-        return e.stream().map(SimpleGrantedAuthority::new)
+        return rolesRetorno.stream().map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
 }

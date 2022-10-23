@@ -2,11 +2,9 @@ package br.com.wszd.jboard.security;
 
 import br.com.wszd.jboard.model.Role;
 import io.jsonwebtoken.*;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class JWTCreator {
     public static final String HEADER_AUTHORIZATION = "Authorization";
@@ -36,16 +34,12 @@ public class JWTCreator {
     }
     private static List<String> checkRoles(List<Role> roles) {
 
-        List<String> ret = new ArrayList<>();
+        List<String> rolesRetorno = new ArrayList<>();
 
         for (Role r: roles){
-            ret.add(new String("ROLE_"+r.getName()));
+            rolesRetorno.add(new String("ROLE_" + r.getName()));
         }
 
-        return ret;
+        return rolesRetorno;
     }
-
-//user.get().getRoles().stream().map(role -> {
-//                    return new SimpleGrantedAuthority("ROLE_" + role.getName());
-//                }).collect(Collectors.toList());
 }

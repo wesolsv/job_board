@@ -4,7 +4,6 @@ public class Sessao {
     private String login;
     private String token;
 
-
     public String getLogin() {
         return login;
     }
