@@ -21,6 +21,30 @@ public class CandidacyDTO {
     private PersonDTO person;
     private JobDTO job;
 
+    public CandidacyDTO(Long id, LocalDateTime dateCandidacy, CandidacyStatus status, Person person, Job job) {
+        this.id = id;
+        this.dateCandidacy = dateCandidacy;
+        this.status = status;
+        this.person = new PersonDTO.Builder()
+                .id(person.getId())
+                .name(person.getName())
+                .phone(person.getPhone())
+                .email(person.getEmail())
+                .cpf(person.getCpf())
+                .build();
+        this.job = new JobDTO.Builder()
+                .id(job.getId())
+                .opportunity(job.getOpportunity())
+                .description(job.getDescription())
+                .type(job.getType())
+                .salary(job.getSalary())
+                .benefits(job.getBenefits())
+                .status(job.getStatus())
+                .companyName(job.getCompanyId().getName())
+                .datePublish(job.getDatePublish())
+                .build();;
+    }
+
     public static class Builder{
         private PersonDTO person;
         private JobDTO job;

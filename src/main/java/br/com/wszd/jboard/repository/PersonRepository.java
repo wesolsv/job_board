@@ -27,8 +27,4 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             "FROM Person p " +
             "WHERE p.id = :id")
     Optional<PersonDTO> listPersonByCandidacyJobId(@Param("id") Long id);
-
-    //"SELECT "
-    //            + "new br.com.wszd.jboard.dto.PersonCandidacyDTO(cd.dateCandidacy, cd.status, cd.personId, cd.job) "
-    //            + "FROM Candidacy cd "
 }

@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.controller;
 
+import br.com.wszd.jboard.dto.CandidacyDTO;
 import br.com.wszd.jboard.model.Candidacy;
 import br.com.wszd.jboard.service.CandidacyService;
 import io.swagger.annotations.Api;
@@ -7,7 +8,9 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.ArrayList;
 
 @RestController
@@ -20,38 +23,38 @@ public class CandidacyController {
 
     @ApiOperation(value = "Retorna todas as candidaturas")
     @GetMapping
-    public ArrayList<Candidacy> getAllCandidacy(){
+    public ArrayList<CandidacyDTO> getAllCandidacy(){
         return service.getAllCandidacy();
     }
 
     @ApiOperation(value = "Retorna uma candidatura")
     @GetMapping("/{id}")
-    public ResponseEntity<Candidacy> getOneCandidacy(@PathVariable Long id){
-        Candidacy res = service.getCandidacy(id);
-        if(res != null){
-            return ResponseEntity.ok(res);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<CandidacyDTO> getOneCandidacy(@PathVariable Long id){
+        CandidacyDTO res = service.getCandidacy(id);
+        return ResponseEntity.ok(res);
     }
     @ApiOperation(value = "Cria nova candidatura")
     @PostMapping
     public ResponseEntity<Candidacy> createCandidacy(@RequestBody Candidacy novo){
         Candidacy res = service.createNewCandidacy(novo);
-        if(res != null){
-            return ResponseEntity.ok(res);
-        }
-        return ResponseEntity.notFound().build();
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(res.getId())
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @ApiOperation(value = "Altera uma candidatura")
     @PutMapping("/{id}")
-    public ResponseEntity<Candidacy> editCandidacy(@PathVariable Long id, @RequestBody Candidacy novo){
-        Candidacy res = service.editCandidacy(id, novo);
-
-        if(res != null){
-            return ResponseEntity.ok(res);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<CandidacyDTO> editCandidacy(@PathVariable Long id, @RequestBody Candidacy novo){
+        CandidacyDTO res = service.editCandidacy(id, novo);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(res.getId())
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @ApiOperation(value = "Deleta uma candidatura")

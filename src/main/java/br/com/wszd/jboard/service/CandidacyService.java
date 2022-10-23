@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.service;
 
+import br.com.wszd.jboard.dto.CandidacyDTO;
 import br.com.wszd.jboard.dto.PersonCandidacyDTO;
 import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
 import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -28,9 +30,9 @@ public class CandidacyService {
     @Autowired
     private JobService jobService;
 
-    public ArrayList<Candidacy> getAllCandidacy(){
+    public ArrayList<CandidacyDTO> getAllCandidacy(){
         log.info("Buscando todas as candidaturas");
-       return (ArrayList<Candidacy>) repository.findAll();
+       return (ArrayList<CandidacyDTO>) repository.listAllCandidacy();
     }
 
     public ArrayList<PersonCandidacyDTO> getAllCandidacyByPersonId(Long id){
@@ -38,10 +40,17 @@ public class CandidacyService {
         return repository.returnCandidacyByPerson(id);
     }
 
-    public Candidacy getCandidacy(Long id){
+    public CandidacyDTO getCandidacy(Long id){
         log.info("Buscando candidatura");
-        return repository.findById(id).orElseThrow(
-                () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
+
+        Candidacy realCandidacy = repository.findById(id).orElseThrow(
+                () ->  new ResourceObjectNotFoundException("Não encontrado id = " + id));
+
+        return new CandidacyDTO(realCandidacy.getId(),
+                realCandidacy.getDateCandidacy(),
+                realCandidacy.getStatus(),
+                realCandidacy.getPersonId(),
+                realCandidacy.getJob());
     }
 
     public Candidacy createNewCandidacy(Candidacy novo) {
@@ -79,16 +88,21 @@ public class CandidacyService {
         return candidacy;
     }
 
-    public Candidacy editCandidacy(Long id, Candidacy novo){
+    public CandidacyDTO editCandidacy(Long id, Candidacy novo){
         log.info("Editando candidatura");
 
-        Candidacy candidacy = getCandidacy(id);
-        candidacy.setStatus(novo.getStatus());
-        if(candidacy.getStatus() == CandidacyStatus.RECUSADA) {
+        Optional<Candidacy> candidacy = repository.findById(id);
+        candidacy.get().setStatus(novo.getStatus());
+        if(candidacy.get().getStatus() == CandidacyStatus.RECUSADA) {
             deleteCandidacy(id);
             return null;
         }
-        return repository.save(candidacy);
+        repository.save(candidacy.get());
+        return new CandidacyDTO(candidacy.get().getId(),
+                candidacy.get().getDateCandidacy(),
+                candidacy.get().getStatus(),
+                candidacy.get().getPersonId(),
+                candidacy.get().getJob());
     }
 
     public void deleteCandidacy(Long id){
@@ -100,7 +114,7 @@ public class CandidacyService {
     //Deletar todas as candidaturas com o job id.
     public void deleteAllCandidacy(Long jobId){
         log.info("Deletando todas as candidaturas");
-        ArrayList<Candidacy> candidaturas = getAllCandidacy();
+        ArrayList<Candidacy> candidaturas = (ArrayList<Candidacy>) repository.findAll();
 
         for(Candidacy cd : candidaturas){
             if(cd.getJob().getId() == jobId){

@@ -1,5 +1,6 @@
 package br.com.wszd.jboard.service;
 
+import br.com.wszd.jboard.dto.CandidacyDTO;
 import br.com.wszd.jboard.dto.CompanyDTO;
 import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.dto.UserRoleDTO;
@@ -137,12 +138,12 @@ public class CompanyService {
         log.info("Buscando todas as pessoas da vaga de id " + jobId);
 
         List<Optional<PersonDTO>> pessoas = new ArrayList<>();
-        List<Candidacy> candidaturas = candidacyService.getAllCandidacy();
+        List<CandidacyDTO> candidaturas = candidacyService.getAllCandidacy();
 
         try {
-            for(Candidacy cd : candidaturas){
+            for(CandidacyDTO cd : candidaturas){
                 if(cd.getJob().getId() == jobId){
-                    pessoas.add(personService.listPersonByCandidacyJobId(cd.getPersonId().getId()));
+                    pessoas.add(personService.listPersonByCandidacyJobId(cd.getPerson().getId()));
                 }
             }
         }catch (ResourceBadRequestException e){
