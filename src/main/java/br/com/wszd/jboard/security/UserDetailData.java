@@ -23,7 +23,6 @@ public class UserDetailData implements UserDetails {
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        // ROLE_ADMIN, ROLE_USER
         authorities = user.get().getRoles().stream().map(role -> {
             return new SimpleGrantedAuthority("ROLE_" + role.getName());
         }).collect(Collectors.toList());

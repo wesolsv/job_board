@@ -18,18 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    @Value("${spring.security.debug:false}")
-    boolean securityDebug;
-
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
-
     @Bean
     public BCryptPasswordEncoder encoder(){
-        return new BCryptPasswordEncoder();
-    }
-
-    private BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
@@ -42,11 +32,6 @@ public class WebSecurityConfig {
             "/swagger-ui.html",
             "/webjars/**"
     };
-
-    @Autowired
-    public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception{
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
 
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -65,5 +50,4 @@ public class WebSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().build();
     }
-
 }

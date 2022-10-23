@@ -1,6 +1,6 @@
 package br.com.wszd.jboard.controller;
 
-import br.com.wszd.jboard.dto.Sessao;
+import br.com.wszd.jboard.dto.SessaoDTO;
 import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
 import br.com.wszd.jboard.model.Users;
@@ -41,7 +41,7 @@ public class UserController {
 
     @PostMapping("/login")
     @ApiOperation(value = "Realiza o Login do usuario e retorna o seu token")
-    public Sessao logar(@RequestBody Users infoLogin){
+    public SessaoDTO logar(@RequestBody Users infoLogin){
         Users user = service.findByEmail(infoLogin.getEmail());
         if(user!=null) {
             boolean passwordOk =  encoder.matches(infoLogin.getPassword(), user.getPassword());
@@ -49,17 +49,18 @@ public class UserController {
                 throw new ResourceBadRequestException("Senha incorreta para o email: " + infoLogin.getEmail());
             }
 
-            //Enviando um objeto Sessão para retornar mais informações do usuário
-            Sessao sessao = new Sessao();
-            sessao.setLogin(user.getEmail());
+            //Cria o objeto de sessão para retornar email e token do usuario
+            SessaoDTO sessaoDTO = new SessaoDTO();
+            sessaoDTO.setLogin(user.getEmail());
 
             JWTObject jwtObject = new JWTObject();
             jwtObject.setIssuedAt(new Date(System.currentTimeMillis()));
             jwtObject.setExpiration((new Date(System.currentTimeMillis() + SecurityConfig.EXPIRATION)));
             jwtObject.setRoles(user.getRoles());
-            sessao.setToken(JWTCreator.create(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
 
-            return sessao;
+            sessaoDTO.setToken(JWTCreator.createToken(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
+
+            return sessaoDTO;
         }else {
             throw new ResourceBadRequestException("Erro ao tentar fazer login");
         }

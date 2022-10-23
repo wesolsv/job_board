@@ -1,6 +1,6 @@
 package br.com.wszd.jboard.dto;
 
-public class Sessao {
+public class SessaoDTO {
     private String login;
     private String token;
 

@@ -10,7 +10,7 @@ public class JWTCreator {
     public static final String HEADER_AUTHORIZATION = "Authorization";
     public static final String ROLES_AUTHORITIES = "authorities";
 
-    public static String create(String prefix,String key, JWTObject jwtObject) {
+    public static String createToken(String prefix, String key, JWTObject jwtObject) {
         String token = Jwts.builder()
                 .setSubject(jwtObject.getEmail())
                 .setIssuedAt(jwtObject.getIssuedAt())
@@ -20,7 +20,7 @@ public class JWTCreator {
                 .compact();
         return prefix + " " + token;
     }
-    public static JWTObject create(String token,String prefix,String key)
+    public static JWTObject createJwtObject(String token, String prefix, String key)
             throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException {
         JWTObject object = new JWTObject();
         token = token.replace(prefix, "");
@@ -37,7 +37,7 @@ public class JWTCreator {
         List<String> rolesRetorno = new ArrayList<>();
 
         for (Role r: roles){
-            rolesRetorno.add(new String("ROLE_" + r.getName()));
+            rolesRetorno.add("ROLE_" + r.getName());
         }
 
         return rolesRetorno;
