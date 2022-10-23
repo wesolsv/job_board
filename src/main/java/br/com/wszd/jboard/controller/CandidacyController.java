@@ -54,7 +54,7 @@ public class CandidacyController {
         return ResponseEntity.notFound().build();
     }
 
-    @ApiOperation(value = "Deletando uma candidatura")
+    @ApiOperation(value = "Deleta uma candidatura")
     @DeleteMapping("/{id}")
     public void deleteCandidacy(@PathVariable Long id){
         service.deleteCandidacy(id);

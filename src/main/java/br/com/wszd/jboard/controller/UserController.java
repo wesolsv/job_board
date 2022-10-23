@@ -11,6 +11,7 @@ import br.com.wszd.jboard.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +23,11 @@ import java.util.Date;
 public class UserController {
 
     @Autowired
-    private PasswordEncoder encoder;
-    @Autowired
     private UserService service;
+
+    public BCryptPasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
     @ApiOperation(value = "Cria nova Role")
     @PostMapping("/role")
@@ -44,7 +47,7 @@ public class UserController {
     public SessaoDTO logar(@RequestBody Users infoLogin){
         Users user = service.findByEmail(infoLogin.getEmail());
         if(user!=null) {
-            boolean passwordOk =  encoder.matches(infoLogin.getPassword(), user.getPassword());
+            boolean passwordOk = passwordEncoder().matches(infoLogin.getPassword(), user.getPassword());
             if (!passwordOk) {
                 throw new ResourceBadRequestException("Senha incorreta para o email: " + infoLogin.getEmail());
             }
