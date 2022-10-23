@@ -1,6 +1,7 @@
 package br.com.wszd.jboard.controller;
 
 import br.com.wszd.jboard.dto.SessaoDTO;
+import br.com.wszd.jboard.dto.UserLoginDTO;
 import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
 import br.com.wszd.jboard.model.Users;
@@ -25,17 +26,6 @@ public class UserController {
     @Autowired
     private UserService service;
 
-    public BCryptPasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
-    @ApiOperation(value = "Cria nova Role")
-    @PostMapping("/role")
-    public Users role(@RequestBody UserRoleDTO userRoleDTO){
-
-        return service.execute(userRoleDTO);
-    }
-
     @ApiOperation(value = "Deletando um usuario")
     @DeleteMapping("/{id}")
     public void deletePerson(@PathVariable Long id){
@@ -44,28 +34,8 @@ public class UserController {
 
     @PostMapping("/login")
     @ApiOperation(value = "Realiza o Login do usuario e retorna o seu token")
-    public SessaoDTO logar(@RequestBody Users infoLogin){
+    public SessaoDTO logar(@RequestBody UserLoginDTO infoLogin){
         Users user = service.findByEmail(infoLogin.getEmail());
-        if(user!=null) {
-            boolean passwordOk = passwordEncoder().matches(infoLogin.getPassword(), user.getPassword());
-            if (!passwordOk) {
-                throw new ResourceBadRequestException("Senha incorreta para o email: " + infoLogin.getEmail());
-            }
-
-            //Cria o objeto de sessão para retornar email e token do usuario
-            SessaoDTO sessaoDTO = new SessaoDTO();
-            sessaoDTO.setLogin(user.getEmail());
-
-            JWTObject jwtObject = new JWTObject();
-            jwtObject.setIssuedAt(new Date(System.currentTimeMillis()));
-            jwtObject.setExpiration((new Date(System.currentTimeMillis() + SecurityConfig.EXPIRATION)));
-            jwtObject.setRoles(user.getRoles());
-
-            sessaoDTO.setToken(JWTCreator.createToken(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
-
-            return sessaoDTO;
-        }else {
-            throw new ResourceBadRequestException("Erro ao tentar fazer login");
-        }
+        return service.validLogin(user, infoLogin);
     }
 }
