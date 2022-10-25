@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 public class UserDetailData implements UserDetails {
 
-    private String email;
-    private String password;
+    public static String email;
+    private static String password;
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailData(Optional<Users> user){
