@@ -9,11 +9,13 @@ import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.*;
 import br.com.wszd.jboard.repository.*;
 import br.com.wszd.jboard.util.JobStatus;
+import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +37,9 @@ public class CompanyService {
     private UserService userService;
     @Autowired
     private UserService createRoleUserService;
+
+    @Autowired
+    private LogService logService;
 
     private BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -70,13 +75,10 @@ public class CompanyService {
 
         List<Long> listIdRoles = Arrays.asList(3L);
 
-        try{
-            //Validando a existencia do email ou cnpj nas tabelas de company ou users
-            repository.findByEmail(novo.getEmail());
-            repository.findByCnpj(novo.getCnpj());
-            userService.findByEmail(novo.getEmail());
 
-        }catch (ResourceBadRequestException e){
+            //Validando a existencia do email ou cnpj nas tabelas de company ou users
+
+        if(repository.findByEmail(novo.getEmail()) != null && repository.findByCnpj(novo.getCnpj())!= null &&  userService.findByEmail(novo.getEmail())!= null) {
             throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
         }
 
@@ -175,5 +177,18 @@ public class CompanyService {
         }catch(ResourceBadRequestException e){
             throw new ResourceBadRequestException("Não foi encontrada candidatura para a pessoa id " +personId);
         }
+    }
+
+    public void createLog(String payload, String endpoint, Long userId, LogStatus status){
+
+        LogTable log = new LogTable.Builder()
+                .payload(payload.toString())
+                .endpoint(endpoint)
+                .userId(userId)
+                .status(status)
+                .dataInclusao(LocalDateTime.now())
+                .build();
+
+        logService.createLog(log);
     }
 }

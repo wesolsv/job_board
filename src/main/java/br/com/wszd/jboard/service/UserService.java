@@ -97,4 +97,8 @@ public class UserService {
       throw new ResourceBadRequestException("Erro ao tentar fazer login");
     }
   }
+
+  public void editUser(Users user) {
+    userRepository.save(user);
+  }
 }

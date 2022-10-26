@@ -73,15 +73,7 @@ public class PersonService {
         List<Long> listIdRoles = Arrays.asList(1L);
 
           if(repository.findByEmail(novo.getEmail()) != null && repository.findByCpf(novo.getCpf()) != null && userService.findByEmail(novo.getEmail())!= null){
-              LogTable log = new LogTable.Builder()
-                      .payload(novo.toString())
-                      .endpoint("/person")
-                      .userId(0L)
-                      .status(LogStatus.ERRO)
-                      .dataInclusao(LocalDateTime.now())
-                      .build();
-
-              logService.createLog(log);
+              createLog(novo.toString(), "/person", 0L, LogStatus.ERRO);
               throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
           }
 
@@ -106,18 +98,8 @@ public class PersonService {
         UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
         createRoleUserService.execute(userRoleDTO);
 
-
         //Criando log de inserção
-        LogTable log = new LogTable.Builder()
-                .payload(novo.toString())
-                .endpoint("/person")
-                .userId(user.getId())
-                .status(LogStatus.SUCESSO)
-                .dataInclusao(LocalDateTime.now())
-                .build();
-
-        logService.createLog(log);
-
+        createLog(novo.toString(), "/person", user.getId(), LogStatus.SUCESSO);
 
         return new PersonDTO.Builder()
                 .id(person.getId())
@@ -135,15 +117,15 @@ public class PersonService {
 
         repository.save(novo);
 
-        LogTable log = new LogTable.Builder()
-                .payload(novo.toString())
-                .endpoint("/person{" + id +"}")
-                .userId(userService.getUserByPersonId(getPerson(id)).getId())
-                .status(LogStatus.SUCESSO)
-                .dataInclusao(LocalDateTime.now())
-                .build();
+        Users user = userService.getUserByPersonId(getPerson(id));
 
-        logService.createLog(log);
+        user.setEmail(novo.getEmail());
+
+        userService.editUser(user);
+
+        createLog(novo.toString(),"/person{" + id +"}",
+                userService.getUserByPersonId(getPerson(id)).getId(), LogStatus.SUCESSO);
+
 
         return new PersonDTO.Builder()
                 .id(novo.getId())
@@ -165,5 +147,18 @@ public class PersonService {
 
     public Optional<PersonDTO> listPersonByCandidacyJobId(Long id) {
         return repository.listPersonByCandidacyJobId(id);
+    }
+
+    public void createLog(String payload, String endpoint, Long userId, LogStatus status){
+
+        LogTable log = new LogTable.Builder()
+                .payload(payload.toString())
+                .endpoint(endpoint)
+                .userId(userId)
+                .status(status)
+                .dataInclusao(LocalDateTime.now())
+                .build();
+
+        logService.createLog(log);
     }
 }
