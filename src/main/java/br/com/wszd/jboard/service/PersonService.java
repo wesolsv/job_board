@@ -4,17 +4,20 @@ import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
 import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
+import br.com.wszd.jboard.model.LogTable;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
 import br.com.wszd.jboard.security.JWTCreator;
 import br.com.wszd.jboard.security.UserDetailData;
+import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +34,9 @@ public class PersonService {
 
     @Autowired
     private UserService createRoleUserService;
+
+    @Autowired
+    private LogService logService;
 
     private BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -112,6 +118,16 @@ public class PersonService {
         novo.setId(id);
 
         repository.save(novo);
+
+        LogTable log = new LogTable.Builder()
+                .payload(novo.toString())
+                .endpoint("/person{" + id +"}")
+                .userId(userService.getUserByPersonId(getPerson(id)).getId())
+                .status(LogStatus.SUCESSO)
+                .dataInclusao(LocalDateTime.now())
+                .build();
+
+        logService.createLog(log);
 
         return new PersonDTO.Builder()
                 .id(novo.getId())

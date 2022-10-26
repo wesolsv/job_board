@@ -97,5 +97,6 @@ CREATE TABLE IF NOT EXISTS logs(
 	endpoint VARCHAR(255) NOT NULL,
 	user_id INT NOT NULL,
 	status VARCHAR(20) NOT NULL,
+	data_inclusion TIMESTAMP NOT NULL,
 	PRIMARY KEY(id)
 );
