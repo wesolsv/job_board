@@ -72,15 +72,18 @@ public class PersonService {
 
         List<Long> listIdRoles = Arrays.asList(1L);
 
-        try{
-            //Validando a existencia do email ou cnpj nas tabelas de company ou users
-            repository.findByEmail(novo.getEmail());
-            repository.findByCpf(novo.getCpf());
-            userService.findByEmail(novo.getEmail());
+          if(repository.findByEmail(novo.getEmail()) != null && repository.findByCpf(novo.getCpf()) != null && userService.findByEmail(novo.getEmail())!= null){
+              LogTable log = new LogTable.Builder()
+                      .payload(novo.toString())
+                      .endpoint("/person")
+                      .userId(0L)
+                      .status(LogStatus.ERRO)
+                      .dataInclusao(LocalDateTime.now())
+                      .build();
 
-        }catch (ResourceBadRequestException e){
-            throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
-        }
+              logService.createLog(log);
+              throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
+          }
 
         Person person = repository.save(new Person.Builder()
                 .name(novo.getName())
@@ -102,6 +105,19 @@ public class PersonService {
         //Criando atribuindo a role ao user
         UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
         createRoleUserService.execute(userRoleDTO);
+
+
+        //Criando log de inserção
+        LogTable log = new LogTable.Builder()
+                .payload(novo.toString())
+                .endpoint("/person")
+                .userId(user.getId())
+                .status(LogStatus.SUCESSO)
+                .dataInclusao(LocalDateTime.now())
+                .build();
+
+        logService.createLog(log);
+
 
         return new PersonDTO.Builder()
                 .id(person.getId())
