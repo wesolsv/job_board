@@ -100,7 +100,7 @@ public class PersonService {
         createRoleUserService.execute(userRoleDTO);
 
         //Criando log de inserção
-        createLog(novo.toString(), "/person", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
+        //createLog(novo.toString(), "/person", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
 
         return new PersonDTO.Builder()
                 .id(person.getId())
@@ -113,20 +113,20 @@ public class PersonService {
 
     public PersonDTO editPerson(Long id, Person novo){
         log.info("Editando pessoa");
+        //Validando a existencia de person com o id informado
         getPerson(id);
         novo.setId(id);
-
+        //Salvando alteracao do usuario
         repository.save(novo);
 
+        //Editando email do usuario editado anteriormente
         Users user = userService.getUserByPersonId(getPerson(id));
-
         user.setEmail(novo.getEmail());
-
         userService.editUser(user);
 
+        //Salvando o log da edicao efetuada
         createLog(novo.toString(),"/person{" + id +"}",
                 userService.getUserByPersonId(getPerson(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
-
 
         return new PersonDTO.Builder()
                 .id(novo.getId())
@@ -139,11 +139,16 @@ public class PersonService {
 
     public void deletePerson(Long id){
         log.info("Deletando pessoa");
+
+        //Validando a existencia de person e usuario e deletando ambos
         Person person = getPerson(id);
         Users user = userService.getUserByPersonId(person);
         userService.deleteUser(user.getId());
-
         repository.deleteById(id);
+
+        //Salvando o log do delete efetuada
+        createLog("Delete Person","/person{" + id +"}",
+                user.getId(), LogStatus.SUCESSO, HttpMethod.DELETE.toString());
     }
 
     public Optional<PersonDTO> listPersonByCandidacyJobId(Long id) {

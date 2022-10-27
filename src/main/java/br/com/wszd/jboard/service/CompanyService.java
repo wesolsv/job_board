@@ -76,11 +76,10 @@ public class CompanyService {
 
         List<Long> listIdRoles = Arrays.asList(3L);
 
-
             //Validando a existencia do email ou cnpj nas tabelas de company ou users
 
         if(repository.findByEmail(novo.getEmail()) != null && repository.findByCnpj(novo.getCnpj())!= null &&  userService.findByEmail(novo.getEmail())!= null) {
-            createLog(novo.toString(), "/person", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
+            createLog(novo.toString(), "/company", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
             throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
         }
 
@@ -106,7 +105,7 @@ public class CompanyService {
         createRoleUserService.execute(userRoleDTO);
 
         //Criando log de inserção
-        createLog(novo.toString(), "/person", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
+        createLog(novo.toString(), "/company", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
 
         return new CompanyDTO.Builder()
                 .id(company.getId())
@@ -119,17 +118,19 @@ public class CompanyService {
 
     public CompanyDTO editCompany(Long id, Company novo){
         log.info("Editando empresa");
+        //Validando a existencia de person com o id informado
         getCompany(id);
         novo.setId(id);
+        //Salvando alteracao do usuario
         repository.save(novo);
 
+        //Editando email do usuario editado anteriormente
         Users user = userService.getUserByCompanyId(getCompany(id));
-
         user.setEmail(novo.getEmail());
-
         userService.editUser(user);
 
-        createLog(novo.toString(),"/person{" + id +"}",
+        //Salvando o log da edicao efetuada
+        createLog(novo.toString(),"/company{" + id +"}",
                 userService.getUserByCompanyId(getCompany(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
 
         return new CompanyDTO.Builder()
@@ -143,12 +144,15 @@ public class CompanyService {
 
     public void deleteCompany(Long id){
         log.info("Deletando empresa");
-
+        //Validando a existencia da company e usuario vinculado e excluindo ambos
         Company company = getCompany(id);
         Users user = userService.getUserByCompanyId(company);
         userService.deleteUser(user.getId());
-
         repository.deleteById(id);
+
+        //Salvando o log do delete efetuada
+        createLog("Delete Company","/company{" + id +"}",
+                user.getId(), LogStatus.SUCESSO, HttpMethod.DELETE.toString());
     }
 
     public List<Optional<PersonDTO>> getAllPersonByJob(Long jobId) {
