@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -31,8 +32,8 @@ public class CompanyController {
 
     @ApiOperation(value = "Retorna uma empresa")
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyDTO> getOneCompany(@PathVariable Long id){
-        CompanyDTO res = service.getCompanyDTO(id);
+    public ResponseEntity<CompanyDTO> getOneCompany(@PathVariable Long id, HttpServletRequest request){
+        CompanyDTO res = service.getCompanyDTO(id, request);
         if(res != null){
             return ResponseEntity.ok(res);
         }
@@ -53,8 +54,8 @@ public class CompanyController {
 
     @ApiOperation(value = "Altera uma empresa")
     @PutMapping("/{id}")
-    public ResponseEntity<CompanyDTO> editCompany(@PathVariable Long id, @RequestBody Company novo){
-        CompanyDTO res = service.editCompany(id,novo);
+    public ResponseEntity<CompanyDTO> editCompany(@PathVariable Long id, @RequestBody Company novo, HttpServletRequest request){
+        CompanyDTO res = service.editCompany(id,novo,request);
 
         if(res != null){
             return ResponseEntity.ok(res);

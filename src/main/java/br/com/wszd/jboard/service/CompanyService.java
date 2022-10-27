@@ -13,9 +13,12 @@ import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,19 +45,21 @@ public class CompanyService {
     @Autowired
     private LogService logService;
 
-    private BCryptPasswordEncoder passwordEncoder(){
+    private BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    public List<CompanyDTO> getAllCompany(){
+    public List<CompanyDTO> getAllCompany() {
         log.info("Buscando todas as empresas");
-       return repository.listCompany();
+        return repository.listCompany();
     }
 
-    public CompanyDTO getCompanyDTO(Long id){
+    public CompanyDTO getCompanyDTO(Long id, HttpServletRequest request) {
         log.info("Buscando empresa");
         Company realCompany = repository.findById(id).orElseThrow(
-                () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
+                () -> new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
+
+        validEmailUser(request, realCompany);
 
         return new CompanyDTO.Builder()
                 .id(realCompany.getId())
@@ -65,10 +70,10 @@ public class CompanyService {
                 .build();
     }
 
-    private Company getCompany(Long id){
+    private Company getCompany(Long id) {
         log.info("Buscando empresa");
         return repository.findById(id).orElseThrow(
-                () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
+                () -> new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
     }
 
     public CompanyDTO createNewCompany(Company novo) {
@@ -76,9 +81,9 @@ public class CompanyService {
 
         List<Long> listIdRoles = Arrays.asList(3L);
 
-            //Validando a existencia do email ou cnpj nas tabelas de company ou users
+        //Validando a existencia do email ou cnpj nas tabelas de company ou users
 
-        if(repository.findByEmail(novo.getEmail()) != null && repository.findByCnpj(novo.getCnpj())!= null &&  userService.findByEmail(novo.getEmail())!= null) {
+        if (repository.findByEmail(novo.getEmail()) != null && repository.findByCnpj(novo.getCnpj()) != null && userService.findByEmail(novo.getEmail()) != null) {
             createLog(novo.toString(), "/company", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
             throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
         }
@@ -116,11 +121,15 @@ public class CompanyService {
                 .build();
     }
 
-    public CompanyDTO editCompany(Long id, Company novo){
+    public CompanyDTO editCompany(Long id, Company novo, HttpServletRequest request) {
         log.info("Editando empresa");
         //Validando a existencia de person com o id informado
         getCompany(id);
         novo.setId(id);
+
+        //validando se a pessoa que está editando pode realizar a ação
+        validEmailUser(request, getCompany(id));
+
         //Salvando alteracao do usuario
         repository.save(novo);
 
@@ -130,7 +139,7 @@ public class CompanyService {
         userService.editUser(user);
 
         //Salvando o log da edicao efetuada
-        createLog(novo.toString(),"/company{" + id +"}",
+        createLog(novo.toString(), "/company{" + id + "}",
                 userService.getUserByCompanyId(getCompany(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
 
         return new CompanyDTO.Builder()
@@ -142,7 +151,7 @@ public class CompanyService {
                 .build();
     }
 
-    public void deleteCompany(Long id){
+    public void deleteCompany(Long id) {
         log.info("Deletando empresa");
         //Validando a existencia da company e usuario vinculado e excluindo ambos
         Company company = getCompany(id);
@@ -151,7 +160,7 @@ public class CompanyService {
         repository.deleteById(id);
 
         //Salvando o log do delete efetuada
-        createLog("Delete Company","/company{" + id +"}",
+        createLog("Delete Company", "/company{" + id + "}",
                 user.getId(), LogStatus.SUCESSO, HttpMethod.DELETE.toString());
     }
 
@@ -162,16 +171,16 @@ public class CompanyService {
         List<CandidacyDTO> candidaturas = candidacyService.getAllCandidacy();
 
         try {
-            for(CandidacyDTO cd : candidaturas){
-                if(cd.getJob().getId() == jobId){
+            for (CandidacyDTO cd : candidaturas) {
+                if (cd.getJob().getId() == jobId) {
                     pessoas.add(personService.listPersonByCandidacyJobId(cd.getPerson().getId()));
                 }
             }
-        }catch (ResourceBadRequestException e){
+        } catch (ResourceBadRequestException e) {
             throw new ResourceBadRequestException("O job id " + jobId + " não existe");
         }
 
-       return pessoas;
+        return pessoas;
     }
 
     public void hirePerson(Long personId, Long jobId) {
@@ -182,9 +191,9 @@ public class CompanyService {
 
         List<Optional<PersonDTO>> pessoas = getAllPersonByJob(jobId);
 
-        try{
-            for(Optional<PersonDTO> p : pessoas){
-                if(p.get().getId() == personId){
+        try {
+            for (Optional<PersonDTO> p : pessoas) {
+                if (p.get().getId() == personId) {
                     job = jobService.getJob(jobId);
                     job.setPersonId(personService.getPerson(personId));
                     job.setStatus(JobStatus.COMPLETED);
@@ -193,12 +202,12 @@ public class CompanyService {
                     jobService.createNewJob(job);
                 }
             }
-        }catch(ResourceBadRequestException e){
-            throw new ResourceBadRequestException("Não foi encontrada candidatura para a pessoa id " +personId);
+        } catch (ResourceBadRequestException e) {
+            throw new ResourceBadRequestException("Não foi encontrada candidatura para a pessoa id " + personId);
         }
     }
 
-    public void createLog(String payload, String endpoint, Long userId, LogStatus status, String method){
+    public void createLog(String payload, String endpoint, Long userId, LogStatus status, String method) {
 
         LogTable log = new LogTable.Builder()
                 .payload(payload)
@@ -210,5 +219,24 @@ public class CompanyService {
                 .build();
 
         logService.createLog(log);
+    }
+
+    public void validEmailUser(HttpServletRequest request, Company company) {
+        HttpSession session = request.getSession();
+        SecurityContextImpl sec = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
+        Users user = userService.findByEmail((String) sec.getAuthentication().getPrincipal());
+
+        ArrayList<String> rolesRetorno = new ArrayList<>();
+
+        for (int i = 0; i < user.getRoles().size(); i++) {
+            String j = user.getRoles().get(i).getName() + "";
+            rolesRetorno.add(j);
+        }
+
+        if (rolesRetorno.contains("ADMIN") || company.getEmail().equals(user.getEmail())) {
+            log.info("Validado email do usuario ou usuario é admin");
+        } else {
+            throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
+        }
     }
 }
