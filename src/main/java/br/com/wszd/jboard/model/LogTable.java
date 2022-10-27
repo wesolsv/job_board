@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpMethod;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,12 +39,16 @@ public class LogTable {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", shape= JsonFormat.Shape.STRING)
     private LocalDateTime dataInclusao;
 
+    @Column(name = "method")
+    private String method;
+
     public static class Builder{
 
         private String payload;
         private String endpoint;
         private Long userId;
         private LogStatus status;
+        private String method;
 
         private LocalDateTime dataInclusao;
         public LogTable.Builder payload(String payload){
@@ -61,6 +66,9 @@ public class LogTable {
         }public LogTable.Builder dataInclusao(LocalDateTime dataInclusao){
             this.dataInclusao = dataInclusao;
             return this;
+        }public LogTable.Builder method(String method){
+            this.method = method;
+            return this;
         }
 
         public LogTable build(){
@@ -74,5 +82,6 @@ public class LogTable {
         userId = builder.userId;
         status = builder.status;
         dataInclusao = builder.dataInclusao;
+        method = builder.method;
     }
 }

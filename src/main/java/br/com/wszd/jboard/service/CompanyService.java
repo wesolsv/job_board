@@ -12,6 +12,7 @@ import br.com.wszd.jboard.util.JobStatus;
 import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -79,6 +80,7 @@ public class CompanyService {
             //Validando a existencia do email ou cnpj nas tabelas de company ou users
 
         if(repository.findByEmail(novo.getEmail()) != null && repository.findByCnpj(novo.getCnpj())!= null &&  userService.findByEmail(novo.getEmail())!= null) {
+            createLog(novo.toString(), "/person", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
             throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
         }
 
@@ -103,6 +105,9 @@ public class CompanyService {
         UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
         createRoleUserService.execute(userRoleDTO);
 
+        //Criando log de inserção
+        createLog(novo.toString(), "/person", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
+
         return new CompanyDTO.Builder()
                 .id(company.getId())
                 .name(company.getName())
@@ -117,6 +122,16 @@ public class CompanyService {
         getCompany(id);
         novo.setId(id);
         repository.save(novo);
+
+        Users user = userService.getUserByCompanyId(getCompany(id));
+
+        user.setEmail(novo.getEmail());
+
+        userService.editUser(user);
+
+        createLog(novo.toString(),"/person{" + id +"}",
+                userService.getUserByCompanyId(getCompany(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
+
         return new CompanyDTO.Builder()
                 .id(novo.getId())
                 .name(novo.getName())
@@ -179,14 +194,15 @@ public class CompanyService {
         }
     }
 
-    public void createLog(String payload, String endpoint, Long userId, LogStatus status){
+    public void createLog(String payload, String endpoint, Long userId, LogStatus status, String method){
 
         LogTable log = new LogTable.Builder()
-                .payload(payload.toString())
+                .payload(payload)
                 .endpoint(endpoint)
                 .userId(userId)
                 .status(status)
                 .dataInclusao(LocalDateTime.now())
+                .method(method)
                 .build();
 
         logService.createLog(log);

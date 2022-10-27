@@ -98,5 +98,6 @@ CREATE TABLE IF NOT EXISTS logs(
 	user_id INT NOT NULL,
 	status VARCHAR(20) NOT NULL,
 	data_inclusion TIMESTAMP NOT NULL,
+	method VARCHAR(30) NOT NULL,
 	PRIMARY KEY(id)
 );
