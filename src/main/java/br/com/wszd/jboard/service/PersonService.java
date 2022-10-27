@@ -61,11 +61,7 @@ public class PersonService {
         Person realPerson = repository.findById(id).orElseThrow(
                 () ->  new ResourceObjectNotFoundException("Não encontrado id = " + id));
 
-        boolean validAdminAndEmail = validEmailUser(request, realPerson);
-
-        if(!validAdminAndEmail){
-            throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
-        }
+        validEmailUser(request, realPerson);
 
         return new PersonDTO.Builder()
                 .id(realPerson.getId())
@@ -125,11 +121,15 @@ public class PersonService {
                 .build();
     }
 
-    public PersonDTO editPerson(Long id, Person novo){
+    public PersonDTO editPerson(Long id, Person novo, HttpServletRequest request){
         log.info("Editando pessoa");
         //Validando a existencia de person com o id informado
         getPerson(id);
         novo.setId(id);
+
+        //validando se a pessoa que está editando pode realizar a ação
+        validEmailUser(request, getPerson(id));
+
         //Salvando alteracao do usuario
         repository.save(novo);
 
@@ -183,7 +183,7 @@ public class PersonService {
         logService.createLog(log);
     }
 
-    public boolean validEmailUser(HttpServletRequest request, Person person){
+    public void validEmailUser(HttpServletRequest request, Person person){
         HttpSession session = request.getSession();
         SecurityContextImpl sec = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
         Users user = userService.findByEmail((String) sec.getAuthentication().getPrincipal());
@@ -196,9 +196,9 @@ public class PersonService {
         }
 
         if(rolesRetorno.contains("ADMIN") || person.getEmail().equals(user.getEmail())){
-            return true;
+            log.info("Validado email do usuario ou usuario é admin");
+        }else {
+            throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
         }
-
-        return false;
     }
 }

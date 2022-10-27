@@ -61,8 +61,8 @@ public class PersonController {
 
     @ApiOperation(value = "Altera uma pessoa")
     @PutMapping("/{id}")
-    public ResponseEntity<PersonDTO> editPerson(@PathVariable Long id, @RequestBody Person novo){
-        PersonDTO res = service.editPerson(id, novo);
+    public ResponseEntity<PersonDTO> editPerson(@PathVariable Long id, @RequestBody Person novo, HttpServletRequest request){
+        PersonDTO res = service.editPerson(id, novo, request);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
