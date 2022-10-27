@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +40,8 @@ public class PersonController {
 
     @ApiOperation(value = "Retorna uma pessoa")
     @GetMapping("/{id}")
-    public ResponseEntity<PersonDTO> getOnePerson(@PathVariable Long id){
-        PersonDTO res = service.getPersonDTO(id);
+    public ResponseEntity<PersonDTO> getOnePerson(@PathVariable Long id, HttpServletRequest request){
+        PersonDTO res = service.getPersonDTO(id, request);
         if(res != null){
             return ResponseEntity.ok(res);
         }

@@ -86,6 +86,7 @@ public class UserService {
       sessaoDTO.setLogin(user.getEmail());
 
       JWTObject jwtObject = new JWTObject();
+      jwtObject.setSubject(user.getEmail());
       jwtObject.setIssuedAt(new Date(System.currentTimeMillis()));
       jwtObject.setExpiration((new Date(System.currentTimeMillis() + SecurityConfig.EXPIRATION)));
       jwtObject.setRoles(user.getRoles());

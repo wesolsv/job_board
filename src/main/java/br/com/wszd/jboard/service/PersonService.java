@@ -15,10 +15,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.ServletRequestAttributeEvent;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -48,10 +55,17 @@ public class PersonService {
        return repository.listPerson();
     }
 
-    public PersonDTO getPersonDTO(Long id){
+    public PersonDTO getPersonDTO(Long id, HttpServletRequest request){
         log.info("Buscando pessoa");
+
         Person realPerson = repository.findById(id).orElseThrow(
                 () ->  new ResourceObjectNotFoundException("Não encontrado id = " + id));
+
+        boolean validAdminAndEmail = validEmailUser(request, realPerson);
+
+        if(!validAdminAndEmail){
+            throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
+        }
 
         return new PersonDTO.Builder()
                 .id(realPerson.getId())
@@ -75,7 +89,7 @@ public class PersonService {
 
           if(repository.findByEmail(novo.getEmail()) != null && repository.findByCpf(novo.getCpf()) != null && userService.findByEmail(novo.getEmail())!= null){
               createLog(novo.toString(), "/person", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
-              throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
+              throw new ResourceBadRequestException("Email ou CPF já cadastrado, verfique seus dados");
           }
 
         Person person = repository.save(new Person.Builder()
@@ -100,7 +114,7 @@ public class PersonService {
         createRoleUserService.execute(userRoleDTO);
 
         //Criando log de inserção
-        //createLog(novo.toString(), "/person", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
+        createLog(novo.toString(), "/person", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
 
         return new PersonDTO.Builder()
                 .id(person.getId())
@@ -167,5 +181,24 @@ public class PersonService {
                 .build();
 
         logService.createLog(log);
+    }
+
+    public boolean validEmailUser(HttpServletRequest request, Person person){
+        HttpSession session = request.getSession();
+        SecurityContextImpl sec = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
+        Users user = userService.findByEmail((String) sec.getAuthentication().getPrincipal());
+
+        ArrayList<String> rolesRetorno = new ArrayList<>();
+
+        for(int i = 0; i < user.getRoles().size(); i++) {
+            String j = user.getRoles().get(i).getName() + "";
+            rolesRetorno.add(j);
+        }
+
+        if(rolesRetorno.contains("ADMIN") || person.getEmail().equals(user.getEmail())){
+            return true;
+        }
+
+        return false;
     }
 }

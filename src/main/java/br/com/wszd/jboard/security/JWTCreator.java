@@ -12,7 +12,7 @@ public class JWTCreator {
 
     public static String createToken(String prefix, String key, JWTObject jwtObject) {
         String token = Jwts.builder()
-                .setSubject(jwtObject.getEmail())
+                .setSubject(jwtObject.getSubject())
                 .setIssuedAt(jwtObject.getIssuedAt())
                 .setExpiration(jwtObject.getExpiration())
                 .claim(ROLES_AUTHORITIES, checkRoles(jwtObject.getRoles()))
@@ -25,7 +25,7 @@ public class JWTCreator {
         JWTObject object = new JWTObject();
         token = token.replace(prefix, "");
         Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
-        object.setEmail(claims.getSubject());
+        object.setSubject(claims.getSubject());
         object.setExpiration(claims.getExpiration());
         object.setIssuedAt(claims.getIssuedAt());
         object.setRoles((List) claims.get(ROLES_AUTHORITIES));

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class JWTObject {
 
-    private String email;
+    private String subject;
     private Date issuedAt;
     private Date expiration;
     private List<Role> roles;
@@ -18,11 +18,11 @@ public class JWTObject {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
-    public String getEmail() {
-        return email;
+    public String getSubject() {
+        return subject;
     }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public Date getIssuedAt() {
