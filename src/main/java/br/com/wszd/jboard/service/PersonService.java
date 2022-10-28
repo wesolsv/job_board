@@ -41,9 +41,6 @@ public class PersonService {
     private UserService userService;
 
     @Autowired
-    private UserService createRoleUserService;
-
-    @Autowired
     private LogService logService;
 
     private BCryptPasswordEncoder passwordEncoder(){
@@ -107,7 +104,7 @@ public class PersonService {
 
         //Criando atribuindo a role ao user
         UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
-        createRoleUserService.execute(userRoleDTO);
+        userService.execute(userRoleDTO);
 
         //Criando log de inserção
         createLog(novo.toString(), "/person", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());

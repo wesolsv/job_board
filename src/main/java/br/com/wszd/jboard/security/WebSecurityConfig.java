@@ -26,7 +26,6 @@ public class WebSecurityConfig {
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
-                .addFilterAfter(new JWTFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers(SWAGGER_WHITELIST).permitAll()
                 .antMatchers(HttpMethod.POST,"/api/v1/person").anonymous()
@@ -38,8 +37,7 @@ public class WebSecurityConfig {
                 .antMatchers(HttpMethod.PUT,"/api/v1/company/{id}").hasAnyRole("COMP", "ADMIN")
                 .antMatchers(HttpMethod.GET,"/api/v1/company/{id}").hasAnyRole("COMP", "ADMIN")
                 .anyRequest().hasAnyRole("ADMIN")
-                .and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                .and().build();
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().addFilterBefore(new JWTFilter(), UsernamePasswordAuthenticationFilter.class).build();
     }
 }
