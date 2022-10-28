@@ -36,6 +36,12 @@ public class Users {
     @ManyToMany
     private List<Role> roles;
 
+    public Users(String email, String password, List<Role> roles) {
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
+
     public static class Builder{
         private String email;
         private String password;
