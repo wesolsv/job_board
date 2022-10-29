@@ -107,7 +107,7 @@ public class CompanyService {
 
         //Criando atribuindo a role ao user
         UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
-        createRoleUserService.execute(userRoleDTO);
+        createRoleUserService.addRoleInUser(userRoleDTO);
 
         //Criando log de inserção
         createLog(novo.toString(), "/company", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());

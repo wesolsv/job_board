@@ -8,20 +8,14 @@ import br.com.wszd.jboard.model.LogTable;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
-import br.com.wszd.jboard.security.JWTCreator;
-import br.com.wszd.jboard.security.UserDetailData;
 import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.ServletRequestAttributeEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
@@ -75,24 +69,8 @@ public class PersonService {
                 () ->  new ResourceObjectNotFoundException("Pessoa não encontrada com id = " + id));
     }
 
-    public PersonDTO createNewPerson(Person novo) {
-        log.info("Adicionando nova pessoa");
-
+    public void createUser(Person person) {
         List<Long> listIdRoles = Arrays.asList(1L);
-
-          if(repository.findByEmail(novo.getEmail()) != null && repository.findByCpf(novo.getCpf()) != null && userService.findByEmail(novo.getEmail())!= null){
-              createLog(novo.toString(), "/person", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
-              throw new ResourceBadRequestException("Email ou CPF já cadastrado, verfique seus dados");
-          }
-
-        Person person = repository.save(new Person.Builder()
-                .name(novo.getName())
-                .phone(novo.getPhone().replaceAll("\\D", ""))
-                .email(novo.getEmail())
-                .cpf(novo.getCpf().replaceAll("\\D", ""))
-                .password(passwordEncoder().encode(novo.getPassword()))
-                .user(novo.getUser())
-                .build());
 
         //Criando usuário no repositorio
         Users user = userService.createUser(new Users.Builder()
@@ -102,12 +80,34 @@ public class PersonService {
                 .companyId(null)
                 .build());
 
-        //Criando atribuindo a role ao user
+        //Criando e atribuindo a role ao user
         UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
-        userService.execute(userRoleDTO);
+        userService.addRoleInUser(userRoleDTO);
 
         //Criando log de inserção
-        createLog(novo.toString(), "/person", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
+        createLog(person.toString(), "/person", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
+    }
+
+    public PersonDTO createNewPerson(Person novo) {
+        log.info("Adicionando nova pessoa");
+
+          if(repository.findByEmail(novo.getEmail()) != null && repository.findByCpf(novo.getCpf()) != null && userService.findByEmail(novo.getEmail())!= null){
+              createLog(novo.toString(), "/person", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
+              throw new ResourceBadRequestException("Email ou CPF já cadastrado, verfique seus dados");
+          }
+
+        Person person = new Person.Builder()
+                .name(novo.getName())
+                .phone(novo.getPhone().replaceAll("\\D", ""))
+                .email(novo.getEmail())
+                .cpf(novo.getCpf().replaceAll("\\D", ""))
+                .password(passwordEncoder().encode(novo.getPassword()))
+                .user(novo.getUser())
+                .build();
+
+        person = savePerson(person);
+
+        createUser(person);
 
         return new PersonDTO.Builder()
                 .id(person.getId())
@@ -116,6 +116,10 @@ public class PersonService {
                 .email(person.getEmail())
                 .cpf(person.getCpf())
                 .build();
+    }
+
+    public Person savePerson(Person novo) {
+        return repository.save(novo);
     }
 
     public PersonDTO editPerson(Long id, Person novo, HttpServletRequest request){

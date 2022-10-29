@@ -32,7 +32,7 @@ public class UserService {
     return new BCryptPasswordEncoder();
   }
 
-  public Users execute(UserRoleDTO userRoleDTO) {
+  public Users addRoleInUser(UserRoleDTO userRoleDTO) {
 
     Optional<Users> userExists = userRepository.findById(userRoleDTO.getIdUser());
     List<Role> roles = new ArrayList<>();
