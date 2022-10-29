@@ -27,6 +27,7 @@ public class UserController {
 
     @PostMapping("/login")
     @ApiOperation(value = "Realiza o Login do usuario e retorna o seu token")
+    @ResponseBody
     public SessaoDTO logar(@RequestBody UserLoginDTO infoLogin){
         Users user = service.findByEmail(infoLogin.getEmail());
         return service.validLogin(user, infoLogin);
