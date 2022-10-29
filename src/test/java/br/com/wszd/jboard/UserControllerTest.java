@@ -1,57 +1,46 @@
 package br.com.wszd.jboard;
 
-import br.com.wszd.jboard.dto.SessaoDTO;
-import br.com.wszd.jboard.dto.UserLoginDTO;
+import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.UserRepository;
 import br.com.wszd.jboard.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.hamcrest.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
 
-//@RunWith(SpringRunner.class)
 @SpringBootTest
-@AutoConfigureMockMvc
 public class UserControllerTest{
 
-    @Autowired
-    private MockMvc mockMvc;
-    @MockBean
-    private UserService service;
-    @MockBean
+    @Mock
     private UserRepository repository;
 
+    @InjectMocks
+    private UserService service;
+
+//    @BeforeEach
+//    public void setUp() throws Exception {
+//        createPerson();
+//    }
     @Test
-    public void shouldDoLogin() throws Exception {
-        String jsonString = "{\"email\": \"wes@teste.com.br\", \"password\": \"123456\"}";
+    public void shouldCreateUser() throws Exception {
+        Person person = new Person();
 
-       mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users/login")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(jsonString)
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
-               .andExpect(status().isOk())
-               .andDo(print())
-                .andReturn();
+        Users user = new Users.Builder()
+                .email("wes@test2e.com.br")
+                .password("123456")
+                .personId(person)
+                .companyId(null)
+                .build();
 
+        when(repository.save(user)).thenReturn(user);
+        user = service.createUser(user);
+
+        assertNotNull(user);
+        assertEquals("wes@test2e.com.br", user.getEmail());
     }
 }
