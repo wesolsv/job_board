@@ -63,6 +63,8 @@ public class UserServiceTest {
 
         session = service.validLogin(user, login);
 
+        System.out.println(session.getToken());
+
         assertNotNull(session);
         assertEquals("wes@test2e.com.br", session.getLogin());
     }

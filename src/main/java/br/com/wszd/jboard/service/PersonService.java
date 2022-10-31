@@ -132,9 +132,9 @@ public class PersonService {
         validEmailUser(request, getPerson(id));
 
         //Salvando alteracao do usuario
-        repository.save(novo);
+        saveEditPerson(novo);
 
-        //Editando email do usuario editado anteriormente
+        //Editando email do user de person que foi editado anteriormente
         Users user = userService.getUserByPersonId(getPerson(id));
         user.setEmail(novo.getEmail());
         userService.editUser(user);
@@ -152,13 +152,19 @@ public class PersonService {
                 .build();
     }
 
+    public Person saveEditPerson(Person novo){
+        return repository.save(novo);
+    }
+
     public void deletePerson(Long id){
         log.info("Deletando pessoa");
 
         //Validando a existencia de person e usuario e deletando ambos
         Person person = getPerson(id);
         Users user = userService.getUserByPersonId(person);
-        userService.deleteUser(user.getId());
+        if(user != null) {
+            userService.deleteUser(user.getId());
+        }
         repository.deleteById(id);
 
         //Salvando o log do delete efetuada

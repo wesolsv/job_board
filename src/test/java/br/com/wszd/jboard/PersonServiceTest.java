@@ -3,6 +3,7 @@ package br.com.wszd.jboard;
 import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.dto.SessaoDTO;
 import br.com.wszd.jboard.dto.UserLoginDTO;
+import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Role;
@@ -13,9 +14,12 @@ import br.com.wszd.jboard.service.LogService;
 import br.com.wszd.jboard.service.PersonService;
 import br.com.wszd.jboard.service.UserService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,8 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -41,33 +44,15 @@ public class PersonServiceTest {
     @InjectMocks
     private PersonService service;
 
+    Person person;
+
     private BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
-    @Test
-    public void shouldCreatePerson() throws Exception {
-        Person person = createPersonTest();
-
-        when(repository.save(person)).thenReturn(person);
-        Person obj = service.savePerson(person);
-
-        assertNotNull(obj);
-        assertEquals("wes@test2e.com.br", obj.getEmail());
-    }
-
-    @Test
-    public void shouldGetPerson() throws Exception {
-        Person person = createPersonTest();
-
-        when(repository.findById(anyLong())).thenReturn(Optional.of(person));
-        Person p = service.getPerson(person.getId());
-
-        Assertions.assertEquals(Person.class, p.getClass());
-    }
-
-    public Person createPersonTest(){
-        Person person = new Person();
+    @BeforeEach
+    public void setUp(){
+        person = new Person();
         person.setId(1L);
         person.setName("Wesley");
         person.setPhone("(34)991307618");
@@ -76,8 +61,41 @@ public class PersonServiceTest {
         person.setPassword("123456");
         person.setJob(new Job());
         person.setUser(new Users());
+    }
 
-        return person;
+    @Test
+    public void shouldCreatePerson() throws Exception {
+
+        when(repository.save(person)).thenReturn(person);
+        Person p = service.savePerson(person);
+
+        assertNotNull(p);
+        assertEquals("wes@test2e.com.br", p.getEmail());
+    }
+    @Test
+    public void shouldGetPerson() throws Exception {
+
+        when(repository.findById(anyLong())).thenReturn(Optional.of(person));
+        Person p = service.getPerson(person.getId());
+
+        Assertions.assertEquals(Person.class, p.getClass());
+    }
+    @Test
+    public void shouldEditPerson() throws Exception {
+        shouldCreatePerson();
+        person.setEmail("email@alterado.com");
+        when(repository.save(person)).thenReturn(person);
+        Person obj = service.saveEditPerson(person);
+
+        assertNotNull(obj);
+        assertEquals("email@alterado.com", obj.getEmail());
+    }
+    @Test
+    public void shouldDeletePerson() throws Exception {
+        when(repository.findById(person.getId())).thenReturn(Optional.ofNullable(person));
+        service.deletePerson(person.getId());
+        verify(repository).deleteById(person.getId());
+        assertThrows(ResourceObjectNotFoundException.class, () ->{service.deletePerson(person.getId());});
     }
 
 }
