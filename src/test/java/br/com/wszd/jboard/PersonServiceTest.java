@@ -81,8 +81,14 @@ public class PersonServiceTest {
         Assertions.assertEquals(Person.class, p.getClass());
     }
     @Test
+    public void shouldGetAllPerson() throws Exception {
+
+        when(repository.listPerson()).thenReturn(List.of(new PersonDTO()));
+        List<PersonDTO> list = service.getAllPerson();
+        verify(repository, times(1)).listPerson();
+    }
+    @Test
     public void shouldEditPerson() throws Exception {
-        shouldCreatePerson();
         person.setEmail("email@alterado.com");
         when(repository.save(person)).thenReturn(person);
         Person obj = service.saveEditPerson(person);
@@ -92,10 +98,9 @@ public class PersonServiceTest {
     }
     @Test
     public void shouldDeletePerson() throws Exception {
-        when(repository.findById(person.getId())).thenReturn(Optional.ofNullable(person));
-        service.deletePerson(person.getId());
-        verify(repository).deleteById(person.getId());
-        assertThrows(ResourceObjectNotFoundException.class, () ->{service.deletePerson(person.getId());});
+        doNothing().when(repository).deleteById(anyLong());
+        service.deleteOnePerson(person.getId());
+        verify(repository, times(1)).deleteById(anyLong());
     }
 
 }

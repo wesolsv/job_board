@@ -165,11 +165,15 @@ public class PersonService {
         if(user != null) {
             userService.deleteUser(user.getId());
         }
-        repository.deleteById(id);
+        deleteOnePerson(id);
 
         //Salvando o log do delete efetuada
         createLog("Delete Person","/person{" + id +"}",
                 user.getId(), LogStatus.SUCESSO, HttpMethod.DELETE.toString());
+    }
+
+    public void deleteOnePerson(Long id){
+        repository.deleteById(id);
     }
 
     public Optional<PersonDTO> listPersonByCandidacyJobId(Long id) {
