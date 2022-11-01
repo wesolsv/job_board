@@ -70,32 +70,14 @@ public class CompanyService {
                 .build();
     }
 
-    private Company getCompany(Long id) {
+    public Company getCompany(Long id) {
         log.info("Buscando empresa");
         return repository.findById(id).orElseThrow(
                 () -> new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
     }
 
-    public CompanyDTO createNewCompany(Company novo) {
-        log.info("Adicionando nova empresa");
-
+    public void createUser(Company company) {
         List<Long> listIdRoles = Arrays.asList(3L);
-
-        //Validando a existencia do email ou cnpj nas tabelas de company ou users
-
-        if (repository.findByEmail(novo.getEmail()) != null && repository.findByCnpj(novo.getCnpj()) != null && userService.findByEmail(novo.getEmail()) != null) {
-            createLog(novo.toString(), "/company", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
-            throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
-        }
-
-        Company company = repository.save(new Company.Builder()
-                .name(novo.getName())
-                .phone(novo.getPhone().replaceAll("\\D", ""))
-                .email(novo.getEmail())
-                .cnpj(novo.getCnpj().replaceAll("\\D", ""))
-                .password(passwordEncoder().encode(novo.getPassword()))
-                .user(novo.getUser())
-                .build());
 
         //Criando usuário no repositorio
         Users user = userService.createUser(new Users.Builder()
@@ -105,12 +87,33 @@ public class CompanyService {
                 .companyId(company)
                 .build());
 
-        //Criando atribuindo a role ao user
+        //Criando e atribuindo a role ao user
         UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
-        createRoleUserService.addRoleInUser(userRoleDTO);
+        userService.addRoleInUser(userRoleDTO);
 
         //Criando log de inserção
-        createLog(novo.toString(), "/company", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
+        createLog(company.toString(), "/company", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
+    }
+
+    public CompanyDTO createNewCompany(Company novo) {
+        log.info("Adicionando nova empresa");
+
+        if (repository.findByEmail(novo.getEmail()) != null && repository.findByCnpj(novo.getCnpj()) != null && userService.findByEmail(novo.getEmail()) != null) {
+            createLog(novo.toString(), "/company", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
+            throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
+        }
+
+        Company company = new Company.Builder()
+                .name(novo.getName())
+                .phone(novo.getPhone().replaceAll("\\D", ""))
+                .email(novo.getEmail())
+                .cnpj(novo.getCnpj().replaceAll("\\D", ""))
+                .password(passwordEncoder().encode(novo.getPassword()))
+                .user(novo.getUser())
+                .build();
+
+        company = saveCompany(company);
+        createUser(company);
 
         return new CompanyDTO.Builder()
                 .id(company.getId())
@@ -119,6 +122,10 @@ public class CompanyService {
                 .email(company.getEmail())
                 .cnpj(company.getCnpj())
                 .build();
+    }
+
+    public Company saveCompany(Company novo){
+        return repository.save(novo);
     }
 
     public CompanyDTO editCompany(Long id, Company novo, HttpServletRequest request) {
@@ -131,7 +138,7 @@ public class CompanyService {
         validEmailUser(request, getCompany(id));
 
         //Salvando alteracao do usuario
-        repository.save(novo);
+        saveEditCompany(novo);
 
         //Editando email do usuario editado anteriormente
         Users user = userService.getUserByCompanyId(getCompany(id));
@@ -151,17 +158,25 @@ public class CompanyService {
                 .build();
     }
 
+    public Company saveEditCompany(Company novo) {
+        return repository.save(novo);
+    }
+
     public void deleteCompany(Long id) {
         log.info("Deletando empresa");
         //Validando a existencia da company e usuario vinculado e excluindo ambos
         Company company = getCompany(id);
         Users user = userService.getUserByCompanyId(company);
         userService.deleteUser(user.getId());
-        repository.deleteById(id);
+        deleteOneCompany(id);
 
         //Salvando o log do delete efetuada
         createLog("Delete Company", "/company{" + id + "}",
                 user.getId(), LogStatus.SUCESSO, HttpMethod.DELETE.toString());
+    }
+
+    public void deleteOneCompany(Long id){
+        repository.deleteById(id);
     }
 
     public List<Optional<PersonDTO>> getAllPersonByJob(Long jobId) {

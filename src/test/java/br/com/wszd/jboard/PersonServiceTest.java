@@ -1,33 +1,18 @@
 package br.com.wszd.jboard;
 
 import br.com.wszd.jboard.dto.PersonDTO;
-import br.com.wszd.jboard.dto.SessaoDTO;
-import br.com.wszd.jboard.dto.UserLoginDTO;
-import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Person;
-import br.com.wszd.jboard.model.Role;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
-import br.com.wszd.jboard.repository.UserRepository;
-import br.com.wszd.jboard.service.LogService;
 import br.com.wszd.jboard.service.PersonService;
-import br.com.wszd.jboard.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,10 +30,6 @@ public class PersonServiceTest {
     private PersonService service;
 
     Person person;
-
-    private BCryptPasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 
     @BeforeEach
     public void setUp(){
@@ -101,6 +82,15 @@ public class PersonServiceTest {
         doNothing().when(repository).deleteById(anyLong());
         service.deleteOnePerson(person.getId());
         verify(repository, times(1)).deleteById(anyLong());
+    }
+    @Test
+    public void shouldListPersonByCandidacyJobId() throws Exception {
+
+        Optional<PersonDTO> personDTO = null;
+
+        when(repository.listPersonByCandidacyJobId(anyLong())).thenReturn(personDTO);
+        personDTO = service.listPersonByCandidacyJobId(anyLong());
+        verify(repository, times(1)).listPersonByCandidacyJobId(anyLong());
     }
 
 }

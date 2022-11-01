@@ -195,6 +195,7 @@ public class PersonService {
     }
 
     public void validEmailUser(HttpServletRequest request, Person person){
+        //Validando se o email do usuario da requisicao é ADMIN ou pertence ao id para a qual foi feita a requisicao
         HttpSession session = request.getSession();
         SecurityContextImpl sec = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
         Users user = userService.findByEmail((String) sec.getAuthentication().getPrincipal());
