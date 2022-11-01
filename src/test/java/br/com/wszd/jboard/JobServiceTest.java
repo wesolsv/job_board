@@ -85,7 +85,7 @@ public class JobServiceTest {
     public void shouldEditJob() throws Exception {
         job.setOpportunity("VAGA ALTERADA NOVAMENTE");
         when(repository.save(job)).thenReturn(job);
-        JobDTO obj = service.editJob(job.getId(), job);
+        Job obj = service.saveEditJob(job);
 
         assertNotNull(obj);
         assertEquals("VAGA ALTERADA NOVAMENTE", obj.getOpportunity());
@@ -93,7 +93,7 @@ public class JobServiceTest {
     @Test
     public void shouldDeleteCompany() throws Exception {
         doNothing().when(repository).deleteById(anyLong());
-        service.deleteJob(job.getId());
+        service.deleteOneJob(job.getId());
         verify(repository, times(1)).deleteById(anyLong());
     }
 }

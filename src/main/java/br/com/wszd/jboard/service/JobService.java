@@ -93,10 +93,17 @@ public class JobService {
                 .datePublish(returnJob.getDatePublish())
                 .build();
     }
+    public Job saveEditJob(Job novo){
+        return repository.save(novo);
+    }
 
     public void deleteJob(Long id){
         log.info("Deletando Job");
         getJob(id);
+        repository.deleteById(id);
+    }
+
+    public void deleteOneJob(Long id){
         repository.deleteById(id);
     }
 }
