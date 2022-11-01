@@ -55,7 +55,7 @@ public class JobService {
 
         Job job;
         try{
-            job = repository.save(new Job.Builder()
+            job = new Job.Builder()
                     .opportunity(novo.getOpportunity())
                     .description(novo.getDescription())
                     .type(novo.getType())
@@ -64,7 +64,9 @@ public class JobService {
                     .status(novo.getStatus())
                     .personId(novo.getPersonId())
                     .companyId(novo.getCompanyId())
-                    .build());
+                    .build();
+
+            repository.save(job);
         }catch(ResourceBadRequestException e){
             throw new ResourceBadRequestException("Falha ao criar job");
         }

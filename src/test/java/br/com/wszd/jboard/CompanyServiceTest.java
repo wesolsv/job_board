@@ -89,7 +89,7 @@ public class CompanyServiceTest {
         assertEquals("email@alterado.com", obj.getEmail());
     }
     @Test
-    public void shouldDeletePerson() throws Exception {
+    public void shouldDeleteCompany() throws Exception {
         doNothing().when(repository).deleteById(anyLong());
         service.deleteOneCompany(company.getId());
         verify(repository, times(1)).deleteById(anyLong());

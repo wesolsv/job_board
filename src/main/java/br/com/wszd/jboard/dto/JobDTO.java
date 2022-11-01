@@ -15,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
 public class JobDTO {
 
     private Long id;
