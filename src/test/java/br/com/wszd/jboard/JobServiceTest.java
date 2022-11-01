@@ -1,28 +1,18 @@
 package br.com.wszd.jboard;
 
-import br.com.wszd.jboard.dto.CompanyDTO;
 import br.com.wszd.jboard.dto.JobDTO;
 import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Job;
-import br.com.wszd.jboard.model.Person;
-import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.JobRepository;
 import br.com.wszd.jboard.service.JobService;
 import br.com.wszd.jboard.util.JobStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sun.istack.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,7 +81,7 @@ public class JobServiceTest {
         assertEquals("VAGA ALTERADA NOVAMENTE", obj.getOpportunity());
     }
     @Test
-    public void shouldDeleteCompany() throws Exception {
+    public void shouldDeleteJob() throws Exception {
         doNothing().when(repository).deleteById(anyLong());
         service.deleteOneJob(job.getId());
         verify(repository, times(1)).deleteById(anyLong());

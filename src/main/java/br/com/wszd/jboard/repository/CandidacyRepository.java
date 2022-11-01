@@ -20,5 +20,5 @@ public interface CandidacyRepository extends JpaRepository<Candidacy, Long> {
 
     @Query("SELECT new br.com.wszd.jboard.dto.CandidacyDTO(cd.id, cd.dateCandidacy, cd.status, cd.personId, cd.job ) " +
             "FROM Candidacy cd")
-    List<CandidacyDTO> listAllCandidacy();
+    ArrayList<CandidacyDTO> listAllCandidacy();
 }

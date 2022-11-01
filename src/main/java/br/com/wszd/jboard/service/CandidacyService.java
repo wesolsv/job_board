@@ -32,7 +32,7 @@ public class CandidacyService {
 
     public ArrayList<CandidacyDTO> getAllCandidacy(){
         log.info("Buscando todas as candidaturas");
-       return (ArrayList<CandidacyDTO>) repository.listAllCandidacy();
+       return repository.listAllCandidacy();
     }
 
     public ArrayList<PersonCandidacyDTO> getAllCandidacyByPersonId(Long id){
@@ -43,14 +43,18 @@ public class CandidacyService {
     public CandidacyDTO getCandidacy(Long id){
         log.info("Buscando candidatura");
 
-        Candidacy realCandidacy = repository.findById(id).orElseThrow(
-                () ->  new ResourceObjectNotFoundException("Não encontrado id = " + id));
+        Candidacy realCandidacy = getOneCandidacy(id);
 
         return new CandidacyDTO(realCandidacy.getId(),
                 realCandidacy.getDateCandidacy(),
                 realCandidacy.getStatus(),
                 realCandidacy.getPersonId(),
                 realCandidacy.getJob());
+    }
+
+    public Candidacy getOneCandidacy(Long id){
+        return repository.findById(id).orElseThrow(
+                () ->  new ResourceObjectNotFoundException("Não encontrado id = " + id));
     }
 
     public Candidacy createNewCandidacy(Candidacy novo) {
@@ -81,11 +85,15 @@ public class CandidacyService {
                     .job(novo.getJob())
                     .build();
 
-            repository.save(candidacy);
+            newCandidacy(candidacy);
         }catch(ResourceBadRequestException e){
             throw new ResourceBadRequestException("Falha ao criar candidatura");
         }
         return candidacy;
+    }
+
+    public Candidacy newCandidacy(Candidacy candidacy){
+        return repository.save(candidacy);
     }
 
     public CandidacyDTO editCandidacy(Long id, Candidacy novo){
@@ -97,7 +105,7 @@ public class CandidacyService {
             deleteCandidacy(id);
             return null;
         }
-        repository.save(candidacy.get());
+        saveEditCandidacy(candidacy.get());
         return new CandidacyDTO(candidacy.get().getId(),
                 candidacy.get().getDateCandidacy(),
                 candidacy.get().getStatus(),
@@ -105,9 +113,12 @@ public class CandidacyService {
                 candidacy.get().getJob());
     }
 
+    public Candidacy saveEditCandidacy(Candidacy candidacy){
+        return repository.save(candidacy);
+    }
+
     public void deleteCandidacy(Long id){
         log.info("Deletando candidatura");
-        getCandidacy(id);
         repository.deleteById(id);
     }
 

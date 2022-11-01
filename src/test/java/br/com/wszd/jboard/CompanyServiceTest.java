@@ -1,8 +1,6 @@
 package br.com.wszd.jboard;
 
-import br.com.wszd.jboard.dto.CandidacyDTO;
 import br.com.wszd.jboard.dto.CompanyDTO;
-import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.CandidacyRepository;
