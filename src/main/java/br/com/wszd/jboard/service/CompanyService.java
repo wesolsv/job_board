@@ -58,8 +58,8 @@ public class CompanyService {
         Company realCompany = repository.findById(id).orElseThrow(
                 () -> new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
 
-        Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(realCompany, obj.toString());
+        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(realCompany, email.toString());
 
         return new CompanyDTO.Builder()
                 .id(realCompany.getId())
@@ -135,8 +135,8 @@ public class CompanyService {
         novo.setId(id);
 
         //validando se a pessoa que está editando pode realizar a ação
-        Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(getCompany(id), obj.toString());
+        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(getCompany(id), email.toString());
 
         //Salvando alteracao do usuario
         saveEditCompany(novo);
@@ -188,8 +188,8 @@ public class CompanyService {
         Job job = jobService.getJob(jobId);
         Optional<Company> realCompany = repository.findById(job.getCompanyId().getId());
 
-        Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(realCompany.get(), obj.toString());
+        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(realCompany.get(), email.toString());
 
         try {
             for (CandidacyDTO cd : candidaturas) {
@@ -211,8 +211,8 @@ public class CompanyService {
         Job job = jobService.getJob(jobId);
         Optional<Company> realCompany = repository.findById(job.getCompanyId().getId());
 
-        Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(realCompany.get(), obj.toString());
+        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(realCompany.get(), email.toString());
 
         List<Optional<PersonDTO>> pessoas = getAllPersonByJob(jobId);
 

@@ -13,6 +13,7 @@ import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +51,8 @@ public class PersonService {
         Person realPerson = repository.findById(id).orElseThrow(
                 () ->  new ResourceObjectNotFoundException("Não encontrado id = " + id));
 
-        validEmailUser( realPerson);
+        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(realPerson, email.toString());
 
         return new PersonDTO.Builder()
                 .id(realPerson.getId())
@@ -127,7 +129,8 @@ public class PersonService {
         novo.setId(id);
 
         //validando se a pessoa que está editando pode realizar a ação
-        validEmailUser(getPerson(id));
+        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(getPerson(id), email.toString());
 
         //Salvando alteracao do usuario
         saveEditPerson(novo);
@@ -192,10 +195,10 @@ public class PersonService {
         logService.createLog(log);
     }
 
-    public void validEmailUser(Person person){
+    public void validEmailUser(Person person, String emailRequest){
         //Validando se o email do usuario da requisicao é ADMIN ou pertence ao id para a qual foi feita a requisicao
 
-        Users user = userService.findByEmail(JWTFilter.emailRequest);
+        Users user = userService.findByEmail(emailRequest);
 
         ArrayList<String> rolesRetorno = new ArrayList<>();
 
@@ -204,7 +207,7 @@ public class PersonService {
             rolesRetorno.add(j);
         }
 
-        if(rolesRetorno.contains("ADMIN") || person.getEmail().equals(user.getEmail())){
+        if(rolesRetorno.contains("ADMIN") || person.getId() == user.getId()){
             log.info("Validado email do usuario ou usuario é admin");
         }else {
             throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
