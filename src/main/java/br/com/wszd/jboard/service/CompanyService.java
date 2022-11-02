@@ -8,18 +8,15 @@ import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
 import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.*;
 import br.com.wszd.jboard.repository.*;
-import br.com.wszd.jboard.security.JWTFilter;
 import br.com.wszd.jboard.util.JobStatus;
 import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,10 +54,12 @@ public class CompanyService {
 
     public CompanyDTO getCompanyDTO(Long id) {
         log.info("Buscando empresa");
+
         Company realCompany = repository.findById(id).orElseThrow(
                 () -> new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
 
-        validEmailUser(realCompany);
+        Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(realCompany, obj.toString());
 
         return new CompanyDTO.Builder()
                 .id(realCompany.getId())
@@ -136,7 +135,8 @@ public class CompanyService {
         novo.setId(id);
 
         //validando se a pessoa que está editando pode realizar a ação
-        validEmailUser(getCompany(id));
+        Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(getCompany(id), obj.toString());
 
         //Salvando alteracao do usuario
         saveEditCompany(novo);
@@ -185,6 +185,11 @@ public class CompanyService {
 
         List<Optional<PersonDTO>> pessoas = new ArrayList<>();
         List<CandidacyDTO> candidaturas = candidacyService.getAllCandidacy();
+        Job job = jobService.getJob(jobId);
+        Optional<Company> realCompany = repository.findById(job.getCompanyId().getId());
+
+        Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(realCompany.get(), obj.toString());
 
         try {
             for (CandidacyDTO cd : candidaturas) {
@@ -204,6 +209,10 @@ public class CompanyService {
 
         personService.getPerson(personId);
         Job job = jobService.getJob(jobId);
+        Optional<Company> realCompany = repository.findById(job.getCompanyId().getId());
+
+        Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(realCompany.get(), obj.toString());
 
         List<Optional<PersonDTO>> pessoas = getAllPersonByJob(jobId);
 
@@ -215,11 +224,29 @@ public class CompanyService {
                     job.setStatus(JobStatus.COMPLETED);
 
                     candidacyService.deleteAllCandidacy(jobId);
-                    jobService.createNewJob(job);
+                    jobService.saveEditJob(job);
                 }
             }
         } catch (ResourceBadRequestException e) {
             throw new ResourceBadRequestException("Não foi encontrada candidatura para a pessoa id " + personId);
+        }
+    }
+
+    public void validEmailUser(Company company, String emailRequest) {
+
+        Users user = userService.findByEmail(emailRequest);
+
+        ArrayList<String> rolesRetorno = new ArrayList<>();
+
+        for (int i = 0; i < user.getRoles().size(); i++) {
+            String j = user.getRoles().get(i).getName() + "";
+            rolesRetorno.add(j);
+        }
+
+        if (rolesRetorno.contains("ADMIN") || company.getId() == user.getCompanyId().getId()) {
+            log.info("Validado email do usuario ou usuario é admin");
+        } else {
+            throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
         }
     }
 
@@ -235,23 +262,5 @@ public class CompanyService {
                 .build();
 
         logService.createLog(log);
-    }
-
-    public void validEmailUser(Company company) {
-
-        Users user = userService.findByEmail(JWTFilter.emailRequest);
-
-        ArrayList<String> rolesRetorno = new ArrayList<>();
-
-        for (int i = 0; i < user.getRoles().size(); i++) {
-            String j = user.getRoles().get(i).getName() + "";
-            rolesRetorno.add(j);
-        }
-
-        if (rolesRetorno.contains("ADMIN") || company.getEmail().equals(user.getEmail())) {
-            log.info("Validado email do usuario ou usuario é admin");
-        } else {
-            throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
-        }
     }
 }
