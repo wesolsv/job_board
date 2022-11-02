@@ -8,6 +8,7 @@ import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
 import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.*;
 import br.com.wszd.jboard.repository.*;
+import br.com.wszd.jboard.security.JWTFilter;
 import br.com.wszd.jboard.util.JobStatus;
 import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -54,12 +55,12 @@ public class CompanyService {
         return repository.listCompany();
     }
 
-    public CompanyDTO getCompanyDTO(Long id, HttpServletRequest request) {
+    public CompanyDTO getCompanyDTO(Long id) {
         log.info("Buscando empresa");
         Company realCompany = repository.findById(id).orElseThrow(
                 () -> new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
 
-        validEmailUser(request, realCompany);
+        validEmailUser(realCompany);
 
         return new CompanyDTO.Builder()
                 .id(realCompany.getId())
@@ -128,14 +129,14 @@ public class CompanyService {
         return repository.save(novo);
     }
 
-    public CompanyDTO editCompany(Long id, Company novo, HttpServletRequest request) {
+    public CompanyDTO editCompany(Long id, Company novo) {
         log.info("Editando empresa");
         //Validando a existencia de person com o id informado
         getCompany(id);
         novo.setId(id);
 
         //validando se a pessoa que está editando pode realizar a ação
-        validEmailUser(request, getCompany(id));
+        validEmailUser(getCompany(id));
 
         //Salvando alteracao do usuario
         saveEditCompany(novo);
@@ -236,10 +237,9 @@ public class CompanyService {
         logService.createLog(log);
     }
 
-    public void validEmailUser(HttpServletRequest request, Company company) {
-        HttpSession session = request.getSession();
-        SecurityContextImpl sec = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
-        Users user = userService.findByEmail((String) sec.getAuthentication().getPrincipal());
+    public void validEmailUser(Company company) {
+
+        Users user = userService.findByEmail(JWTFilter.emailRequest);
 
         ArrayList<String> rolesRetorno = new ArrayList<>();
 

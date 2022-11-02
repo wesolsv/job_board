@@ -32,8 +32,8 @@ public class CompanyController {
 
     @ApiOperation(value = "Retorna uma empresa")
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyDTO> getOneCompany(@PathVariable Long id, HttpServletRequest request){
-        CompanyDTO res = service.getCompanyDTO(id, request);
+    public ResponseEntity<CompanyDTO> getOneCompany(@PathVariable Long id){
+        CompanyDTO res = service.getCompanyDTO(id);
         if(res != null){
             return ResponseEntity.ok(res);
         }
@@ -54,8 +54,8 @@ public class CompanyController {
 
     @ApiOperation(value = "Altera uma empresa")
     @PutMapping("/{id}")
-    public ResponseEntity<CompanyDTO> editCompany(@PathVariable Long id, @RequestBody Company novo, HttpServletRequest request){
-        CompanyDTO res = service.editCompany(id,novo,request);
+    public ResponseEntity<CompanyDTO> editCompany(@PathVariable Long id, @RequestBody Company novo){
+        CompanyDTO res = service.editCompany(id,novo);
 
         if(res != null){
             return ResponseEntity.ok(res);

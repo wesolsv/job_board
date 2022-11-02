@@ -49,6 +49,7 @@ public class PersonController {
         }
         return ResponseEntity.notFound().build();
     }
+
     @ApiOperation(value = "Cria nova pessoa")
     @PostMapping
     public ResponseEntity<PersonDTO> createPerson(@RequestBody Person novo){

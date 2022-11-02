@@ -9,18 +9,13 @@ import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
 import br.com.wszd.jboard.security.JWTFilter;
-import br.com.wszd.jboard.security.JWTObject;
 import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +64,7 @@ public class PersonService {
     public Person getPerson(Long id){
         log.info("Buscando pessoa");
         return repository.findById(id).orElseThrow(
-                () ->  new ResourceObjectNotFoundException("Pessoa não encontrada com id = " + id));
+                () ->  new ResourceObjectNotFoundException("Não encontrada com id = " + id));
     }
 
     public void createUser(Person person) {
