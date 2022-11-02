@@ -49,13 +49,13 @@ public class PersonService {
        return repository.listPerson();
     }
 
-    public PersonDTO getPersonDTO(Long id, ServletRequest request){
+    public PersonDTO getPersonDTO(Long id){
         log.info("Buscando pessoa");
 
         Person realPerson = repository.findById(id).orElseThrow(
                 () ->  new ResourceObjectNotFoundException("Não encontrado id = " + id));
 
-        validEmailUser(request, realPerson);
+        validEmailUser( realPerson);
 
         return new PersonDTO.Builder()
                 .id(realPerson.getId())
@@ -125,14 +125,14 @@ public class PersonService {
         return repository.save(novo);
     }
 
-    public PersonDTO editPerson(Long id, Person novo, ServletRequest request){
+    public PersonDTO editPerson(Long id, Person novo){
         log.info("Editando pessoa");
         //Validando a existencia de person com o id informado
         getPerson(id);
         novo.setId(id);
 
         //validando se a pessoa que está editando pode realizar a ação
-        validEmailUser(request, getPerson(id));
+        validEmailUser(getPerson(id));
 
         //Salvando alteracao do usuario
         saveEditPerson(novo);
@@ -197,9 +197,9 @@ public class PersonService {
         logService.createLog(log);
     }
 
-    public void validEmailUser(ServletRequest request, Person person){
+    public void validEmailUser(Person person){
         //Validando se o email do usuario da requisicao é ADMIN ou pertence ao id para a qual foi feita a requisicao
-        SecurityContextImpl sec = (SecurityContextImpl) request.getAttribute("SPRING_SECURITY_CONTEXT");
+
         Users user = userService.findByEmail(JWTFilter.emailRequest);
 
         ArrayList<String> rolesRetorno = new ArrayList<>();

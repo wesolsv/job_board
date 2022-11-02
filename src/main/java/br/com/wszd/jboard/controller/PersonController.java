@@ -42,8 +42,8 @@ public class PersonController {
 
     @ApiOperation(value = "Retorna uma pessoa")
     @GetMapping("/{id}")
-    public ResponseEntity<PersonDTO> getOnePerson(@PathVariable Long id, ServletRequest request){
-        PersonDTO res = service.getPersonDTO(id, request);
+    public ResponseEntity<PersonDTO> getOnePerson(@PathVariable Long id){
+        PersonDTO res = service.getPersonDTO(id);
         if(res != null){
             return ResponseEntity.ok(res);
         }
@@ -63,8 +63,8 @@ public class PersonController {
 
     @ApiOperation(value = "Altera uma pessoa")
     @PutMapping("/{id}")
-    public ResponseEntity<PersonDTO> editPerson(@PathVariable Long id, @RequestBody Person novo, ServletRequest request){
-        PersonDTO res = service.editPerson(id, novo, request);
+    public ResponseEntity<PersonDTO> editPerson(@PathVariable Long id, @RequestBody Person novo){
+        PersonDTO res = service.editPerson(id, novo);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
