@@ -23,6 +23,9 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 
 public class JWTFilter extends OncePerRequestFilter {
+
+    public static String emailRequest;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -32,7 +35,7 @@ public class JWTFilter extends OncePerRequestFilter {
         try {
             if(token!=null && !token.isEmpty()) {
                 JWTObject tokenObject = JWTCreator.createJwtObject(token, SecurityConfig.PREFIX, SecurityConfig.KEY);
-
+                emailRequest = tokenObject.getSubject();
                 List<SimpleGrantedAuthority> authorities = authorities(tokenObject.getRoles());
 
                 UsernamePasswordAuthenticationToken userToken =

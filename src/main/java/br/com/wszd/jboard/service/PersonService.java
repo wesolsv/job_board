@@ -8,6 +8,8 @@ import br.com.wszd.jboard.model.LogTable;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
+import br.com.wszd.jboard.security.JWTFilter;
+import br.com.wszd.jboard.security.JWTObject;
 import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
@@ -46,7 +49,7 @@ public class PersonService {
        return repository.listPerson();
     }
 
-    public PersonDTO getPersonDTO(Long id, HttpServletRequest request){
+    public PersonDTO getPersonDTO(Long id, ServletRequest request){
         log.info("Buscando pessoa");
 
         Person realPerson = repository.findById(id).orElseThrow(
@@ -122,7 +125,7 @@ public class PersonService {
         return repository.save(novo);
     }
 
-    public PersonDTO editPerson(Long id, Person novo, HttpServletRequest request){
+    public PersonDTO editPerson(Long id, Person novo, ServletRequest request){
         log.info("Editando pessoa");
         //Validando a existencia de person com o id informado
         getPerson(id);
@@ -194,11 +197,10 @@ public class PersonService {
         logService.createLog(log);
     }
 
-    public void validEmailUser(HttpServletRequest request, Person person){
+    public void validEmailUser(ServletRequest request, Person person){
         //Validando se o email do usuario da requisicao é ADMIN ou pertence ao id para a qual foi feita a requisicao
-        HttpSession session = request.getSession();
-        SecurityContextImpl sec = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
-        Users user = userService.findByEmail((String) sec.getAuthentication().getPrincipal());
+        SecurityContextImpl sec = (SecurityContextImpl) request.getAttribute("SPRING_SECURITY_CONTEXT");
+        Users user = userService.findByEmail(JWTFilter.emailRequest);
 
         ArrayList<String> rolesRetorno = new ArrayList<>();
 
