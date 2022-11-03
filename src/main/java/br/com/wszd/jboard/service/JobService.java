@@ -112,6 +112,11 @@ public class JobService {
         novo.setDatePublish(returnJob.getDatePublish());
         novo.setId(id);
 
+        Company company = companyService.getCompany(returnJob.getCompanyId().getId());
+
+        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(company, email.toString());
+
         returnJob = repository.save(novo);
 
         return new JobDTO.Builder()
@@ -132,8 +137,12 @@ public class JobService {
 
     public void deleteJob(Long id){
         log.info("Deletando Job");
-        getJob(id);
-        repository.deleteById(id);
+                Company company = companyService.getCompany(getJob(id).getCompanyId().getId());
+
+        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(company, email.toString());
+
+        deleteOneJob(id);
     }
 
     public void deleteOneJob(Long id){
