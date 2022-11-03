@@ -33,7 +33,8 @@ public class JobService {
     public List<JobDTO> getAllJobs(){
         log.info("Buscando todas os jobs");
 
-        List<JobDTO> list = repository.listJobs();
+        List<JobDTO> list = null;
+        list =  repository.listJobs();
         List<JobDTO> listReturn = new ArrayList<>();
 
         Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

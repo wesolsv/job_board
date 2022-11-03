@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface JobRepository extends JpaRepository<Job, Long> {
     @Query("SELECT new br.com.wszd.jboard.dto.JobDTO "
-            + "(j.id, j.opportunity, j.description, j.type, j.salary, j.benefits, j.status, j.datePublish, "
-            + "(SELECT c.name, c.id FROM Company c WHERE j.companyId = c.id), "
-            + "(SELECT c.id, c.id FROM Company c WHERE j.companyId = c.id) )"
-            + "FROM Job j")
+            + "(j.id, j.opportunity, j.description, j.type, j.salary, j.benefits, j.status, j.datePublish, cp.name, cp.id) "
+            + "FROM Job j "
+            + "INNER JOIN Company cp "
+            + "ON cp.id = j.companyId")
     List<JobDTO> listJobs();
 
 
