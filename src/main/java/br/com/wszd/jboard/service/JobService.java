@@ -6,6 +6,7 @@ import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Users;
+import br.com.wszd.jboard.repository.CompanyRepository;
 import br.com.wszd.jboard.repository.JobRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -26,7 +28,7 @@ public class JobService {
     private UserService userService;
 
     @Autowired
-    private CompanyService companyService;
+    private CompanyRepository companyRepository;
 
     public List<JobDTO> getAllJobs(){
         log.info("Buscando todas os jobs");
@@ -56,10 +58,10 @@ public class JobService {
         Job realJob =  repository.findById(id).orElseThrow(
                 () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
 
-        Company company = companyService.getCompany(realJob.getCompanyId().getId());
+        Optional<Company> company = companyRepository.findById(realJob.getCompanyId().getId());
 
         Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(company, email.toString());
+        validEmailUser(company.get(), email.toString());
 
         JobDTO job = new JobDTO.Builder()
                         .id(realJob.getId())
@@ -71,7 +73,7 @@ public class JobService {
                         .status(realJob.getStatus())
                         .companyName(realJob.getCompanyId().getName())
                         .datePublish(realJob.getDatePublish())
-                        .companyId(company.getId())
+                        .companyId(company.get().getId())
                         .build();
         return job;
     }
@@ -112,10 +114,10 @@ public class JobService {
         novo.setDatePublish(returnJob.getDatePublish());
         novo.setId(id);
 
-        Company company = companyService.getCompany(returnJob.getCompanyId().getId());
+        Optional<Company> company = companyRepository.findById(returnJob.getCompanyId().getId());
 
         Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(company, email.toString());
+        validEmailUser(company.get(), email.toString());
 
         returnJob = repository.save(novo);
 
@@ -137,10 +139,10 @@ public class JobService {
 
     public void deleteJob(Long id){
         log.info("Deletando Job");
-                Company company = companyService.getCompany(getJob(id).getCompanyId().getId());
+        Optional<Company> company = companyRepository.findById(getJob(id).getCompanyId().getId());
 
         Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(company, email.toString());
+        validEmailUser(company.get(), email.toString());
 
         deleteOneJob(id);
     }
