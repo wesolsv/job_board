@@ -3,12 +3,16 @@ package br.com.wszd.jboard.service;
 import br.com.wszd.jboard.dto.JobDTO;
 import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
 import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
+import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Job;
+import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.JobRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,9 +22,32 @@ public class JobService {
     @Autowired
     private JobRepository repository;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private CompanyService companyService;
+
     public List<JobDTO> getAllJobs(){
         log.info("Buscando todas os jobs");
-       return repository.listJobs();
+
+        List<JobDTO> list = repository.listJobs();
+        List<JobDTO> listReturn = new ArrayList<>();
+
+        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(validAdminUser(email.toString())){
+            return list;
+        }
+
+        Users user = userService.findByEmail(email.toString());
+
+        for(JobDTO job : list){
+            if(job.getCompanyId() == user.getCompanyId().getId()){
+                listReturn.add(job);
+            };
+        }
+        return listReturn;
     }
 
     public JobDTO getJobDTO(Long id){
@@ -28,6 +55,11 @@ public class JobService {
 
         Job realJob =  repository.findById(id).orElseThrow(
                 () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
+
+        Company company = companyService.getCompany(realJob.getCompanyId().getId());
+
+        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        validEmailUser(company, email.toString());
 
         JobDTO job = new JobDTO.Builder()
                         .id(realJob.getId())
@@ -39,6 +71,7 @@ public class JobService {
                         .status(realJob.getStatus())
                         .companyName(realJob.getCompanyId().getName())
                         .datePublish(realJob.getDatePublish())
+                        .companyId(company.getId())
                         .build();
         return job;
     }
@@ -105,5 +138,41 @@ public class JobService {
 
     public void deleteOneJob(Long id){
         repository.deleteById(id);
+    }
+
+    public void validEmailUser(Company company, String emailRequest) {
+
+        Users user = userService.findByEmail(emailRequest);
+
+        ArrayList<String> rolesRetorno = new ArrayList<>();
+
+        for (int i = 0; i < user.getRoles().size(); i++) {
+            String j = user.getRoles().get(i).getName() + "";
+            rolesRetorno.add(j);
+        }
+
+        if (company.getId() == user.getCompanyId().getId()) {
+            log.info("Validado email do usuario ou usuario é admin");
+        } else {
+            throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
+        }
+    }
+
+    public boolean validAdminUser(String emailRequest){
+
+            Users user = userService.findByEmail(emailRequest);
+
+            ArrayList<String> rolesRetorno = new ArrayList<>();
+
+            for (int i = 0; i < user.getRoles().size(); i++) {
+                String j = user.getRoles().get(i).getName() + "";
+                rolesRetorno.add(j);
+            }
+
+            if (rolesRetorno.contains("ADMIN")) {
+                log.info("Usuário é ADMIN");
+                return true;
+            }
+            return false;
     }
 }

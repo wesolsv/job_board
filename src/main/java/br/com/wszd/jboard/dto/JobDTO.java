@@ -27,8 +27,9 @@ public class JobDTO {
     private JobStatus status;
     private String companyName;
     private LocalDateTime datePublish;
+    private Long companyId;
 
-    public JobDTO(Long id, String opportunity, String description, String type, Double salary, String benefits, JobStatus status, LocalDateTime datePublish, String companyName) {
+    public JobDTO(Long id, String opportunity, String description, String type, Double salary, String benefits, JobStatus status, LocalDateTime datePublish, String companyName, Long companyId) {
         this.id = id;
         this.opportunity = opportunity;
         this.description = description;
@@ -38,6 +39,7 @@ public class JobDTO {
         this.status = status;
         this.companyName = companyName;
         this.datePublish = datePublish;
+        this.companyId = companyId;
     }
 
     public static class Builder{
@@ -50,6 +52,8 @@ public class JobDTO {
         private JobStatus status;
         private String companyName;
         private LocalDateTime datePublish;
+
+        private Long companyId;
 
         public JobDTO.Builder id(Long id){
             this.id = id;
@@ -90,6 +94,11 @@ public class JobDTO {
             return this;
         }
 
+        public JobDTO.Builder companyId(Long companyId){
+            this.companyId = companyId;
+            return this;
+        }
+
         public JobDTO build(){
             return new JobDTO(this);
         }
@@ -105,5 +114,6 @@ public class JobDTO {
         status = builder.status;
         companyName = builder.companyName;
         datePublish = builder.datePublish;
+        companyId = builder.companyId;
     }
 }
