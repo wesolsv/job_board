@@ -60,9 +60,12 @@ public class JobService {
                 () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
 
         Optional<Company> company = companyRepository.findById(realJob.getCompanyId().getId());
-
         Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(company.get(), email.toString());
+
+        if(validAdminUser(email.toString())){
+        }else{
+            validEmailUser(company.get(), email.toString());
+        }
 
         JobDTO job = new JobDTO.Builder()
                         .id(realJob.getId())
@@ -89,6 +92,10 @@ public class JobService {
     public Job createNewJob(Job novo) {
         log.info("Adicionando nova job");
 
+        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users user =  userService.findByEmail(email.toString());
+        Optional<Company> company = companyRepository.findById(user.getCompanyId().getId());
+
         Job job;
         try{
             job = new Job.Builder()
@@ -99,7 +106,7 @@ public class JobService {
                     .benefits(novo.getBenefits())
                     .status(novo.getStatus())
                     .personId(novo.getPersonId())
-                    .companyId(novo.getCompanyId())
+                    .companyId(company.get())
                     .build();
 
             repository.save(job);
@@ -114,6 +121,7 @@ public class JobService {
         log.info("Editando Job");
         novo.setDatePublish(returnJob.getDatePublish());
         novo.setId(id);
+        novo.setCompanyId(returnJob.getCompanyId());
 
         Optional<Company> company = companyRepository.findById(returnJob.getCompanyId().getId());
 
@@ -132,6 +140,7 @@ public class JobService {
                 .status(returnJob.getStatus())
                 .companyName(returnJob.getCompanyId().getName())
                 .datePublish(returnJob.getDatePublish())
+                .companyId(returnJob.getCompanyId().getId())
                 .build();
     }
     public Job saveEditJob(Job novo){

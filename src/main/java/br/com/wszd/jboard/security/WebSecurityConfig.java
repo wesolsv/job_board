@@ -39,7 +39,7 @@ public class WebSecurityConfig {
                 .antMatchers(HttpMethod.GET,"/api/v1/company/{id}").hasAnyRole("COMP", "ADMIN")
                 .antMatchers(HttpMethod.GET,"/api/v1/company/candidate/{id}").hasAnyRole("COMP", "ADMIN")
                 .antMatchers(HttpMethod.POST,"/api/v1/company/candidate/hire").hasAnyRole("COMP", "ADMIN")
-                .antMatchers("/api/v1/job/**").hasAnyRole("COMP", "ADMIN")
+                .antMatchers("/api/v1/job/**").hasAnyRole("COMP")
                 .anyRequest().hasAnyRole("ADMIN")
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().addFilterBefore(new JWTFilter(), UsernamePasswordAuthenticationFilter.class).build();
