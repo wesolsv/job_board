@@ -70,6 +70,7 @@ public class PersonService {
     }
 
     public void createUser(Person person) {
+        log.info("Criando usuario");
         List<Long> listIdRoles = Arrays.asList(1L);
 
         //Criando usuário no repositorio
@@ -119,6 +120,7 @@ public class PersonService {
     }
 
     public Person savePerson(Person novo) {
+        log.info("Salvando pessoa");
         return repository.save(novo);
     }
 
@@ -154,6 +156,7 @@ public class PersonService {
     }
 
     public Person saveEditPerson(Person novo){
+        log.info("Salvando pessoa editada");
         return repository.save(novo);
     }
 
@@ -174,15 +177,17 @@ public class PersonService {
     }
 
     public void deleteOnePerson(Long id){
+        log.info("Deletando uma pessoa");
         repository.deleteById(id);
     }
 
     public Optional<PersonDTO> listPersonByCandidacyJobId(Long id) {
+        log.info("Listando candidaturas por pessoa");
         return repository.listPersonByCandidacyJobId(id);
     }
 
     public void createLog(String payload, String endpoint, Long userId, LogStatus status, String method){
-
+        log.info("Criando log");
         LogTable log = new LogTable.Builder()
                 .payload(payload)
                 .endpoint(endpoint)
@@ -196,6 +201,7 @@ public class PersonService {
     }
 
     public void validEmailUser(Person person, String emailRequest){
+        log.info("Validando usuario");
         //Validando se o email do usuario da requisicao é ADMIN ou pertence ao id para a qual foi feita a requisicao
 
         Users user = userService.findByEmail(emailRequest);

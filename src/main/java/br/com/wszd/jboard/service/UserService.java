@@ -12,6 +12,7 @@ import br.com.wszd.jboard.repository.UserRepository;
 import br.com.wszd.jboard.security.JWTCreator;
 import br.com.wszd.jboard.security.JWTObject;
 import br.com.wszd.jboard.security.SecurityConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserService {
 
   @Autowired
@@ -33,7 +35,7 @@ public class UserService {
   }
 
   public Users addRoleInUser(UserRoleDTO userRoleDTO) {
-
+    log.info("Adicionando role ao usuario");
     Optional<Users> userExists = userRepository.findById(userRoleDTO.getIdUser());
     List<Role> roles = new ArrayList<>();
 
@@ -55,26 +57,32 @@ public class UserService {
   }
 
   public void deleteUser(Long id) {
+    log.info("Deletando usuario");
     userRepository.deleteById(id);
   }
 
   public Users findByEmail(String email) {
+    log.info("Buscando usuario por email");
     return userRepository.findByEmail(email);
   }
 
   public Users createUser(Users user) {
+    log.info("Salvando novo usuario");
     return userRepository.save(user);
   }
 
   public Users getUserByPersonId(Person person) {
+    log.info("Buscando usuario por pessoa id");
     return userRepository.findByPersonId(person);
   }
 
   public Users getUserByCompanyId(Company company) {
+    log.info("Buscando usuario por empresa id");
     return userRepository.findByCompanyId(company);
   }
 
   public SessaoDTO validLogin(Users user, UserLoginDTO infoLogin) {
+    log.info("Validando senha e retornando sessao");
     if(user!=null) {
       boolean passwordOk = passwordEncoder().matches(infoLogin.getPassword(), user.getPassword());
       if (!passwordOk) {
@@ -100,6 +108,7 @@ public class UserService {
   }
 
   public void editUser(Users user) {
+    log.info("Editando usuario");
     userRepository.save(user);
   }
 }
