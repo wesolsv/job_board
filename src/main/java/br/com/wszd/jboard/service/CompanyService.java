@@ -77,6 +77,7 @@ public class CompanyService {
     }
 
     public void createUser(Company company) {
+        log.info("Criando usuario");
         List<Long> listIdRoles = Arrays.asList(3L);
 
         //Criando usuário no repositorio
@@ -125,6 +126,7 @@ public class CompanyService {
     }
 
     public Company saveCompany(Company novo){
+        log.info("Salvando empresa");
         return repository.save(novo);
     }
 
@@ -160,6 +162,7 @@ public class CompanyService {
     }
 
     public Company saveEditCompany(Company novo) {
+        log.info("Salvando empresa editada");
         return repository.save(novo);
     }
 
@@ -205,6 +208,7 @@ public class CompanyService {
     }
 
     public void hirePerson(Long personId, Long jobId) {
+        log.info("Iniciando processo de contratação");
         //validando se pessoa existe e se job existe
 
         personService.getPerson(personId);
@@ -233,6 +237,7 @@ public class CompanyService {
     }
 
     public void validEmailUser(Company company, String emailRequest) {
+        log.info("Validando usuario");
 
         Users user = userService.findByEmail(emailRequest);
 
@@ -251,7 +256,7 @@ public class CompanyService {
     }
 
     public void createLog(String payload, String endpoint, Long userId, LogStatus status, String method) {
-
+        log.info("Gerando Log");
         LogTable log = new LogTable.Builder()
                 .payload(payload)
                 .endpoint(endpoint)

@@ -52,6 +52,7 @@ public class CandidacyService {
     }
 
     public Candidacy getOneCandidacy(Long id){
+        log.info("Buscando candidatura");
         return repository.findById(id).orElseThrow(
                 () ->  new ResourceObjectNotFoundException("Não encontrado id = " + id));
     }
@@ -92,6 +93,7 @@ public class CandidacyService {
     }
 
     public Candidacy newCandidacy(Candidacy candidacy){
+        log.info("Salvando candidatura");
         return repository.save(candidacy);
     }
 
@@ -113,6 +115,7 @@ public class CandidacyService {
     }
 
     public Candidacy saveEditCandidacy(Candidacy candidacy){
+        log.info("Salvando candidatura editada");
         return repository.save(candidacy);
     }
 

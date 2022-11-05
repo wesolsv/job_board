@@ -162,7 +162,7 @@ public class JobService {
     }
 
     public void validEmailUser(Company company, String emailRequest) {
-
+        log.info("Validando usuario");
         Users user = userService.findByEmail(emailRequest);
 
         ArrayList<String> rolesRetorno = new ArrayList<>();
@@ -180,7 +180,7 @@ public class JobService {
     }
 
     public boolean validAdminUser(String emailRequest){
-
+            log.info("Validando usuario admin");
             Users user = userService.findByEmail(emailRequest);
 
             ArrayList<String> rolesRetorno = new ArrayList<>();

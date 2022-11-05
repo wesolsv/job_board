@@ -14,12 +14,4 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             + "INNER JOIN Company cp "
             + "ON cp.id = j.companyId")
     List<JobDTO> listJobs();
-
-
-    /*@Query("SELECT new br.com.wszd.jboard.dto.JobDTO "
-            + "(j.id, j.opportunity, j.description, j.type, j.salary, j.benefits, j.status, "
-            + "j.datePublish, j.companyId"
-            + "(SELECT c.name FROM Company c WHERE j.companyId = c.id) ) "
-            + "FROM Job j ")
-    List<JobDTO> listJobs();*/
 }
