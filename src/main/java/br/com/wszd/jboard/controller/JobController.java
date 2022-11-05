@@ -27,6 +27,12 @@ public class JobController {
         return service.getAllJobs();
     }
 
+    @ApiOperation(value = "Retorna todas os empregos")
+    @GetMapping("/search")
+    public List<JobDTO> searchJobs(@RequestParam String param){
+        return service.searchJobsByParam(param);
+    }
+
     @ApiOperation(value = "Retorna um emprego")
     @GetMapping("/{id}")
     public ResponseEntity<JobDTO> getOneJob(@PathVariable Long id){

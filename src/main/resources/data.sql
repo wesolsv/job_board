@@ -15,6 +15,8 @@ INSERT INTO company(name, phone, email, cnpj, password)
 	VALUES('Benício Informática Ltda', '3135824237', 'producao@leateltda.com.br','09028195000152','$2a$08$oFn06lNFvcMgqg4cU2E.IeT6v6/B/eDawhzRnmLGfmxZ21pQ5zlAW');
 INSERT INTO company(name, phone, email, cnpj, password)
 	VALUES('Laticinios Petter Parker', '38981133588', 'latprod@fojsc.br','05024237000140', '$2a$08$oFn06lNFvcMgqg4cU2E.IeT6v6/B/eDawhzRnmLGfmxZ21pQ5zlAW');
+INSERT INTO company(name, phone, email, cnpj, password)
+	VALUES('Vagas DEV', '38981943588', 'vagasti@vagasdev.com','05067937000140', '$2a$08$oFn06lNFvcMgqg4cU2E.IeT6v6/B/eDawhzRnmLGfmxZ21pQ5zlAW');
 
 --ROLES
 INSERT INTO roles(name) VALUES('USER');
@@ -28,6 +30,7 @@ INSERT INTO users(email, password, person_id) VALUES('beneditopires@deca.com.br'
 INSERT INTO users(email, password, person_id) VALUES('wes@teste.com.br', '$2a$08$QP.Z/n7WxJ5.92JxowU7l.oD8IPAbu7EEVAEakWeQFn7P6yAAYXim', 4);
 INSERT INTO users(email, password, company_id) VALUES('producao@leateltda.com.br', '$2a$08$oFn06lNFvcMgqg4cU2E.IeT6v6/B/eDawhzRnmLGfmxZ21pQ5zlAW', 1);
 INSERT INTO users(email, password, company_id) VALUES('latprod@fojsc.br', '$2a$08$oFn06lNFvcMgqg4cU2E.IeT6v6/B/eDawhzRnmLGfmxZ21pQ5zlAW', 2);
+INSERT INTO users(email, password, company_id) VALUES('vagasti@vagasdev.com', '$2a$08$oFn06lNFvcMgqg4cU2E.IeT6v6/B/eDawhzRnmLGfmxZ21pQ5zlAW', 3);
 
 --USERS_ROLES
 INSERT INTO users_roles(users_id, roles_id) VALUES(1,1);
@@ -46,7 +49,11 @@ INSERT INTO job(opportunity, description, type, salary, benefits, status, person
 INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
 	VALUES('Gerente','Gerente description', 'Tempo Integral', 4000.00, 'VR VT CONVENIO MEDICO', 'COMPLETED', 1, 1, '2022-11-01 12:00:00');
 INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
-	VALUES('Operador de Maquina','Operador de maquina description', 'Tempo Integral', 3500.00, 'VR VT CONVENIO MEDICO E ODONTOLOGICO', 'OPEN', NULL, 1, '2022-11-01 12:00:00');
+	VALUES('Operador de Maquina','Operador de maquina description', 'Tempo Integral', 3500.00, 'VR VT CONVENIO MEDICO E ODONTOLOGICO', 'OPEN', NULL, 2, '2022-11-01 12:00:00');
+INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
+	VALUES('Desenvolvedor Back-end','Desenvolvedor back end java e php', 'Tempo Integral', 3500.00, 'VR VT CONVENIO MEDICO E ODONTOLOGICO', 'OPEN', NULL, 3, '2022-11-01 12:00:00');
+INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
+	VALUES('Desenvolvedor Front-end','Desenvolvedor front end javascript', 'Tempo Integral', 3500.00, 'VR VT CONVENIO MEDICO E ODONTOLOGICO', 'OPEN', NULL, 3, '2022-11-01 12:00:00');
 
 --CANDIDACY
 INSERT INTO candidacy(date_candidacy, status, person_id, job_id)

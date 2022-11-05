@@ -53,6 +53,13 @@ public class JobService {
         return listReturn;
     }
 
+    public List<JobDTO> searchJobsByParam(String param) {
+        log.info("Buscando todas os jobs com parametro de busca");
+        List<JobDTO> list = null;
+        list =  repository.listJobsByParam(param);
+        return list;
+    }
+
     public JobDTO getJobDTO(Long id){
         log.info("Buscando job");
 
