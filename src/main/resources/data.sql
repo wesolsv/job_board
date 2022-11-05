@@ -43,17 +43,19 @@ INSERT INTO users_roles(users_id, roles_id) VALUES(6,3);
 
 --JOB
 INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
-	VALUES('Tecnico de Informatica','Tecnico de Informatica description', 'Tempo Integral', 1500.00, 'VR VT CONVENIO MEDICO', 'OPEN', NULL, 1, '2022-11-01 12:00:00');
+	VALUES('TECNICO DE INFORMATICA','TECNICO DE INFORMATICA DESCRICAO', 'TEMPO INTEGRAL', 1500.00, 'VR VT CONVENIO MEDICO', 'OPEN', NULL, 1, '2022-11-01 12:00:00');
 INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
-	VALUES('Analista de Sistemas','Analista de sistemas description', 'Tempo Integral', 2000.00, 'CONVENIO MEDICO', 'OPEN', NULL, 1, '2022-11-01 12:00:00');
+	VALUES('ANALISTA DE SISTEMAS','ANALISE DE SISTEMAS DESCRICAO', 'TEMPO INTEGRAL', 2000.00, 'CONVENIO MEDICO', 'OPEN', NULL, 1, '2022-11-01 12:00:00');
 INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
-	VALUES('Gerente','Gerente description', 'Tempo Integral', 4000.00, 'VR VT CONVENIO MEDICO', 'COMPLETED', 1, 1, '2022-11-01 12:00:00');
+	VALUES('GERENTE COMERCIAL','GERENCIA DESCRICAO COMERCIAL', 'TEMPO INTEGRAL', 4000.00, 'VR VT CONVENIO MEDICO', 'COMPLETED', 1, 1, '2022-11-01 12:00:00');
 INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
-	VALUES('Operador de Maquina','Operador de maquina description', 'Tempo Integral', 3500.00, 'VR VT CONVENIO MEDICO E ODONTOLOGICO', 'OPEN', NULL, 2, '2022-11-01 12:00:00');
+	VALUES('OPERADOR DE MAQUINA','OPERADOR DE MAQUINA DESCRIPTION', 'TEMPO INTEGRAL', 3500.00, 'VR VT CONVENIO MEDICO E ODONTOLOGICO', 'OPEN', NULL, 2, '2022-11-01 12:00:00');
 INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
-	VALUES('Desenvolvedor Back-end','Desenvolvedor back end java e php', 'Tempo Integral', 3500.00, 'VR VT CONVENIO MEDICO E ODONTOLOGICO', 'OPEN', NULL, 3, '2022-11-01 12:00:00');
+	VALUES('DESENVOLVEDOR BACK-END','DESENVOLVEDOR BACK END JAVA E PHP', 'TEMPO INTEGRAL', 3500.00, 'VR VT CONVENIO MEDICO E ODONTOLOGICO', 'OPEN', NULL, 3, '2022-11-01 12:00:00');
 INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
-	VALUES('Desenvolvedor Front-end','Desenvolvedor front end javascript', 'Tempo Integral', 3500.00, 'VR VT CONVENIO MEDICO E ODONTOLOGICO', 'OPEN', NULL, 3, '2022-11-01 12:00:00');
+	VALUES('DESENVOLVEDOR FRONT-END','DESENVOLVEDOR FRONT END JS, JAVA, PHP, HTML', 'TEMPO INTEGRAL', 3500.00, 'VR VT CONVENIO MEDICO E ODONTOLOGICO', 'OPEN', NULL, 3, '2022-11-01 12:00:00');
+INSERT INTO job(opportunity, description, type, salary, benefits, status, person_id, company_id, date_publish)
+	VALUES('ESTAGIARIO UI UX','ESTAGIO UI UX DESCRICAO', 'MEIO PERIODO', 3500.00, 'VR VT CONVENIO MEDICO E ODONTOLOGICO', 'OPEN', NULL, 3, '2022-11-01 12:00:00');
 
 --CANDIDACY
 INSERT INTO candidacy(date_candidacy, status, person_id, job_id)

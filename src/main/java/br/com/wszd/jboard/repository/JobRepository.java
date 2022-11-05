@@ -20,6 +20,14 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             + "FROM Job j "
             + "INNER JOIN Company cp "
             + "ON cp.id = j.companyId "
-            + "WHERE j.opportunity LIKE %:param%")
-    List<JobDTO> listJobsByParam(String param);
+            + "WHERE j.opportunity LIKE %:opportunity%")
+    List<JobDTO> listJobsByOpportunity(String opportunity);
+
+    @Query("SELECT new br.com.wszd.jboard.dto.JobDTO "
+            + "(j.id, j.opportunity, j.description, j.type, j.salary, j.benefits, j.status, j.datePublish, cp.name, cp.id) "
+            + "FROM Job j "
+            + "INNER JOIN Company cp "
+            + "ON cp.id = j.companyId "
+            + "WHERE j.type = :type")
+    List<JobDTO> listJobsByType(String type);
 }

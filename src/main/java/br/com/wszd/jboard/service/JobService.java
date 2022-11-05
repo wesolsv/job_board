@@ -53,11 +53,13 @@ public class JobService {
         return listReturn;
     }
 
-    public List<JobDTO> searchJobsByParam(String param) {
+    public List<JobDTO> searchJobsByParam(String opportunity) {
         log.info("Buscando todas os jobs com parametro de busca");
-        List<JobDTO> list = null;
-        list =  repository.listJobsByParam(param);
-        return list;
+        return repository.listJobsByOpportunity(opportunity.toUpperCase());
+    }
+    public List<JobDTO> searchJobsByType(String type) {
+        log.info("Buscando todas os jobs com parametro de busca");
+        return repository.listJobsByType(type.toUpperCase());
     }
 
     public JobDTO getJobDTO(Long id){
@@ -106,11 +108,11 @@ public class JobService {
         Job job;
         try{
             job = new Job.Builder()
-                    .opportunity(novo.getOpportunity())
-                    .description(novo.getDescription())
-                    .type(novo.getType())
+                    .opportunity(novo.getOpportunity().toUpperCase())
+                    .description(novo.getDescription().toUpperCase())
+                    .type(novo.getType().toUpperCase())
                     .salary(novo.getSalary())
-                    .benefits(novo.getBenefits())
+                    .benefits(novo.getBenefits().toUpperCase())
                     .status(novo.getStatus())
                     .personId(novo.getPersonId())
                     .companyId(company.get())
@@ -139,11 +141,11 @@ public class JobService {
 
         return new JobDTO.Builder()
                 .id(returnJob.getId())
-                .opportunity(returnJob.getOpportunity())
-                .description(returnJob.getDescription())
-                .type(returnJob.getType())
+                .opportunity(returnJob.getOpportunity().toUpperCase())
+                .description(returnJob.getDescription().toUpperCase())
+                .type(returnJob.getType().toUpperCase())
                 .salary(returnJob.getSalary())
-                .benefits(returnJob.getBenefits())
+                .benefits(returnJob.getBenefits().toUpperCase())
                 .status(returnJob.getStatus())
                 .companyName(returnJob.getCompanyId().getName())
                 .datePublish(returnJob.getDatePublish())
