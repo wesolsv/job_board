@@ -28,6 +28,8 @@ import java.util.Optional;
 public class PersonService {
 
     @Autowired
+    private EmailService emailService;
+    @Autowired
     private PersonRepository repository;
 
     @Autowired
@@ -84,6 +86,9 @@ public class PersonService {
         //Criando e atribuindo a role ao user
         UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
         userService.addRoleInUser(userRoleDTO);
+
+        //Enviando Email
+        emailService.sendEmailToUserCreateUsers(user);
 
         //Criando log de inserção
         createLog(person.toString(), "/person", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
