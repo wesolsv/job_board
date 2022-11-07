@@ -39,6 +39,8 @@ public class CompanyService {
     private UserService userService;
     @Autowired
     private UserService createRoleUserService;
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private LogService logService;
@@ -91,6 +93,9 @@ public class CompanyService {
         //Criando e atribuindo a role ao user
         UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
         userService.addRoleInUser(userRoleDTO);
+
+        //Enviando Email
+        emailService.sendEmailToUserCreateUsers(user);
 
         //Criando log de inserção
         createLog(company.toString(), "/company", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
@@ -147,6 +152,9 @@ public class CompanyService {
         Users user = userService.getUserByCompanyId(getCompany(id));
         user.setEmail(novo.getEmail());
         userService.editUser(user);
+
+        //Enviando Email
+        emailService.sendEmailEditUser(user);
 
         //Salvando o log da edicao efetuada
         createLog(novo.toString(), "/company{" + id + "}",
@@ -211,7 +219,7 @@ public class CompanyService {
         log.info("Iniciando processo de contratação");
         //validando se pessoa existe e se job existe
 
-        personService.getPerson(personId);
+        Person person = personService.getPerson(personId);
         Job job = jobService.getJob(jobId);
         Optional<Company> realCompany = repository.findById(job.getCompanyId().getId());
 
@@ -234,6 +242,7 @@ public class CompanyService {
         } catch (ResourceBadRequestException e) {
             throw new ResourceBadRequestException("Não foi encontrada candidatura para a pessoa id " + personId);
         }
+        emailService.sendEmailNewHire(person, job);
     }
 
     public void validEmailUser(Company company, String emailRequest) {

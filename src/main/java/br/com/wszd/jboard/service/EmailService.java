@@ -75,6 +75,17 @@ public class EmailService {
         createEmail(toEmail, subject, body);
     }
 
+    public void sendEmailNewHire(Person person, Job job) {
+
+        String toEmail = personService.getPerson(person.getId()).getEmail();
+
+        String subject = "Parabéns você foi aprovado";
+        String body = "Parabéns você foi aprovado pela Empresa "
+                + job.getCompanyId().getName() + " \n para a vaga " + job.getOpportunity() + " aguarde mais informações";
+
+        createEmail(toEmail, subject, body);
+    }
+
     private void createEmail(String toEmail, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
 
