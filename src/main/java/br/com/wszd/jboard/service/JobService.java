@@ -181,7 +181,7 @@ public class JobService {
             rolesRetorno.add(j);
         }
 
-        if (company.getId() == user.getCompanyId().getId()) {
+        if (company.getId().equals(user.getCompanyId().getId())) {
             log.info("Validado email do usuario ou usuario é admin");
         } else {
             throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");

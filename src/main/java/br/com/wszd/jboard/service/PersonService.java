@@ -151,6 +151,9 @@ public class PersonService {
         user.setEmail(novo.getEmail());
         userService.editUser(user);
 
+        //Enviando email
+        emailService.sendEmailEditUser(user);
+
         //Salvando o log da edicao efetuada
         createLog(novo.toString(),"/person{" + id +"}",
                 userService.getUserByPersonId(getPerson(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
@@ -222,7 +225,7 @@ public class PersonService {
             rolesRetorno.add(j);
         }
 
-        if(rolesRetorno.contains("ADMIN") || person.getId() == user.getId()){
+        if(rolesRetorno.contains("ADMIN") || person.getId().equals(user.getPersonId().getId())){
             log.info("Validado email do usuario ou usuario é admin");
         }else {
             throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");

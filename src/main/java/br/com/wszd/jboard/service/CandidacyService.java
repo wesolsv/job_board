@@ -6,6 +6,7 @@ import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
 import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.Candidacy;
 import br.com.wszd.jboard.model.Job;
+import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.repository.CandidacyRepository;
 import br.com.wszd.jboard.util.CandidacyStatus;
 import br.com.wszd.jboard.util.JobStatus;
@@ -22,10 +23,10 @@ public class CandidacyService {
 
     @Autowired
     private CandidacyRepository repository;
-
     @Autowired
     private PersonService personService;
-
+    @Autowired
+    private EmailService emailService;
     @Autowired
     private JobService jobService;
 
@@ -61,7 +62,7 @@ public class CandidacyService {
         log.info("Adicionando nova candidatura");
 
         //Validar se job e pessoa existe e se o status do job é completed, caso for, não é possível me candidatar
-        personService.getPerson(novo.getPersonId().getId());
+        Person person = personService.getPerson(novo.getPersonId().getId());
         Job job = jobService.getJob(novo.getJob().getId());
         if(job.getStatus() == JobStatus.COMPLETED){
             throw new ResourceBadRequestException("Esta vaga não está disponível");
@@ -89,6 +90,8 @@ public class CandidacyService {
         }catch(ResourceBadRequestException e){
             throw new ResourceBadRequestException("Falha ao criar candidatura");
         }
+
+        emailService.sendEmailNewCandidacy(person, job);
         return candidacy;
     }
 

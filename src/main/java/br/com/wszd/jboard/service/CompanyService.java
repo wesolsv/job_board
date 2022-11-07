@@ -248,7 +248,7 @@ public class CompanyService {
             rolesRetorno.add(j);
         }
 
-        if (rolesRetorno.contains("ADMIN") || company.getId() == user.getCompanyId().getId()) {
+        if (rolesRetorno.contains("ADMIN") || company.getId().equals(user.getCompanyId().getId())) {
             log.info("Validado email do usuario ou usuario é admin");
         } else {
             throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");

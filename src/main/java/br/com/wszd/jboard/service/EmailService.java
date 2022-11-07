@@ -2,6 +2,7 @@ package br.com.wszd.jboard.service;
 
 
 import br.com.wszd.jboard.model.Company;
+import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +38,44 @@ public class EmailService {
             toEmail = person.getEmail();
         }
 
-        //createEmail(toEmail)
-
         String subject = "Cadastro realizado com sucesso";
-        String body = "Prabéns pelo cadastro em JobBoard, seu usuário é " + user.getEmail();
+        String body = "Parabéns pelo cadastro em JobBoard, seu usuário é " + user.getEmail();
 
+        createEmail(toEmail, subject, body);
+    }
+
+    public void sendEmailEditUser(Users user) {
+
+        Company company = null;
+        Person person = null;
+        String toEmail = "";
+
+        if(user.getCompanyId() != null){
+            company = companyService.getCompany(user.getCompanyId().getId());
+            toEmail = company.getEmail();
+        }else{
+            person = personService.getPerson(user.getPersonId().getId());
+            toEmail = person.getEmail();
+        }
+
+        String subject = "Edição de usuario com sucesso";
+        String body = "Usuário Editado";
+
+        createEmail(toEmail, subject, body);
+    }
+
+    public void sendEmailNewCandidacy(Person person, Job job) {
+
+        String toEmail = personService.getPerson(person.getId()).getEmail();
+
+        String subject = "Parabéns pela nova candidatura";
+        String body = "Agora é só aguardar o retorno da Empresa "
+                + job.getCompanyId().getName() + " para a vaga " + job.getOpportunity();
+
+        createEmail(toEmail, subject, body);
+    }
+
+    private void createEmail(String toEmail, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setFrom("noreplayjobboard@gmail.com");
@@ -52,6 +86,5 @@ public class EmailService {
         mailSender.send(message);
 
         log.info("Email enviado com sucesso");
-
     }
 }
