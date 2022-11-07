@@ -1,16 +1,18 @@
 # job_board
 
-API de um quadro de empregos, contendo empresa, pessoa, emprego e candidatura
+Projeto de uma API de um quadro de empregos, com o objetivo da pessoa se candidatar a 
+uma vaga publicada por uma empresa e a empresa poderá buscar e selecionar os candidatos a suas vagas.
 
-Utilizado o banco de dados PostgreSQL para criar as tabelas, ao rodar o projeto o script para seed ocorre automaticamente.
 
-Para instalar o projeto: mvn clean install
+* Utilizado o banco de dados PostgreSQL para criar as tabelas, ao rodar o projeto o script para seed ocorre automaticamente.
+* Implementado o spring security, adicionado controle de usuários, jwt e serviço para envio de e-mail ao usuário.
+* Implementada a documentação da aplicação com o Swagger.
 
-Para executar o projeto: mvn spring-boot:run
+**Para instalar o projeto: mvn clean install**
+
+**Para executar o projeto: mvn spring-boot:run**
 
 ### Acesso local com o swagger: http://localhost:8080/swagger-ui.html#/
-
-Neste projeto também implementei o SpringSecurity, tenho as entidades Role e User e nas configurações de segurança implemente o controle de usuários por Role.
 
 ### Candidacy
 * GET    - api/v1/candidacy     - Retorna todas as candidaturas
@@ -43,3 +45,7 @@ Neste projeto também implementei o SpringSecurity, tenho as entidades Role e Us
 * DELETE - api/v1/person{id} - Deleta uma pessoa
 * GET    - api/v1/person/candidacy - Realiza uma nova candidatura 
 * POST   - api/v1/person/candidacy/{id} - Retorna todas as candidaturas da pessoa
+
+### Users
+* POST - api/v1/users/role  - Possibilita a criação de uma nova Role.
+* POST - api/v1/users/login - Disponibilizado para o usuário realizar login na aplicação e resgatar seu token de acesso
