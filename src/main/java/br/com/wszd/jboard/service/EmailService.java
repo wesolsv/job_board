@@ -37,9 +37,10 @@ public class EmailService {
             toEmail = person.getEmail();
         }
 
-        String subject = "Cadastro realizado com sucesso";
+        //createEmail(toEmail)
 
-        String body = "<p>Parabéns pelo cadastro" + "</p>";
+        String subject = "Cadastro realizado com sucesso";
+        String body = "Prabéns pelo cadastro em JobBoard, seu usuário é " + user.getEmail();
 
         SimpleMailMessage message = new SimpleMailMessage();
 

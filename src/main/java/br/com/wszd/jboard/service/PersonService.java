@@ -11,7 +11,12 @@ import br.com.wszd.jboard.repository.PersonRepository;
 import br.com.wszd.jboard.security.JWTFilter;
 import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,12 +36,11 @@ public class PersonService {
     private EmailService emailService;
     @Autowired
     private PersonRepository repository;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private LogService logService;
+
 
     private BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
