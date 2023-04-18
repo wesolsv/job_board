@@ -8,16 +8,22 @@ import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.repository.CandidacyRepository;
 import br.com.wszd.jboard.service.CandidacyService;
+import br.com.wszd.jboard.service.EmailService;
+import br.com.wszd.jboard.service.JobService;
+import br.com.wszd.jboard.service.PersonService;
 import br.com.wszd.jboard.util.CandidacyStatus;
 import br.com.wszd.jboard.util.JobStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -34,13 +40,21 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 public class CandidacyServiceTest {
 
-    @Mock
+    @MockBean
     private CandidacyRepository repository;
+    @MockBean
+    private PersonService personService;
+    @MockBean
+    private EmailService emailService;
+    @MockBean
+    private JobService jobService;
 
-    @InjectMocks
+    @Autowired
     private CandidacyService service;
 
     Candidacy candidacy;
+
+    Job job;
 
     @BeforeEach
     public void setUp(){
@@ -49,32 +63,45 @@ public class CandidacyServiceTest {
         candidacy.setDateCandidacy(LocalDateTime.now());
         candidacy.setStatus(CandidacyStatus.AGUARDANDO);
         candidacy.setPersonId(new Person());
-        candidacy.setJob(new Job());
+        candidacy.setJob(job);
     }
 
     @Test
+    @DisplayName("deve criar uma nova candidatura")
     public void shouldCreateCandidacy() throws Exception {
+        Long idPessoa = 0L;
+        Long idJob = 1L;
+        Candidacy candidatura = mock(Candidacy.class);
+        Person pessoa = mock(Person.class);
+        Job jobT = mock(Job.class);
 
-        when(repository.save(candidacy)).thenReturn(candidacy);
-        Candidacy c = service.newCandidacy(candidacy);
+        when(candidatura.getPersonId()).thenReturn(pessoa);
+        when(candidatura.getPersonId().getId()).thenReturn(idPessoa);
+        when(candidatura.getJob()).thenReturn(jobT);
+        when(candidatura.getJob().getId()).thenReturn(idJob);
+        when(personService.getPerson(idPessoa)).thenReturn(pessoa);
+        when(jobService.getJob(idJob)).thenReturn(jobT);
+        when(repository.save(candidatura)).thenReturn(candidatura);
+        service.createNewCandidacy(candidatura);
 
-        assertNotNull(c);
-        assertEquals(CandidacyStatus.AGUARDANDO,c.getStatus());
+        verify(repository, times(1)).save(any(Candidacy.class));
+        verify(repository, times(1)).findAll();
     }
     @Test
     public void shouldGetCandidacy() throws Exception {
+        Candidacy candidatura = mock(Candidacy.class);
 
-        when(repository.findById(anyLong())).thenReturn(Optional.of(candidacy));
-        Candidacy c = service.getOneCandidacy(candidacy.getId());
+        when(repository.findById(1L)).thenReturn(Optional.of(candidatura));
+        service.getOneCandidacy(candidacy.getId());
 
-        Assertions.assertEquals(Candidacy.class, c.getClass());
+        verify(repository, times(1)).findById(1L);
     }
     @Test
     public void shouldGetAllCandidacy() throws Exception {
-        ArrayList<CandidacyDTO> lista = new ArrayList<>();
+        List<CandidacyDTO> lista = new ArrayList<>();
 
         when(repository.listAllCandidacy()).thenReturn(lista);
-        List<CandidacyDTO> list = service.getAllCandidacy();
+        service.getAllCandidacy();
         verify(repository, times(1)).listAllCandidacy();
     }
     @Test

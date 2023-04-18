@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/candidacy")
@@ -23,7 +24,7 @@ public class CandidacyController {
 
     @ApiOperation(value = "Retorna todas as candidaturas")
     @GetMapping
-    public ArrayList<CandidacyDTO> getAllCandidacy(){
+    public List<CandidacyDTO> getAllCandidacy(){
         return service.getAllCandidacy();
     }
 

@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.ArrayList;
+import java.util.List;
+
 public interface CandidacyRepository extends JpaRepository<Candidacy, Long> {
 
     @Query("SELECT "
@@ -18,5 +20,5 @@ public interface CandidacyRepository extends JpaRepository<Candidacy, Long> {
 
     @Query("SELECT new br.com.wszd.jboard.dto.CandidacyDTO(cd.id, cd.dateCandidacy, cd.status, cd.personId, cd.job ) " +
             "FROM Candidacy cd")
-    ArrayList<CandidacyDTO> listAllCandidacy();
+    List<CandidacyDTO> listAllCandidacy();
 }

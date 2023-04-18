@@ -29,12 +29,6 @@ public class CompanyServiceTest {
     @Mock
     private CompanyRepository repository;
 
-    @Mock
-    private CandidacyService candidacyService;
-
-    @Mock
-    private CandidacyRepository candidacyRepository;
-
     @InjectMocks
     private CompanyService service;
 

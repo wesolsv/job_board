@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,7 +31,7 @@ public class CandidacyService {
     @Autowired
     private JobService jobService;
 
-    public ArrayList<CandidacyDTO> getAllCandidacy(){
+    public List<CandidacyDTO> getAllCandidacy(){
         log.info("Buscando todas as candidaturas");
        return repository.listAllCandidacy();
     }
@@ -70,7 +71,7 @@ public class CandidacyService {
 
         //Validando se a pessoa e a vaga já tem a mesma combinação de registros
 
-        ArrayList<Candidacy> lista = (ArrayList<Candidacy>) repository.findAll();
+        List<Candidacy> lista = repository.findAll();
         for(Candidacy cd : lista){
             if(cd.getJob().getId() == novo.getJob().getId() && cd.getPersonId().getId() == novo.getPersonId().getId()){
                 throw  new ResourceBadRequestException(cd.getPersonId().getName() +" já está se candidatou a esta vaga ");
@@ -86,7 +87,7 @@ public class CandidacyService {
                     .job(novo.getJob())
                     .build();
 
-            newCandidacy(candidacy);
+            candidacy= repository.save(candidacy);
         }catch(ResourceBadRequestException e){
             throw new ResourceBadRequestException("Falha ao criar candidatura");
         }
