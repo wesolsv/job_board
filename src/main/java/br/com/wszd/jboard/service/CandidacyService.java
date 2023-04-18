@@ -96,11 +96,6 @@ public class CandidacyService {
         return candidacy;
     }
 
-    public Candidacy newCandidacy(Candidacy candidacy){
-        log.info("Salvando candidatura");
-        return repository.save(candidacy);
-    }
-
     public CandidacyDTO editCandidacy(Long id, Candidacy novo){
         log.info("Editando candidatura");
 
@@ -110,17 +105,12 @@ public class CandidacyService {
             deleteCandidacy(id);
             return null;
         }
-        saveEditCandidacy(candidacy.get());
+        repository.save(candidacy.get());
         return new CandidacyDTO(candidacy.get().getId(),
                 candidacy.get().getDateCandidacy(),
                 candidacy.get().getStatus(),
                 candidacy.get().getPersonId(),
                 candidacy.get().getJob());
-    }
-
-    public Candidacy saveEditCandidacy(Candidacy candidacy){
-        log.info("Salvando candidatura editada");
-        return repository.save(candidacy);
     }
 
     public void deleteCandidacy(Long id){

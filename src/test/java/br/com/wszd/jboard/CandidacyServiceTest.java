@@ -12,9 +12,11 @@ import br.com.wszd.jboard.service.EmailService;
 import br.com.wszd.jboard.service.JobService;
 import br.com.wszd.jboard.service.PersonService;
 import br.com.wszd.jboard.util.CandidacyStatus;
+import br.com.wszd.jboard.util.CandidacyStatus;
 import br.com.wszd.jboard.util.JobStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
+import org.hibernate.engine.jdbc.env.spi.IdentifierCaseStrategy;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,26 +47,11 @@ public class CandidacyServiceTest {
     @MockBean
     private PersonService personService;
     @MockBean
-    private EmailService emailService;
-    @MockBean
     private JobService jobService;
-
+    @MockBean
+    private EmailService emailService;
     @Autowired
     private CandidacyService service;
-
-    Candidacy candidacy;
-
-    Job job;
-
-    @BeforeEach
-    public void setUp(){
-        candidacy = new Candidacy();
-        candidacy.setId(1L);
-        candidacy.setDateCandidacy(LocalDateTime.now());
-        candidacy.setStatus(CandidacyStatus.AGUARDANDO);
-        candidacy.setPersonId(new Person());
-        candidacy.setJob(job);
-    }
 
     @Test
     @DisplayName("deve criar uma nova candidatura")
@@ -73,30 +60,59 @@ public class CandidacyServiceTest {
         Long idJob = 1L;
         Candidacy candidatura = mock(Candidacy.class);
         Person pessoa = mock(Person.class);
-        Job jobT = mock(Job.class);
+        Job job = mock(Job.class);
+        Company company = mock(Company.class);
 
         when(candidatura.getPersonId()).thenReturn(pessoa);
         when(candidatura.getPersonId().getId()).thenReturn(idPessoa);
-        when(candidatura.getJob()).thenReturn(jobT);
+        when(candidatura.getJob()).thenReturn(job);
         when(candidatura.getJob().getId()).thenReturn(idJob);
+        when(company.getName()).thenReturn("Test Company");
+        when(job.getCompanyId()).thenReturn(company);
         when(personService.getPerson(idPessoa)).thenReturn(pessoa);
-        when(jobService.getJob(idJob)).thenReturn(jobT);
+        when(jobService.getJob(idJob)).thenReturn(job);
         when(repository.save(candidatura)).thenReturn(candidatura);
         service.createNewCandidacy(candidatura);
 
         verify(repository, times(1)).save(any(Candidacy.class));
         verify(repository, times(1)).findAll();
     }
+
     @Test
+    @DisplayName("deve editar uma candidatura")
+    public void shouldEditCandidacy() throws Exception {
+        Long idCandidatura = 1L;
+        Candidacy candidatura = mock(Candidacy.class);
+        Person pessoa = mock(Person.class);
+        Job job = mock(Job.class);
+        Company company = mock(Company.class);
+
+        when(repository.findById(idCandidatura)).thenReturn(Optional.ofNullable(candidatura));
+        when(candidatura.getStatus()).thenReturn(CandidacyStatus.ACEITO);
+        when(candidatura.getPersonId()).thenReturn(pessoa);
+        when(candidatura.getJob()).thenReturn(job);
+        when(company.getName()).thenReturn("Test Company");
+        when(job.getCompanyId()).thenReturn(company);
+        when(repository.save(candidatura)).thenReturn(candidatura);
+        service.editCandidacy(idCandidatura, candidatura);
+
+        verify(repository, times(1)).save(any(Candidacy.class));
+        verify(repository, times(1)).findById(idCandidatura);
+    }
+    @Test
+    @DisplayName("deve retornar uma candidatura")
     public void shouldGetCandidacy() throws Exception {
+        Long idCandidatura = 1L;
         Candidacy candidatura = mock(Candidacy.class);
 
         when(repository.findById(1L)).thenReturn(Optional.of(candidatura));
-        service.getOneCandidacy(candidacy.getId());
+        when(candidatura.getId()).thenReturn(idCandidatura);
+        service.getOneCandidacy(candidatura.getId());
 
         verify(repository, times(1)).findById(1L);
     }
     @Test
+    @DisplayName("deve retornar uma lista de candidaturas")
     public void shouldGetAllCandidacy() throws Exception {
         List<CandidacyDTO> lista = new ArrayList<>();
 
@@ -104,19 +120,16 @@ public class CandidacyServiceTest {
         service.getAllCandidacy();
         verify(repository, times(1)).listAllCandidacy();
     }
-    @Test
-    public void shouldEditCandidacy() throws Exception {
-        candidacy.setStatus(CandidacyStatus.ACEITO);
-        when(repository.save(candidacy)).thenReturn(candidacy);
-        Candidacy obj = service.saveEditCandidacy(candidacy);
 
-        assertNotNull(obj);
-        assertEquals(CandidacyStatus.ACEITO, obj.getStatus());
-    }
     @Test
+    @DisplayName("deve deletar uma candidatura")
     public void shouldDeleteCandidacy() throws Exception {
+        Long idCandidatura = 1L;
+        Candidacy candidatura = mock(Candidacy.class);
+
         doNothing().when(repository).deleteById(anyLong());
-        service.deleteCandidacy(candidacy.getId());
+        when(candidatura.getId()).thenReturn(idCandidatura);
+        service.deleteCandidacy(candidatura.getId());
         verify(repository, times(1)).deleteById(anyLong());
     }
 }
