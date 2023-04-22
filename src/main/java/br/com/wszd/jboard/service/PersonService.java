@@ -69,29 +69,6 @@ public class PersonService {
                 () ->  new ResourceObjectNotFoundException("Não encontrada com id = " + id));
     }
 
-    public void createUser(Person person) {
-        log.info("Criando usuario");
-        List<Long> listIdRoles = Arrays.asList(1L);
-
-        //Criando usuário no repositorio
-        Users user = userService.createUser(new Users.Builder()
-                .email(person.getEmail())
-                .password(person.getPassword())
-                .personId(person)
-                .companyId(null)
-                .build());
-
-        //Criando e atribuindo a role ao user
-        UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
-        userService.addRoleInUser(userRoleDTO);
-
-        //Enviando Email
-        emailService.sendEmailToUserCreateUsers(user);
-
-        //Criando log de inserção
-        createLog(person.toString(), "/person", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
-    }
-
     public PersonDTO createNewPerson(Person novo) {
         log.info("Adicionando nova pessoa");
 
@@ -110,8 +87,7 @@ public class PersonService {
                 .build();
 
         person = savePerson(person);
-
-        createUser(person);
+        userService.createUsers(person);
 
         return new PersonDTO.Builder()
                 .id(person.getId())

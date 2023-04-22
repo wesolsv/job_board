@@ -38,8 +38,6 @@ public class CompanyService {
     @Autowired
     private UserService userService;
     @Autowired
-    private UserService createRoleUserService;
-    @Autowired
     private EmailService emailService;
 
     @Autowired
@@ -78,33 +76,12 @@ public class CompanyService {
                 () -> new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
     }
 
-    public void createUser(Company company) {
-        log.info("Criando usuario");
-        List<Long> listIdRoles = Arrays.asList(3L);
-
-        //Criando usuário no repositorio
-        Users user = userService.createUser(new Users.Builder()
-                .email(company.getEmail())
-                .password(company.getPassword())
-                .personId(null)
-                .companyId(company)
-                .build());
-
-        //Criando e atribuindo a role ao user
-        UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
-        userService.addRoleInUser(userRoleDTO);
-
-        //Enviando Email
-        emailService.sendEmailToUserCreateUsers(user);
-
-        //Criando log de inserção
-        createLog(company.toString(), "/company", user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
-    }
-
     public CompanyDTO createNewCompany(Company novo) {
         log.info("Adicionando nova empresa");
 
-        if (repository.findByEmail(novo.getEmail()) != null && repository.findByCnpj(novo.getCnpj()) != null && userService.findByEmail(novo.getEmail()) != null) {
+        if (repository.findByEmail(novo.getEmail()) != null
+                && repository.findByCnpj(novo.getCnpj()) != null
+                && userService.findByEmail(novo.getEmail()) != null) {
             createLog(novo.toString(), "/company", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
             throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
         }
@@ -118,8 +95,8 @@ public class CompanyService {
                 .user(novo.getUser())
                 .build();
 
-        company = saveCompany(company);
-        createUser(company);
+        userService.createUsers(company);
+        company = repository.save(company);
 
         return new CompanyDTO.Builder()
                 .id(company.getId())
@@ -128,11 +105,6 @@ public class CompanyService {
                 .email(company.getEmail())
                 .cnpj(company.getCnpj())
                 .build();
-    }
-
-    public Company saveCompany(Company novo){
-        log.info("Salvando empresa");
-        return repository.save(novo);
     }
 
     public CompanyDTO editCompany(Long id, Company novo) {

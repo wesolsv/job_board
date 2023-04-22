@@ -1,18 +1,22 @@
 package br.com.wszd.jboard;
 
 import br.com.wszd.jboard.dto.CompanyDTO;
+import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.CandidacyRepository;
 import br.com.wszd.jboard.repository.CompanyRepository;
 import br.com.wszd.jboard.service.CandidacyService;
 import br.com.wszd.jboard.service.CompanyService;
+import br.com.wszd.jboard.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +30,13 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 public class CompanyServiceTest {
 
-    @Mock
+    @MockBean
     private CompanyRepository repository;
 
-    @InjectMocks
+    @MockBean
+    private UserService userService;
+
+    @Autowired
     private CompanyService service;
 
     Company company;
@@ -49,12 +56,24 @@ public class CompanyServiceTest {
 
     @Test
     public void shouldCreateCompany() throws Exception {
+        Long idCompany = 0L;
 
-        when(repository.save(company)).thenReturn(company);
-        Company c = service.saveCompany(company);
+        Company companyT = mock(Company.class);
+        UserRoleDTO userRoleDTO = mock(UserRoleDTO.class);
+        Users user = mock(Users.class);
 
-        assertNotNull(c);
-        assertEquals("wes@test2e.com.br", c.getEmail());
+        when(companyT.getEmail()).thenReturn("teste@teste.com");
+        when(companyT.getCnpj()).thenReturn("12345678911");
+        when(companyT.getPhone()).thenReturn("12345678911");
+        when(companyT.getPassword()).thenReturn("123456");
+        when(user.getId()).thenReturn(1L);
+        when(repository.save(companyT)).thenReturn(companyT);
+        when(companyT.getId()).thenReturn(idCompany);
+        service.createNewCompany(companyT);
+
+        verify(repository, times(1)).findByEmail(anyString());
+        verify(repository, times(1)).findByCnpj(anyString());
+        verify(repository, times(1)).save(any(Company.class));
     }
     @Test
     public void shouldGetCompany() throws Exception {

@@ -4,23 +4,20 @@ import br.com.wszd.jboard.dto.SessaoDTO;
 import br.com.wszd.jboard.dto.UserLoginDTO;
 import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
-import br.com.wszd.jboard.model.Company;
-import br.com.wszd.jboard.model.Person;
-import br.com.wszd.jboard.model.Role;
-import br.com.wszd.jboard.model.Users;
+import br.com.wszd.jboard.model.*;
 import br.com.wszd.jboard.repository.UserRepository;
 import br.com.wszd.jboard.security.JWTCreator;
 import br.com.wszd.jboard.security.JWTObject;
 import br.com.wszd.jboard.security.SecurityConfig;
+import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +26,12 @@ public class UserService {
 
   @Autowired
   UserRepository userRepository;
+
+  @Autowired
+  private EmailService emailService;
+
+  @Autowired
+  private LogService logService;
 
   public BCryptPasswordEncoder passwordEncoder(){
     return new BCryptPasswordEncoder();
@@ -71,6 +74,40 @@ public class UserService {
     return userRepository.save(user);
   }
 
+  public <T> void createUsers(T entity){
+    log.info("Criando usuario");
+    List<Long> listIdRoles = Arrays.asList(3L);
+    Users userT = null;
+    if (entity instanceof Person) {
+      userT = new Users.Builder()
+              .email(((Person) entity).getEmail())
+              .password(((Person) entity).getPassword())
+              .personId((Person) entity)
+              .companyId(null)
+              .build();
+    }else{
+      userT = new Users.Builder()
+              .email(((Company) entity).getEmail())
+              .password(((Company) entity).getPassword())
+              .personId(null)
+              .companyId((Company) entity)
+              .build();
+    }
+
+    //Criando usuário no repositorio
+    Users user = userRepository.save(userT);
+
+    //Criando e atribuindo a role ao user
+    UserRoleDTO userRoleDTO = new UserRoleDTO(user.getId(), listIdRoles);
+    addRoleInUser(userRoleDTO);
+
+    //Enviando Email
+    emailService.sendEmailToUserCreateUsers(user);
+
+    //Criando log de inserção
+    createLog(entity.toString(), "/"+entity.getClass().getSimpleName(), user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
+  }
+
   public Users getUserByPersonId(Person person) {
     log.info("Buscando usuario por pessoa id");
     return userRepository.findByPersonId(person);
@@ -111,4 +148,19 @@ public class UserService {
     log.info("Editando usuario");
     userRepository.save(user);
   }
+
+  public void createLog(String payload, String endpoint, Long userId, LogStatus status, String method) {
+    log.info("Gerando Log");
+    LogTable log = new LogTable.Builder()
+            .payload(payload)
+            .endpoint(endpoint)
+            .userId(userId)
+            .status(status)
+            .dataInclusao(LocalDateTime.now())
+            .method(method)
+            .build();
+
+    logService.createLog(log);
+  }
+
 }
