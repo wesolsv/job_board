@@ -5,16 +5,12 @@ import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.CompanyRepository;
 import br.com.wszd.jboard.service.CompanyService;
-import br.com.wszd.jboard.service.EmailService;
-import br.com.wszd.jboard.service.PersonService;
 import br.com.wszd.jboard.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,32 +22,10 @@ public class CompanyServiceTest {
 
     @MockBean
     private CompanyRepository repository;
-
-    @MockBean
-    private EmailService emailService;
-
-    @MockBean
-    private PersonService personService;
     @MockBean
     private UserService userService;
-
     @Autowired
     private CompanyService service;
-
-    Company company;
-
-    @BeforeEach
-    public void setUp(){
-        company = new Company();
-        company.setId(1L);
-        company.setName("Wesley");
-        company.setPhone("(34)991307618");
-        company.setEmail("wes@test2e.com.br");
-        company.setCnpj("12096105472");
-        company.setPassword("123456");
-        company.setJobs(new ArrayList<>());
-        company.setUser(new Users());
-    }
 
     @Test
     public void shouldCreateCompany() throws Exception {
@@ -113,8 +87,10 @@ public class CompanyServiceTest {
     }
     @Test
     public void shouldDeleteCompany() throws Exception {
+        Company companyT = mock(Company.class);
+        companyT.setId(1L);
         doNothing().when(repository).deleteById(anyLong());
-        service.deleteOneCompany(company.getId());
+        service.deleteOneCompany(companyT.getId());
         verify(repository, times(1)).deleteById(anyLong());
     }
 }
