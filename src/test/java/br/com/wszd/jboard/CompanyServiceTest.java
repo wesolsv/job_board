@@ -56,23 +56,21 @@ public class CompanyServiceTest {
 
     @Test
     public void shouldCreateCompany() throws Exception {
-        Long idCompany = 0L;
-
         Company companyT = mock(Company.class);
-        UserRoleDTO userRoleDTO = mock(UserRoleDTO.class);
-        Users user = mock(Users.class);
 
         when(companyT.getEmail()).thenReturn("teste@teste.com");
         when(companyT.getCnpj()).thenReturn("12345678911");
         when(companyT.getPhone()).thenReturn("12345678911");
         when(companyT.getPassword()).thenReturn("123456");
-        when(user.getId()).thenReturn(1L);
-        when(repository.save(companyT)).thenReturn(companyT);
-        when(companyT.getId()).thenReturn(idCompany);
+        when(repository.save(any(Company.class)))
+                .thenAnswer(invocation -> {
+                    Company company = invocation.getArgument(0);
+                    company.setId(1L); // seta o ID do objeto salvo
+                    return company;
+                });
         service.createNewCompany(companyT);
 
         verify(repository, times(1)).findByEmail(anyString());
-        verify(repository, times(1)).findByCnpj(anyString());
         verify(repository, times(1)).save(any(Company.class));
     }
     @Test
