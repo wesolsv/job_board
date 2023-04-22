@@ -10,6 +10,7 @@ import br.com.wszd.jboard.model.*;
 import br.com.wszd.jboard.repository.*;
 import br.com.wszd.jboard.util.JobStatus;
 import br.com.wszd.jboard.util.LogStatus;
+import br.com.wszd.jboard.util.ValidacaoUsuarioLogged;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -114,23 +115,23 @@ public class CompanyService {
         novo.setId(id);
 
         //validando se a pessoa que está editando pode realizar a ação
-        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(getCompany(id), email.toString());
+        ValidacaoUsuarioLogged.validEmailCompanyUsuario(getCompany(id), userService.returnEmailUser());
 
         //Salvando alteracao do usuario
-        saveEditCompany(novo);
+        log.info("Salvando empresa editada");
+        repository.save(novo);
 
         //Editando email do usuario editado anteriormente
         Users user = userService.getUserByCompanyId(getCompany(id));
         user.setEmail(novo.getEmail());
         userService.editUser(user);
 
-        //Enviando Email
-        emailService.sendEmailEditUser(user);
-
         //Salvando o log da edicao efetuada
         createLog(novo.toString(), "/company{" + id + "}",
                 userService.getUserByCompanyId(getCompany(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
+
+        //Enviando Email
+        emailService.sendEmailEditUser(novo);
 
         return new CompanyDTO.Builder()
                 .id(novo.getId())
@@ -139,11 +140,6 @@ public class CompanyService {
                 .email(novo.getEmail())
                 .cnpj(novo.getCnpj())
                 .build();
-    }
-
-    public Company saveEditCompany(Company novo) {
-        log.info("Salvando empresa editada");
-        return repository.save(novo);
     }
 
     public void deleteCompany(Long id) {

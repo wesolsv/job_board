@@ -44,18 +44,13 @@ public class EmailService {
         createEmail(toEmail, subject, body);
     }
 
-    public void sendEmailEditUser(Users user) {
-
-        Company company = null;
-        Person person = null;
+    public <T> void sendEmailEditUser(T entity) {
         String toEmail = "";
 
-        if(user.getCompanyId() != null){
-            company = companyService.getCompany(user.getCompanyId().getId());
-            toEmail = company.getEmail();
+        if(entity instanceof Company){
+            toEmail = ((Company) entity).getEmail();
         }else{
-            person = personService.getPerson(user.getPersonId().getId());
-            toEmail = person.getEmail();
+            toEmail = ((Person) entity).getEmail();
         }
 
         String subject = "Edição de usuario com sucesso";

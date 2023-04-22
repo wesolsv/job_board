@@ -4,6 +4,7 @@ import br.com.wszd.jboard.dto.SessaoDTO;
 import br.com.wszd.jboard.dto.UserLoginDTO;
 import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
+import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.*;
 import br.com.wszd.jboard.repository.UserRepository;
 import br.com.wszd.jboard.security.JWTCreator;
@@ -13,6 +14,7 @@ import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -147,6 +149,21 @@ public class UserService {
   public void editUser(Users user) {
     log.info("Editando usuario");
     userRepository.save(user);
+  }
+
+  public Users returnEmailUser(){
+    Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return findUserByName(email+"");
+  }
+
+  public Users findUserByName(String nomeUsuario){
+
+    try{
+      return userRepository.findByEmail(nomeUsuario);
+    }catch (ResourceObjectNotFoundException e){
+      throw new ResourceObjectNotFoundException("Usuário não encotrado");
+    }
+
   }
 
   public void createLog(String payload, String endpoint, Long userId, LogStatus status, String method) {

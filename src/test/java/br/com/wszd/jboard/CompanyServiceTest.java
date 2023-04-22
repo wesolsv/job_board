@@ -1,19 +1,15 @@
 package br.com.wszd.jboard;
 
 import br.com.wszd.jboard.dto.CompanyDTO;
-import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Users;
-import br.com.wszd.jboard.repository.CandidacyRepository;
 import br.com.wszd.jboard.repository.CompanyRepository;
-import br.com.wszd.jboard.service.CandidacyService;
 import br.com.wszd.jboard.service.CompanyService;
+import br.com.wszd.jboard.service.EmailService;
+import br.com.wszd.jboard.service.PersonService;
 import br.com.wszd.jboard.service.UserService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 
@@ -33,6 +27,11 @@ public class CompanyServiceTest {
     @MockBean
     private CompanyRepository repository;
 
+    @MockBean
+    private EmailService emailService;
+
+    @MockBean
+    private PersonService personService;
     @MockBean
     private UserService userService;
 
@@ -75,27 +74,42 @@ public class CompanyServiceTest {
     }
     @Test
     public void shouldGetCompany() throws Exception {
+        Company companyT = mock(Company.class);
+        companyT.setId(0L);
 
-        when(repository.findById(anyLong())).thenReturn(Optional.of(company));
-        Company c = service.getCompany(company.getId());
+        when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(companyT));
+        service.getCompany(companyT.getId());
 
-        Assertions.assertEquals(Company.class, c.getClass());
+        verify(repository, times(1)).findById(0L);
     }
     @Test
     public void shouldGetAllCompany() throws Exception {
 
         when(repository.listCompany()).thenReturn(List.of(new CompanyDTO()));
-        List<CompanyDTO> list = service.getAllCompany();
+        service.getAllCompany();
+
         verify(repository, times(1)).listCompany();
     }
     @Test
     public void shouldEditCompany() throws Exception {
-        company.setEmail("email@alterado.com");
-        when(repository.save(company)).thenReturn(company);
-        Company obj = service.saveEditCompany(company);
 
-        assertNotNull(obj);
-        assertEquals("email@alterado.com", obj.getEmail());
+        Company companyT = mock(Company.class);
+        Users user = mock(Users.class);
+        user.setCompanyId(companyT);
+
+        when(userService.getUserByCompanyId(companyT)).thenReturn(user);
+        when(userService.returnEmailUser()).thenReturn(new Users());
+        when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(companyT));
+        when(repository.save(any(Company.class)))
+                .thenAnswer(invocation -> {
+                    Company company = invocation.getArgument(0);
+                    company.setId(1L); // seta o ID do objeto salvo
+                    return company;
+                });
+
+        service.editCompany(0L, companyT);
+
+        verify(repository, times(1)).save(any(Company.class));
     }
     @Test
     public void shouldDeleteCompany() throws Exception {

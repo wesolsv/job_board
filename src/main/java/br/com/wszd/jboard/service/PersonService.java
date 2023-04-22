@@ -122,7 +122,7 @@ public class PersonService {
         userService.editUser(user);
 
         //Enviando email
-        emailService.sendEmailEditUser(user);
+        emailService.sendEmailEditUser(novo);
 
         //Salvando o log da edicao efetuada
         createLog(novo.toString(),"/person{" + id +"}",
