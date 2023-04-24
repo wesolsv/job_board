@@ -3,7 +3,6 @@ package br.com.wszd.jboard.service;
 import br.com.wszd.jboard.dto.CandidacyDTO;
 import br.com.wszd.jboard.dto.CompanyDTO;
 import br.com.wszd.jboard.dto.PersonDTO;
-import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
 import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.*;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,8 +94,8 @@ public class CompanyService {
                 .user(novo.getUser())
                 .build();
 
-        userService.createUsers(company);
         company = repository.save(company);
+        userService.createUsers(company);
 
         return new CompanyDTO.Builder()
                 .id(company.getId())
@@ -115,7 +113,7 @@ public class CompanyService {
         novo.setId(id);
 
         //validando se a pessoa que está editando pode realizar a ação
-        ValidacaoUsuarioLogged.validEmailCompanyUsuario(getCompany(id), userService.returnEmailUser());
+        ValidacaoUsuarioLogged.validEmailUsuario(getCompany(id), userService.returnEmailUser());
 
         //Salvando alteracao do usuario
         log.info("Salvando empresa editada");

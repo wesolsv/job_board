@@ -31,7 +31,7 @@ public final class ValidacaoUsuarioLogged {
         }
     }
 
-    public static void validEmailCompanyUsuario(Company company, Users usuario) {
+    public static <T> void validEmailUsuario(T entity, Users usuario) {
         log.info("Validando company/usuario");
 
         ArrayList<String> rolesRetorno = new ArrayList<>();
@@ -43,10 +43,18 @@ public final class ValidacaoUsuarioLogged {
             }
         }
         if (usuario.getPersonId() != null) {
-            if (rolesRetorno.contains("ADMIN") || company.getId().equals(usuario.getPersonId().getId())) {
-                log.info("Validado email do usuario ou usuario é admin");
-            } else {
-                throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
+            if(entity instanceof Company){
+                if (rolesRetorno.contains("ADMIN") || ((Company) entity).getId().equals(usuario.getPersonId().getId())) {
+                    log.info("Validado email do usuario ou usuario é admin");
+                } else {
+                    throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
+                }
+            }else{
+                if (rolesRetorno.contains("ADMIN") || ((Person) entity).getId().equals(usuario.getPersonId().getId())) {
+                    log.info("Validado email do usuario ou usuario é admin");
+                } else {
+                    throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
+                }
             }
         }
     }

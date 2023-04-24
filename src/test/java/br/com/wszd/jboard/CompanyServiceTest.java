@@ -5,6 +5,7 @@ import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.CompanyRepository;
 import br.com.wszd.jboard.service.CompanyService;
+import br.com.wszd.jboard.service.EmailService;
 import br.com.wszd.jboard.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class CompanyServiceTest {
     private CompanyRepository repository;
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private EmailService emailService;
     @Autowired
     private CompanyService service;
 
@@ -70,7 +74,7 @@ public class CompanyServiceTest {
         Company companyT = mock(Company.class);
         Users user = mock(Users.class);
         user.setCompanyId(companyT);
-
+        when(companyT.getEmail()).thenReturn("teste@teste.com");
         when(userService.getUserByCompanyId(companyT)).thenReturn(user);
         when(userService.returnEmailUser()).thenReturn(new Users());
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(companyT));

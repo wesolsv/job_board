@@ -1,7 +1,6 @@
 package br.com.wszd.jboard.service;
 
 import br.com.wszd.jboard.dto.PersonDTO;
-import br.com.wszd.jboard.dto.UserRoleDTO;
 import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
 import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.LogTable;
@@ -9,6 +8,7 @@ import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
 import br.com.wszd.jboard.util.LogStatus;
+import br.com.wszd.jboard.util.ValidacaoUsuarioLogged;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,7 +85,7 @@ public class PersonService {
                 .user(novo.getUser())
                 .build();
 
-        person = savePerson(person);
+        person = repository.save(person);;
         userService.createUsers(person);
 
         return new PersonDTO.Builder()
@@ -98,11 +97,6 @@ public class PersonService {
                 .build();
     }
 
-    public Person savePerson(Person novo) {
-        log.info("Salvando pessoa");
-        return repository.save(novo);
-    }
-
     public PersonDTO editPerson(Long id, Person novo){
         log.info("Editando pessoa");
         //Validando a existencia de person com o id informado
@@ -110,8 +104,7 @@ public class PersonService {
         novo.setId(id);
 
         //validando se a pessoa que está editando pode realizar a ação
-        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(getPerson(id), email.toString());
+        ValidacaoUsuarioLogged.validEmailUsuario(getPerson(id), userService.returnEmailUser());
 
         //Salvando alteracao do usuario
         saveEditPerson(novo);
@@ -121,12 +114,12 @@ public class PersonService {
         user.setEmail(novo.getEmail());
         userService.editUser(user);
 
-        //Enviando email
-        emailService.sendEmailEditUser(novo);
-
         //Salvando o log da edicao efetuada
         createLog(novo.toString(),"/person{" + id +"}",
                 userService.getUserByPersonId(getPerson(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
+
+        //Enviando email
+        emailService.sendEmailEditUser(novo);
 
         return new PersonDTO.Builder()
                 .id(novo.getId())
