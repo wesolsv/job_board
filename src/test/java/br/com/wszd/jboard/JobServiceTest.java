@@ -39,23 +39,6 @@ public class JobServiceTest {
     @Autowired
     private JobService service;
 
-    Job job;
-
-    @BeforeEach
-    public void setUp(){
-        job = new Job();
-        job.setId(1L);
-        job.setOpportunity("Emprego novo");
-        job.setDescription("Emprego novo descricao");
-        job.setType("Temporario");
-        job.setSalary(1500.0);
-        job.setBenefits("Sem beneficios");
-        job.setStatus(JobStatus.OPEN);
-        job.setPersonId(null);
-        job.setCompanyId(new Company());
-        job.setDatePublish(LocalDateTime.now());
-    }
-
     @Test
     public void shouldCreateJob() throws Exception {
 
@@ -66,6 +49,10 @@ public class JobServiceTest {
         List<Role> listIdRoles = new ArrayList<>();
 
         when(jobT.getCompanyId()).thenReturn(companyT);
+        when(jobT.getOpportunity()).thenReturn("Emprego novo");
+        when(jobT.getDescription()).thenReturn("Emprego novo descricao");
+        when(jobT.getType()).thenReturn("Temporario");
+        when(jobT.getBenefits()).thenReturn("Sem beneficios");
         when(companyT.getId()).thenReturn(0L);
         when(user.getRoles()).thenReturn(listIdRoles);
         when(userService.returnEmailUser()).thenReturn(user);
@@ -77,24 +64,43 @@ public class JobServiceTest {
                     j.setId(1L); // seta o ID do objeto salvo
                     return j;
                 });
-        service.createNewJob(job);
+        service.createNewJob(jobT);
 
         verify(companyRepository, times(1)).findById(anyLong());
         verify(repository, times(1)).save(any(Job.class));
     }
     @Test
-    public void shouldGetJob() throws Exception {
+    public void shouldGetJobDTO() throws Exception {
+        Job jobT = mock(Job.class);
+        jobT.setId(0L);
+        Company companyT = mock(Company.class);
+        Users user = mock(Users.class);
 
-        when(repository.findById(anyLong())).thenReturn(Optional.of(job));
-        Job j = service.getJob(job.getId());
+        when(repository.findById(0L)).thenReturn(Optional.of(jobT));
+        when(companyT.getId()).thenReturn(0L);
+        when(jobT.getCompanyId()).thenReturn(companyT);
+        when(companyRepository.findById(0L)).thenReturn(Optional.of(companyT));
+        when(userService.returnEmailUser()).thenReturn(user);
+        when(repository.findById(anyLong())).thenReturn(Optional.of(jobT));
+        JobDTO j = service.getJobDTO(jobT.getId());
 
-        Assertions.assertEquals(Job.class, j.getClass());
+        Assertions.assertEquals(JobDTO.class, j.getClass());
+        verify(repository, times(1)).findById(anyLong());
     }
     @Test
     public void shouldGetAllJobs() throws Exception {
 
+        Job jobT = mock(Job.class);
+        Company companyT = mock(Company.class);
+        Users user = mock(Users.class);
+
+        when(userService.returnEmailUser()).thenReturn(user);
+        when(user.getCompanyId()).thenReturn(companyT);
+        when(jobT.getCompanyId()).thenReturn(companyT);
         when(repository.listJobs()).thenReturn(List.of(new JobDTO()));
-        List<JobDTO> list = service.getAllJobs();
+        service.getAllJobs();
+
+        verify(userService, times(2)).returnEmailUser();
         verify(repository, times(1)).listJobs();
     }
     @Test
@@ -128,8 +134,11 @@ public class JobServiceTest {
     }
     @Test
     public void shouldDeleteJob() throws Exception {
+        Job jobT = mock(Job.class);
+        jobT.setId(0L);
+
         doNothing().when(repository).deleteById(anyLong());
-        service.deleteOneJob(job.getId());
+        service.deleteOneJob(jobT.getId());
         verify(repository, times(1)).deleteById(anyLong());
     }
 }

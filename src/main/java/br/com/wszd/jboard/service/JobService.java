@@ -36,6 +36,7 @@ public class JobService {
 
         List<JobDTO> list = null;
         list =  repository.listJobs();
+
         List<JobDTO> listReturn = new ArrayList<>();
 
         Users user = userService.returnEmailUser();
