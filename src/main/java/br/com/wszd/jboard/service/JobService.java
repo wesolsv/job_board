@@ -8,6 +8,7 @@ import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.CompanyRepository;
 import br.com.wszd.jboard.repository.JobRepository;
+import br.com.wszd.jboard.util.ValidacaoUsuarioLogged;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,13 +38,9 @@ public class JobService {
         list =  repository.listJobs();
         List<JobDTO> listReturn = new ArrayList<>();
 
-        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users user = userService.returnEmailUser();
 
-        if(validAdminUser(email.toString())){
-            return list;
-        }
-
-        Users user = userService.findByEmail(email.toString());
+        ValidacaoUsuarioLogged.validEmailUsuario(user.getCompanyId(), userService.returnEmailUser());
 
         for(JobDTO job : list){
             if(job.getCompanyId() == user.getCompanyId().getId()){
@@ -69,12 +66,7 @@ public class JobService {
                 () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
 
         Optional<Company> company = companyRepository.findById(realJob.getCompanyId().getId());
-        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if(validAdminUser(email.toString())){
-        }else{
-            validEmailUser(company.get(), email.toString());
-        }
+        ValidacaoUsuarioLogged.validEmailUsuario(company.get().getId(), userService.returnEmailUser());
 
         JobDTO job = new JobDTO.Builder()
                         .id(realJob.getId())
@@ -101,8 +93,8 @@ public class JobService {
     public Job createNewJob(Job novo) {
         log.info("Adicionando nova job");
 
-        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Users user =  userService.findByEmail(email.toString());
+        ValidacaoUsuarioLogged.validEmailUsuario(novo.getCompanyId(), userService.returnEmailUser());
+        Users user =  userService.returnEmailUser();
         Optional<Company> company = companyRepository.findById(user.getCompanyId().getId());
 
         Job job;
@@ -134,8 +126,7 @@ public class JobService {
 
         Optional<Company> company = companyRepository.findById(returnJob.getCompanyId().getId());
 
-        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(company.get(), email.toString());
+        ValidacaoUsuarioLogged.validEmailUsuario(novo.getCompanyId(), userService.returnEmailUser());
 
         returnJob = repository.save(novo);
 
@@ -160,8 +151,7 @@ public class JobService {
         log.info("Deletando Job");
         Optional<Company> company = companyRepository.findById(getJob(id).getCompanyId().getId());
 
-        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(company.get(), email.toString());
+        ValidacaoUsuarioLogged.validEmailUsuario(getJob(id).getCompanyId(), userService.returnEmailUser());
 
         deleteOneJob(id);
     }
@@ -170,39 +160,4 @@ public class JobService {
         repository.deleteById(id);
     }
 
-    public void validEmailUser(Company company, String emailRequest) {
-        log.info("Validando usuario");
-        Users user = userService.findByEmail(emailRequest);
-
-        ArrayList<String> rolesRetorno = new ArrayList<>();
-
-        for (int i = 0; i < user.getRoles().size(); i++) {
-            String j = user.getRoles().get(i).getName() + "";
-            rolesRetorno.add(j);
-        }
-
-        if (company.getId().equals(user.getCompanyId().getId())) {
-            log.info("Validado email do usuario ou usuario é admin");
-        } else {
-            throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
-        }
-    }
-
-    public boolean validAdminUser(String emailRequest){
-            log.info("Validando usuario admin");
-            Users user = userService.findByEmail(emailRequest);
-
-            ArrayList<String> rolesRetorno = new ArrayList<>();
-
-            for (int i = 0; i < user.getRoles().size(); i++) {
-                String j = user.getRoles().get(i).getName() + "";
-                rolesRetorno.add(j);
-            }
-
-            if (rolesRetorno.contains("ADMIN")) {
-                log.info("Usuário é ADMIN");
-                return true;
-            }
-            return false;
-    }
 }

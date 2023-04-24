@@ -1,18 +1,24 @@
 package br.com.wszd.jboard;
 
 import br.com.wszd.jboard.dto.JobDTO;
-import br.com.wszd.jboard.model.Company;
-import br.com.wszd.jboard.model.Job;
+import br.com.wszd.jboard.model.*;
+import br.com.wszd.jboard.repository.CompanyRepository;
 import br.com.wszd.jboard.repository.JobRepository;
 import br.com.wszd.jboard.service.JobService;
+import br.com.wszd.jboard.service.UserService;
 import br.com.wszd.jboard.util.JobStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,10 +30,13 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 public class JobServiceTest {
 
-    @Mock
+    @MockBean
     private JobRepository repository;
-
-    @InjectMocks
+    @MockBean
+    private UserService userService;
+    @MockBean
+    private CompanyRepository companyRepository;
+    @Autowired
     private JobService service;
 
     Job job;
@@ -47,15 +56,32 @@ public class JobServiceTest {
         job.setDatePublish(LocalDateTime.now());
     }
 
-//    @Test
-//    public void shouldCreateJob() throws Exception {
-//
-//        when(repository.save(job)).thenReturn(job);
-//        Job j = service.createNewJob(job);
-//
-//        assertNotNull(j);
-//        assertEquals(JobStatus.OPEN, j.getStatus());
-//    }
+    @Test
+    public void shouldCreateJob() throws Exception {
+
+        Job jobT = mock(Job.class);
+        Users user = mock(Users.class);
+        Company companyT = mock(Company.class);
+
+        List<Role> listIdRoles = new ArrayList<>();
+
+        when(jobT.getCompanyId()).thenReturn(companyT);
+        when(companyT.getId()).thenReturn(0L);
+        when(user.getRoles()).thenReturn(listIdRoles);
+        when(userService.returnEmailUser()).thenReturn(user);
+        when(user.getCompanyId()).thenReturn(companyT);
+        when(companyRepository.findById(0L)).thenReturn(Optional.of(companyT));
+        when(repository.save(any(Job.class)))
+                .thenAnswer(invocation -> {
+                    Job j = invocation.getArgument(0);
+                    j.setId(1L); // seta o ID do objeto salvo
+                    return j;
+                });
+        service.createNewJob(job);
+
+        verify(companyRepository, times(1)).findById(anyLong());
+        verify(repository, times(1)).save(any(Job.class));
+    }
     @Test
     public void shouldGetJob() throws Exception {
 
@@ -64,21 +90,41 @@ public class JobServiceTest {
 
         Assertions.assertEquals(Job.class, j.getClass());
     }
-//    @Test
-//    public void shouldGetAllJobs() throws Exception {
-//
-//        when(repository.listJobs()).thenReturn(List.of(new JobDTO()));
-//        List<JobDTO> list = service.getAllJobs();
-//        verify(repository, times(1)).listJobs();
-//    }
+    @Test
+    public void shouldGetAllJobs() throws Exception {
+
+        when(repository.listJobs()).thenReturn(List.of(new JobDTO()));
+        List<JobDTO> list = service.getAllJobs();
+        verify(repository, times(1)).listJobs();
+    }
     @Test
     public void shouldEditJob() throws Exception {
-        job.setOpportunity("VAGA ALTERADA NOVAMENTE");
-        when(repository.save(job)).thenReturn(job);
-        Job obj = service.saveEditJob(job);
+        Job jobT = mock(Job.class);
+        jobT.setId(0L);
+        Company companyT = mock(Company.class);
+        Users user = mock(Users.class);
 
-        assertNotNull(obj);
-        assertEquals("VAGA ALTERADA NOVAMENTE", obj.getOpportunity());
+        when(jobT.getDatePublish()).thenReturn(LocalDateTime.now());
+        when(jobT.getCompanyId()).thenReturn(companyT);
+        when(jobT.getOpportunity()).thenReturn("Emprego novo");
+        when(jobT.getDescription()).thenReturn("Emprego novo descricao");
+        when(jobT.getType()).thenReturn("Temporario");
+        when(jobT.getBenefits()).thenReturn("Sem beneficios");
+        when(companyT.getId()).thenReturn(0L);
+        when(companyRepository.findById(0L)).thenReturn(Optional.of(companyT));
+        when(userService.returnEmailUser()).thenReturn(user);
+        when(repository.findById(0L)).thenReturn(Optional.of(jobT));
+        when(repository.save(any(Job.class)))
+                .thenAnswer(invocation -> {
+                    Job j = invocation.getArgument(0);
+                    j.setId(0L); // seta o ID do objeto salvo
+                    return j;
+                });
+        service.editJob(0L, jobT);
+
+        verify(companyRepository, times(1)).findById(anyLong());
+        verify(repository, times(1)).findById(anyLong());
+        verify(repository, times(1)).save(any(Job.class));
     }
     @Test
     public void shouldDeleteJob() throws Exception {

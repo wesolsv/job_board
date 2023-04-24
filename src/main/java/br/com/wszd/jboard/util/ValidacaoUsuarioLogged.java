@@ -44,7 +44,7 @@ public final class ValidacaoUsuarioLogged {
         }
         if (usuario.getPersonId() != null) {
             if(entity instanceof Company){
-                if (rolesRetorno.contains("ADMIN") || ((Company) entity).getId().equals(usuario.getPersonId().getId())) {
+                if (rolesRetorno.contains("ADMIN") || ((Company) entity).getId().equals(usuario.getCompanyId().getId())) {
                     log.info("Validado email do usuario ou usuario é admin");
                 } else {
                     throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
