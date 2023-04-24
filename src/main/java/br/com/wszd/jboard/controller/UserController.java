@@ -2,7 +2,6 @@ package br.com.wszd.jboard.controller;
 
 import br.com.wszd.jboard.dto.SessaoDTO;
 import br.com.wszd.jboard.dto.UserLoginDTO;
-import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,7 +26,6 @@ public class UserController {
     @ApiOperation(value = "Realiza o Login do usuario e retorna o seu token")
     @ResponseBody
     public SessaoDTO logar(@RequestBody UserLoginDTO infoLogin){
-        Users user = service.findByEmail(infoLogin.getEmail());
-        return service.validLogin(user, infoLogin);
+        return service.validLogin(infoLogin);
     }
 }

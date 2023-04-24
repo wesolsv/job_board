@@ -106,8 +106,8 @@ public class PersonService {
         //validando se a pessoa que está editando pode realizar a ação
         ValidacaoUsuarioLogged.validEmailUsuario(getPerson(id), userService.returnEmailUser());
 
-        //Salvando alteracao do usuario
-        saveEditPerson(novo);
+        //Salvando alteracao de person
+        repository.save(novo);
 
         //Editando email do user de person que foi editado anteriormente
         Users user = userService.getUserByPersonId(getPerson(id));
@@ -129,12 +129,6 @@ public class PersonService {
                 .cpf(novo.getCpf())
                 .build();
     }
-
-    public Person saveEditPerson(Person novo){
-        log.info("Salvando pessoa editada");
-        return repository.save(novo);
-    }
-
     public void deletePerson(Long id){
         log.info("Deletando pessoa");
 

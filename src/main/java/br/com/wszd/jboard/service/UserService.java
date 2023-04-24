@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
   @Autowired
-  UserRepository userRepository;
+  private UserRepository userRepository;
 
   @Autowired
   private EmailService emailService;
@@ -71,10 +71,6 @@ public class UserService {
     return userRepository.findByEmail(email);
   }
 
-  public Users createUser(Users user) {
-    log.info("Salvando novo usuario");
-    return userRepository.save(user);
-  }
 
   public <T> void createUsers(T entity){
     log.info("Criando usuario");
@@ -120,8 +116,9 @@ public class UserService {
     return userRepository.findByCompanyId(company);
   }
 
-  public SessaoDTO validLogin(Users user, UserLoginDTO infoLogin) {
+  public SessaoDTO validLogin(UserLoginDTO infoLogin) {
     log.info("Validando senha e retornando sessao");
+    Users user = findUserByName(infoLogin.getEmail());
     if(user!=null) {
       boolean passwordOk = passwordEncoder().matches(infoLogin.getPassword(), user.getPassword());
       if (!passwordOk) {
