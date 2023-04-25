@@ -50,8 +50,7 @@ public class PersonService {
         Person realPerson = repository.findById(id).orElseThrow(
                 () ->  new ResourceObjectNotFoundException("Não encontrado id = " + id));
 
-        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(realPerson, email.toString());
+        ValidacaoUsuarioLogged.validEmailUsuario(getPerson(id), userService.returnEmailUser());
 
         return new PersonDTO.Builder()
                 .id(realPerson.getId())
@@ -167,25 +166,5 @@ public class PersonService {
                 .build();
 
         logService.createLog(log);
-    }
-
-    public void validEmailUser(Person person, String emailRequest){
-        log.info("Validando usuario");
-        //Validando se o email do usuario da requisicao é ADMIN ou pertence ao id para a qual foi feita a requisicao
-
-        Users user = userService.findByEmail(emailRequest);
-
-        ArrayList<String> rolesRetorno = new ArrayList<>();
-
-        for(int i = 0; i < user.getRoles().size(); i++) {
-            String j = user.getRoles().get(i).getName() + "";
-            rolesRetorno.add(j);
-        }
-
-        if(rolesRetorno.contains("ADMIN") || person.getId().equals(user.getPersonId().getId())){
-            log.info("Validado email do usuario ou usuario é admin");
-        }else {
-            throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
-        }
     }
 }
