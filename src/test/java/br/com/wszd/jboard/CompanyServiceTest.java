@@ -5,7 +5,7 @@ import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.CompanyRepository;
 import br.com.wszd.jboard.service.CompanyService;
-import br.com.wszd.jboard.service.EmailService;
+import br.com.wszd.jboard.service.EmailServiceImpl;
 import br.com.wszd.jboard.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class CompanyServiceTest {
     private UserService userService;
 
     @MockBean
-    private EmailService emailService;
+    private EmailServiceImpl emailService;
     @Autowired
     private CompanyService service;
 

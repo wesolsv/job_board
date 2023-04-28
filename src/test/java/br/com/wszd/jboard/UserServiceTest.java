@@ -1,17 +1,14 @@
 package br.com.wszd.jboard;
 
-import br.com.wszd.jboard.dto.SessaoDTO;
 import br.com.wszd.jboard.dto.UserLoginDTO;
 import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Role;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.UserRepository;
-import br.com.wszd.jboard.service.EmailService;
+import br.com.wszd.jboard.service.EmailServiceImpl;
 import br.com.wszd.jboard.service.UserService;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,7 +28,7 @@ public class UserServiceTest {
     private UserRepository repository;
 
     @MockBean
-    private EmailService emailService;
+    private EmailServiceImpl emailService;
 
     @Autowired
     private UserService service;

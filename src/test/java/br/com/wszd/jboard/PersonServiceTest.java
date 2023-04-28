@@ -1,20 +1,13 @@
 package br.com.wszd.jboard;
 
-import br.com.wszd.jboard.dto.CompanyDTO;
 import br.com.wszd.jboard.dto.PersonDTO;
-import br.com.wszd.jboard.model.Company;
-import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
-import br.com.wszd.jboard.service.EmailService;
+import br.com.wszd.jboard.service.EmailServiceImpl;
 import br.com.wszd.jboard.service.PersonService;
 import br.com.wszd.jboard.service.UserService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -34,7 +26,7 @@ public class PersonServiceTest {
     @MockBean
     private UserService userService;
     @MockBean
-    private EmailService emailService;
+    private EmailServiceImpl emailService;
 
     @Autowired
     private PersonService service;

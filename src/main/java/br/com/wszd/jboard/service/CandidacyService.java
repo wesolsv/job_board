@@ -27,7 +27,7 @@ public class CandidacyService {
     @Autowired
     private PersonService personService;
     @Autowired
-    private EmailService emailService;
+    private EmailServiceImpl emailService;
     @Autowired
     private JobService jobService;
 

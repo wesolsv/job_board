@@ -30,7 +30,7 @@ public class UserService {
   private UserRepository userRepository;
 
   @Autowired
-  private EmailService emailService;
+  private EmailServiceImpl emailService;
 
   @Autowired
   private LogService logService;

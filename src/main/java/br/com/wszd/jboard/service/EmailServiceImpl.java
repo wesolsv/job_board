@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class EmailService {
+public class EmailServiceImpl implements IEmailService {
 
     @Autowired
     private JavaMailSender mailSender;
@@ -81,7 +81,7 @@ public class EmailService {
         createEmail(toEmail, subject, body);
     }
 
-    private void createEmail(String toEmail, String subject, String body) {
+    public void createEmail(String toEmail, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setFrom("noreplayjobboard@gmail.com");

@@ -1,36 +1,23 @@
 package br.com.wszd.jboard;
 
 import br.com.wszd.jboard.dto.CandidacyDTO;
-import br.com.wszd.jboard.dto.JobDTO;
 import br.com.wszd.jboard.model.Candidacy;
 import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.repository.CandidacyRepository;
 import br.com.wszd.jboard.service.CandidacyService;
-import br.com.wszd.jboard.service.EmailService;
+import br.com.wszd.jboard.service.EmailServiceImpl;
 import br.com.wszd.jboard.service.JobService;
 import br.com.wszd.jboard.service.PersonService;
 import br.com.wszd.jboard.util.CandidacyStatus;
-import br.com.wszd.jboard.util.CandidacyStatus;
-import br.com.wszd.jboard.util.JobStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sun.istack.NotNull;
-import org.hibernate.engine.jdbc.env.spi.IdentifierCaseStrategy;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +36,7 @@ public class CandidacyServiceTest {
     @MockBean
     private JobService jobService;
     @MockBean
-    private EmailService emailService;
+    private EmailServiceImpl emailService;
     @Autowired
     private CandidacyService service;
 
