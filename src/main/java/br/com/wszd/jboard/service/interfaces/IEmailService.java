@@ -1,4 +1,4 @@
-package br.com.wszd.jboard.service;
+package br.com.wszd.jboard.service.interfaces;
 
 import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Person;

@@ -5,20 +5,15 @@ import br.com.wszd.jboard.model.*;
 import br.com.wszd.jboard.repository.CompanyRepository;
 import br.com.wszd.jboard.repository.JobRepository;
 import br.com.wszd.jboard.service.JobService;
-import br.com.wszd.jboard.service.UserService;
-import br.com.wszd.jboard.util.JobStatus;
+import br.com.wszd.jboard.service.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +28,7 @@ public class JobServiceTest {
     @MockBean
     private JobRepository repository;
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
     @MockBean
     private CompanyRepository companyRepository;
     @Autowired
@@ -55,7 +50,7 @@ public class JobServiceTest {
         when(jobT.getBenefits()).thenReturn("Sem beneficios");
         when(companyT.getId()).thenReturn(0L);
         when(user.getRoles()).thenReturn(listIdRoles);
-        when(userService.returnEmailUser()).thenReturn(user);
+        when(userServiceImpl.returnEmailUser()).thenReturn(user);
         when(user.getCompanyId()).thenReturn(companyT);
         when(companyRepository.findById(0L)).thenReturn(Optional.of(companyT));
         when(repository.save(any(Job.class)))
@@ -80,7 +75,7 @@ public class JobServiceTest {
         when(companyT.getId()).thenReturn(0L);
         when(jobT.getCompanyId()).thenReturn(companyT);
         when(companyRepository.findById(0L)).thenReturn(Optional.of(companyT));
-        when(userService.returnEmailUser()).thenReturn(user);
+        when(userServiceImpl.returnEmailUser()).thenReturn(user);
         when(repository.findById(anyLong())).thenReturn(Optional.of(jobT));
         JobDTO j = service.getJobDTO(jobT.getId());
 
@@ -94,13 +89,13 @@ public class JobServiceTest {
         Company companyT = mock(Company.class);
         Users user = mock(Users.class);
 
-        when(userService.returnEmailUser()).thenReturn(user);
+        when(userServiceImpl.returnEmailUser()).thenReturn(user);
         when(user.getCompanyId()).thenReturn(companyT);
         when(jobT.getCompanyId()).thenReturn(companyT);
         when(repository.listJobs()).thenReturn(List.of(new JobDTO()));
         service.getAllJobs();
 
-        verify(userService, times(2)).returnEmailUser();
+        verify(userServiceImpl, times(2)).returnEmailUser();
         verify(repository, times(1)).listJobs();
     }
     @Test
@@ -118,7 +113,7 @@ public class JobServiceTest {
         when(jobT.getBenefits()).thenReturn("Sem beneficios");
         when(companyT.getId()).thenReturn(0L);
         when(companyRepository.findById(0L)).thenReturn(Optional.of(companyT));
-        when(userService.returnEmailUser()).thenReturn(user);
+        when(userServiceImpl.returnEmailUser()).thenReturn(user);
         when(repository.findById(0L)).thenReturn(Optional.of(jobT));
         when(repository.save(any(Job.class)))
                 .thenAnswer(invocation -> {

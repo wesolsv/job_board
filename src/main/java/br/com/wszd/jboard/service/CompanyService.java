@@ -35,7 +35,7 @@ public class CompanyService {
     @Autowired
     private JobService jobService;
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
     @Autowired
     private EmailServiceImpl emailService;
 
@@ -80,7 +80,7 @@ public class CompanyService {
 
         if (repository.findByEmail(novo.getEmail()) != null
                 && repository.findByCnpj(novo.getCnpj()) != null
-                && userService.findByEmail(novo.getEmail()) != null) {
+                && userServiceImpl.findByEmail(novo.getEmail()) != null) {
             createLog(novo.toString(), "/company", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
             throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
         }
@@ -95,7 +95,7 @@ public class CompanyService {
                 .build();
 
         company = repository.save(company);
-        userService.createUsers(company);
+        userServiceImpl.createUsers(company);
 
         return new CompanyDTO.Builder()
                 .id(company.getId())
@@ -113,20 +113,20 @@ public class CompanyService {
         novo.setId(id);
 
         //validando se a pessoa que está editando pode realizar a ação
-        ValidacaoUsuarioLogged.validEmailUsuario(getCompany(id), userService.returnEmailUser());
+        ValidacaoUsuarioLogged.validEmailUsuario(getCompany(id), userServiceImpl.returnEmailUser());
 
         //Salvando alteracao do usuario
         log.info("Salvando empresa editada");
         repository.save(novo);
 
         //Editando email do usuario editado anteriormente
-        Users user = userService.getUserByCompanyId(getCompany(id));
+        Users user = userServiceImpl.getUserByCompanyId(getCompany(id));
         user.setEmail(novo.getEmail());
-        userService.editUser(user);
+        userServiceImpl.editUser(user);
 
         //Salvando o log da edicao efetuada
         createLog(novo.toString(), "/company{" + id + "}",
-                userService.getUserByCompanyId(getCompany(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
+                userServiceImpl.getUserByCompanyId(getCompany(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
 
         //Enviando Email
         emailService.sendEmailEditUser(novo);
@@ -144,8 +144,8 @@ public class CompanyService {
         log.info("Deletando empresa");
         //Validando a existencia da company e usuario vinculado e excluindo ambos
         Company company = getCompany(id);
-        Users user = userService.getUserByCompanyId(company);
-        userService.deleteUser(user.getId());
+        Users user = userServiceImpl.getUserByCompanyId(company);
+        userServiceImpl.deleteUser(user.getId());
         deleteOneCompany(id);
 
         //Salvando o log do delete efetuada
@@ -214,7 +214,7 @@ public class CompanyService {
     public void validEmailUser(Company company, String emailRequest) {
         log.info("Validando usuario");
 
-        Users user = userService.findByEmail(emailRequest);
+        Users user = userServiceImpl.findByEmail(emailRequest);
 
         ArrayList<String> rolesRetorno = new ArrayList<>();
 

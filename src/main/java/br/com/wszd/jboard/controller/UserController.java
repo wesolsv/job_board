@@ -2,7 +2,7 @@ package br.com.wszd.jboard.controller;
 
 import br.com.wszd.jboard.dto.SessaoDTO;
 import br.com.wszd.jboard.dto.UserLoginDTO;
-import br.com.wszd.jboard.service.UserService;
+import br.com.wszd.jboard.service.UserServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private UserService service;
+    private UserServiceImpl service;
 
     @ApiOperation(value = "Deletando um usuario")
     @DeleteMapping("/{id}")

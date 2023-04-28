@@ -6,7 +6,7 @@ import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
 import br.com.wszd.jboard.service.EmailServiceImpl;
 import br.com.wszd.jboard.service.PersonService;
-import br.com.wszd.jboard.service.UserService;
+import br.com.wszd.jboard.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +24,7 @@ public class PersonServiceTest {
     @MockBean
     private PersonRepository repository;
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
     @MockBean
     private EmailServiceImpl emailService;
 
@@ -89,8 +89,8 @@ public class PersonServiceTest {
         user.setPersonId(persont);
 
         when(persont.getEmail()).thenReturn("teste@teste.com");
-        when(userService.getUserByPersonId(persont)).thenReturn(user);
-        when(userService.returnEmailUser()).thenReturn(new Users());
+        when(userServiceImpl.getUserByPersonId(persont)).thenReturn(user);
+        when(userServiceImpl.returnEmailUser()).thenReturn(new Users());
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(persont));
         when(repository.save(any(Person.class)))
                 .thenAnswer(invocation -> {

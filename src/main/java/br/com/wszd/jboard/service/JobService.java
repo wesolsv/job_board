@@ -11,7 +11,6 @@ import br.com.wszd.jboard.repository.JobRepository;
 import br.com.wszd.jboard.util.ValidacaoUsuarioLogged;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class JobService {
     private JobRepository repository;
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Autowired
     private CompanyRepository companyRepository;
@@ -39,9 +38,9 @@ public class JobService {
 
         List<JobDTO> listReturn = new ArrayList<>();
 
-        Users user = userService.returnEmailUser();
+        Users user = userServiceImpl.returnEmailUser();
 
-        ValidacaoUsuarioLogged.validEmailUsuario(user.getCompanyId(), userService.returnEmailUser());
+        ValidacaoUsuarioLogged.validEmailUsuario(user.getCompanyId(), userServiceImpl.returnEmailUser());
 
         for(JobDTO job : list){
             if(job.getCompanyId() == user.getCompanyId().getId()){
@@ -67,7 +66,7 @@ public class JobService {
                 () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
 
         Optional<Company> company = companyRepository.findById(realJob.getCompanyId().getId());
-        ValidacaoUsuarioLogged.validEmailUsuario(company.get().getId(), userService.returnEmailUser());
+        ValidacaoUsuarioLogged.validEmailUsuario(company.get().getId(), userServiceImpl.returnEmailUser());
 
         JobDTO job = new JobDTO.Builder()
                         .id(realJob.getId())
@@ -94,8 +93,8 @@ public class JobService {
     public Job createNewJob(Job novo) {
         log.info("Adicionando nova job");
 
-        ValidacaoUsuarioLogged.validEmailUsuario(novo.getCompanyId(), userService.returnEmailUser());
-        Users user =  userService.returnEmailUser();
+        ValidacaoUsuarioLogged.validEmailUsuario(novo.getCompanyId(), userServiceImpl.returnEmailUser());
+        Users user =  userServiceImpl.returnEmailUser();
         Optional<Company> company = companyRepository.findById(user.getCompanyId().getId());
 
         Job job;
@@ -127,7 +126,7 @@ public class JobService {
 
         Optional<Company> company = companyRepository.findById(returnJob.getCompanyId().getId());
 
-        ValidacaoUsuarioLogged.validEmailUsuario(novo.getCompanyId(), userService.returnEmailUser());
+        ValidacaoUsuarioLogged.validEmailUsuario(novo.getCompanyId(), userServiceImpl.returnEmailUser());
 
         returnJob = repository.save(novo);
 
@@ -152,7 +151,7 @@ public class JobService {
         log.info("Deletando Job");
         Optional<Company> company = companyRepository.findById(getJob(id).getCompanyId().getId());
 
-        ValidacaoUsuarioLogged.validEmailUsuario(getJob(id).getCompanyId(), userService.returnEmailUser());
+        ValidacaoUsuarioLogged.validEmailUsuario(getJob(id).getCompanyId(), userServiceImpl.returnEmailUser());
 
         deleteOneJob(id);
     }

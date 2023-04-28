@@ -5,6 +5,7 @@ import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
+import br.com.wszd.jboard.service.interfaces.IEmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -22,7 +23,7 @@ public class EmailServiceImpl implements IEmailService {
     @Autowired
     private CompanyService companyService;
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     public void sendEmailToUserCreateUsers(Users user) {
 

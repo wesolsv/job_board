@@ -7,7 +7,7 @@ import br.com.wszd.jboard.model.Role;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.UserRepository;
 import br.com.wszd.jboard.service.EmailServiceImpl;
-import br.com.wszd.jboard.service.UserService;
+import br.com.wszd.jboard.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class UserServiceTest {
+public class UserServiceImplTest {
 
     @MockBean
     private UserRepository repository;
@@ -31,7 +31,7 @@ public class UserServiceTest {
     private EmailServiceImpl emailService;
 
     @Autowired
-    private UserService service;
+    private UserServiceImpl service;
 
     @Test
     public void shouldCreateUserPerson() throws Exception {

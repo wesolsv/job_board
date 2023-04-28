@@ -7,6 +7,8 @@ import br.com.wszd.jboard.model.LogTable;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
+import br.com.wszd.jboard.service.interfaces.IEmailService;
+import br.com.wszd.jboard.service.interfaces.IUserService;
 import br.com.wszd.jboard.util.LogStatus;
 import br.com.wszd.jboard.util.ValidacaoUsuarioLogged;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +30,7 @@ public class PersonService {
     @Autowired
     private PersonRepository repository;
     @Autowired
-    private UserService userService;
+    private IUserService userService;
     @Autowired
     private LogService logService;
 

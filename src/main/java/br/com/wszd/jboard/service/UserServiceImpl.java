@@ -10,6 +10,7 @@ import br.com.wszd.jboard.repository.UserRepository;
 import br.com.wszd.jboard.security.JWTCreator;
 import br.com.wszd.jboard.security.JWTObject;
 import br.com.wszd.jboard.security.SecurityConfig;
+import br.com.wszd.jboard.service.interfaces.IUserService;
 import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class UserService {
+public class UserServiceImpl implements IUserService {
 
   @Autowired
   private UserRepository userRepository;
