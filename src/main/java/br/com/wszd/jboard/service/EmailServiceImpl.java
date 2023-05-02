@@ -21,7 +21,7 @@ public class EmailServiceImpl implements IEmailService {
     @Autowired
     private PersonServiceImpl personServiceImpl;
     @Autowired
-    private CompanyService companyService;
+    private CompanyServiceImpl companyServiceImpl;
     @Autowired
     private UserServiceImpl userServiceImpl;
 
@@ -32,7 +32,7 @@ public class EmailServiceImpl implements IEmailService {
         String toEmail = "";
 
         if(user.getCompanyId() != null){
-            company = companyService.getCompany(user.getCompanyId().getId());
+            company = companyServiceImpl.getCompany(user.getCompanyId().getId());
             toEmail = company.getEmail();
         }else{
             person = personServiceImpl.getPerson(user.getPersonId().getId());

@@ -25,7 +25,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class CompanyService {
+public class CompanyServiceImpl implements ICompanyService{
 
     @Autowired
     private CompanyRepository repository;

@@ -3,7 +3,7 @@ package br.com.wszd.jboard.controller;
 import br.com.wszd.jboard.dto.CompanyDTO;
 import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.model.Company;
-import br.com.wszd.jboard.service.CompanyService;
+import br.com.wszd.jboard.service.CompanyServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +21,7 @@ import java.util.Optional;
 public class CompanyController {
 
     @Autowired
-    private CompanyService service;
+    private CompanyServiceImpl service;
 
     @ApiOperation(value = "Retorna todas as empresas")
     @GetMapping

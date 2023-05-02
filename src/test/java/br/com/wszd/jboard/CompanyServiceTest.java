@@ -4,7 +4,7 @@ import br.com.wszd.jboard.dto.CompanyDTO;
 import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.CompanyRepository;
-import br.com.wszd.jboard.service.CompanyService;
+import br.com.wszd.jboard.service.CompanyServiceImpl;
 import br.com.wszd.jboard.service.EmailServiceImpl;
 import br.com.wszd.jboard.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ public class CompanyServiceTest {
     @MockBean
     private EmailServiceImpl emailService;
     @Autowired
-    private CompanyService service;
+    private CompanyServiceImpl service;
 
     @Test
     public void shouldCreateCompany() throws Exception {
