@@ -5,7 +5,7 @@ import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
 import br.com.wszd.jboard.service.EmailServiceImpl;
-import br.com.wszd.jboard.service.PersonService;
+import br.com.wszd.jboard.service.PersonServiceImpl;
 import br.com.wszd.jboard.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class PersonServiceTest {
     private EmailServiceImpl emailService;
 
     @Autowired
-    private PersonService service;
+    private PersonServiceImpl service;
 
     @Test
     public void shouldCreatePerson() throws Exception {

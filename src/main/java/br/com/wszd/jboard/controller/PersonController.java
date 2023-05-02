@@ -4,8 +4,8 @@ import br.com.wszd.jboard.dto.PersonCandidacyDTO;
 import br.com.wszd.jboard.dto.PersonDTO;
 import br.com.wszd.jboard.model.Candidacy;
 import br.com.wszd.jboard.model.Person;
-import br.com.wszd.jboard.service.CandidacyService;
-import br.com.wszd.jboard.service.PersonService;
+import br.com.wszd.jboard.service.CandidacyServiceImpl;
+import br.com.wszd.jboard.service.PersonServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +23,10 @@ import java.util.List;
 public class PersonController {
 
     @Autowired
-    private PersonService service;
+    private PersonServiceImpl service;
 
     @Autowired
-    private CandidacyService candidacyService;
+    private CandidacyServiceImpl candidacyServiceImpl;
 
     @ApiOperation(value = "Retorna todas as pessoas")
     @GetMapping
@@ -79,7 +79,7 @@ public class PersonController {
     @ApiOperation(value = "Realizar candidatura a uma vaga")
     @PostMapping("/candidacy")
     public ResponseEntity<Candidacy> candidacyPerson(@RequestBody Candidacy candidacy){
-        Candidacy cand = candidacyService.createNewCandidacy(candidacy);
+        Candidacy cand = candidacyServiceImpl.createNewCandidacy(candidacy);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -91,6 +91,6 @@ public class PersonController {
     @ApiOperation(value = "Retorna todas as candidaturas da pessoa")
     @GetMapping("/candidacy/{id}")
     public ArrayList<PersonCandidacyDTO> allCandidacyByPersonId(@PathVariable Long id){
-        return candidacyService.getAllCandidacyByPersonId(id);
+        return candidacyServiceImpl.getAllCandidacyByPersonId(id);
     }
 }

@@ -2,7 +2,7 @@ package br.com.wszd.jboard.controller;
 
 import br.com.wszd.jboard.dto.CandidacyDTO;
 import br.com.wszd.jboard.model.Candidacy;
-import br.com.wszd.jboard.service.CandidacyService;
+import br.com.wszd.jboard.service.CandidacyServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,7 +19,7 @@ import java.util.List;
 public class CandidacyController {
 
     @Autowired
-    private CandidacyService service;
+    private CandidacyServiceImpl service;
 
     @ApiOperation(value = "Retorna todas as candidaturas")
     @GetMapping

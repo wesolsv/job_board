@@ -19,7 +19,7 @@ public class EmailServiceImpl implements IEmailService {
     @Autowired
     private JavaMailSender mailSender;
     @Autowired
-    private PersonService personService;
+    private PersonServiceImpl personServiceImpl;
     @Autowired
     private CompanyService companyService;
     @Autowired
@@ -35,7 +35,7 @@ public class EmailServiceImpl implements IEmailService {
             company = companyService.getCompany(user.getCompanyId().getId());
             toEmail = company.getEmail();
         }else{
-            person = personService.getPerson(user.getPersonId().getId());
+            person = personServiceImpl.getPerson(user.getPersonId().getId());
             toEmail = person.getEmail();
         }
 
@@ -62,7 +62,7 @@ public class EmailServiceImpl implements IEmailService {
 
     public void sendEmailNewCandidacy(Person person, Job job) {
 
-        String toEmail = personService.getPerson(person.getId()).getEmail();
+        String toEmail = personServiceImpl.getPerson(person.getId()).getEmail();
 
         String subject = "Parabéns pela nova candidatura";
         String body = "Agora é só aguardar o retorno da Empresa "
@@ -73,7 +73,7 @@ public class EmailServiceImpl implements IEmailService {
 
     public void sendEmailNewHire(Person person, Job job) {
 
-        String toEmail = personService.getPerson(person.getId()).getEmail();
+        String toEmail = personServiceImpl.getPerson(person.getId()).getEmail();
 
         String subject = "Parabéns você foi aprovado";
         String body = "Parabéns você foi aprovado pela Empresa "

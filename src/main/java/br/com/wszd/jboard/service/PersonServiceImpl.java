@@ -9,6 +9,7 @@ import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
 import br.com.wszd.jboard.service.interfaces.IEmailService;
 import br.com.wszd.jboard.service.interfaces.ILogService;
+import br.com.wszd.jboard.service.interfaces.IPersonService;
 import br.com.wszd.jboard.service.interfaces.IUserService;
 import br.com.wszd.jboard.util.LogStatus;
 import br.com.wszd.jboard.util.ValidacaoUsuarioLogged;
@@ -24,7 +25,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class PersonService {
+public class PersonServiceImpl implements IPersonService {
 
     @Autowired
     private IEmailService emailService;

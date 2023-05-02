@@ -7,9 +7,7 @@ import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
 import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.*;
 import br.com.wszd.jboard.repository.*;
-import br.com.wszd.jboard.service.interfaces.IEmailService;
-import br.com.wszd.jboard.service.interfaces.ILogService;
-import br.com.wszd.jboard.service.interfaces.IUserService;
+import br.com.wszd.jboard.service.interfaces.*;
 import br.com.wszd.jboard.util.JobStatus;
 import br.com.wszd.jboard.util.LogStatus;
 import br.com.wszd.jboard.util.ValidacaoUsuarioLogged;
@@ -32,13 +30,13 @@ public class CompanyService {
     @Autowired
     private CompanyRepository repository;
     @Autowired
-    private CandidacyService candidacyService;
+    private ICandidacyService candidacyService;
     @Autowired
-    private PersonService personService;
+    private IPersonService personService;
     @Autowired
-    private JobServiceImpl jobServiceImpl;
+    private IJobService jobService;
     @Autowired
-    private IUserService userServiceImpl;
+    private IUserService userService;
     @Autowired
     private IEmailService emailService;
     @Autowired
@@ -82,7 +80,7 @@ public class CompanyService {
 
         if (repository.findByEmail(novo.getEmail()) != null
                 && repository.findByCnpj(novo.getCnpj()) != null
-                && userServiceImpl.findByEmail(novo.getEmail()) != null) {
+                && userService.findByEmail(novo.getEmail()) != null) {
             createLog(novo.toString(), "/company", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
             throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
         }
@@ -97,7 +95,7 @@ public class CompanyService {
                 .build();
 
         company = repository.save(company);
-        userServiceImpl.createUsers(company);
+        userService.createUsers(company);
 
         return new CompanyDTO.Builder()
                 .id(company.getId())
@@ -115,20 +113,20 @@ public class CompanyService {
         novo.setId(id);
 
         //validando se a pessoa que está editando pode realizar a ação
-        ValidacaoUsuarioLogged.validEmailUsuario(getCompany(id), userServiceImpl.returnEmailUser());
+        ValidacaoUsuarioLogged.validEmailUsuario(getCompany(id), userService.returnEmailUser());
 
         //Salvando alteracao do usuario
         log.info("Salvando empresa editada");
         repository.save(novo);
 
         //Editando email do usuario editado anteriormente
-        Users user = userServiceImpl.getUserByCompanyId(getCompany(id));
+        Users user = userService.getUserByCompanyId(getCompany(id));
         user.setEmail(novo.getEmail());
-        userServiceImpl.editUser(user);
+        userService.editUser(user);
 
         //Salvando o log da edicao efetuada
         createLog(novo.toString(), "/company{" + id + "}",
-                userServiceImpl.getUserByCompanyId(getCompany(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
+                userService.getUserByCompanyId(getCompany(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
 
         //Enviando Email
         emailService.sendEmailEditUser(novo);
@@ -146,8 +144,8 @@ public class CompanyService {
         log.info("Deletando empresa");
         //Validando a existencia da company e usuario vinculado e excluindo ambos
         Company company = getCompany(id);
-        Users user = userServiceImpl.getUserByCompanyId(company);
-        userServiceImpl.deleteUser(user.getId());
+        Users user = userService.getUserByCompanyId(company);
+        userService.deleteUser(user.getId());
         deleteOneCompany(id);
 
         //Salvando o log do delete efetuada
@@ -164,7 +162,7 @@ public class CompanyService {
 
         List<Optional<PersonDTO>> pessoas = new ArrayList<>();
         List<CandidacyDTO> candidaturas = candidacyService.getAllCandidacy();
-        Job job = jobServiceImpl.getJob(jobId);
+        Job job = jobService.getJob(jobId);
         Optional<Company> realCompany = repository.findById(job.getCompanyId().getId());
 
         Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -188,7 +186,7 @@ public class CompanyService {
         //validando se pessoa existe e se job existe
 
         Person person = personService.getPerson(personId);
-        Job job = jobServiceImpl.getJob(jobId);
+        Job job = jobService.getJob(jobId);
         Optional<Company> realCompany = repository.findById(job.getCompanyId().getId());
 
         Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -199,12 +197,12 @@ public class CompanyService {
         try {
             for (Optional<PersonDTO> p : pessoas) {
                 if (p.get().getId() == personId) {
-                    job = jobServiceImpl.getJob(jobId);
+                    job = jobService.getJob(jobId);
                     job.setPersonId(personService.getPerson(personId));
                     job.setStatus(JobStatus.COMPLETED);
 
                     candidacyService.deleteAllCandidacy(jobId);
-                    jobServiceImpl.saveEditJob(job);
+                    jobService.saveEditJob(job);
                 }
             }
         } catch (ResourceBadRequestException e) {
@@ -216,7 +214,7 @@ public class CompanyService {
     public void validEmailUser(Company company, String emailRequest) {
         log.info("Validando usuario");
 
-        Users user = userServiceImpl.findByEmail(emailRequest);
+        Users user = userService.findByEmail(emailRequest);
 
         ArrayList<String> rolesRetorno = new ArrayList<>();
 

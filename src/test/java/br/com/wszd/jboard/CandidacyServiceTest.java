@@ -6,10 +6,10 @@ import br.com.wszd.jboard.model.Company;
 import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.repository.CandidacyRepository;
-import br.com.wszd.jboard.service.CandidacyService;
+import br.com.wszd.jboard.service.CandidacyServiceImpl;
 import br.com.wszd.jboard.service.EmailServiceImpl;
 import br.com.wszd.jboard.service.JobServiceImpl;
-import br.com.wszd.jboard.service.PersonService;
+import br.com.wszd.jboard.service.PersonServiceImpl;
 import br.com.wszd.jboard.util.CandidacyStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,13 +32,13 @@ public class CandidacyServiceTest {
     @MockBean
     private CandidacyRepository repository;
     @MockBean
-    private PersonService personService;
+    private PersonServiceImpl personServiceImpl;
     @MockBean
     private JobServiceImpl jobServiceImpl;
     @MockBean
     private EmailServiceImpl emailService;
     @Autowired
-    private CandidacyService service;
+    private CandidacyServiceImpl service;
 
     @Test
     @DisplayName("deve criar uma nova candidatura")
@@ -56,7 +56,7 @@ public class CandidacyServiceTest {
         when(candidatura.getJob().getId()).thenReturn(idJob);
         when(company.getName()).thenReturn("Test Company");
         when(job.getCompanyId()).thenReturn(company);
-        when(personService.getPerson(idPessoa)).thenReturn(pessoa);
+        when(personServiceImpl.getPerson(idPessoa)).thenReturn(pessoa);
         when(jobServiceImpl.getJob(idJob)).thenReturn(job);
         when(repository.save(candidatura)).thenReturn(candidatura);
         service.createNewCandidacy(candidatura);
