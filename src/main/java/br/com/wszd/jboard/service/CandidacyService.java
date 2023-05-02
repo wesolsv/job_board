@@ -29,7 +29,7 @@ public class CandidacyService {
     @Autowired
     private EmailServiceImpl emailService;
     @Autowired
-    private JobService jobService;
+    private JobServiceImpl jobServiceImpl;
 
     public List<CandidacyDTO> getAllCandidacy(){
         log.info("Buscando todas as candidaturas");
@@ -64,7 +64,7 @@ public class CandidacyService {
 
         //Validar se job e pessoa existe e se o status do job é completed, caso for, não é possível me candidatar
         Person person = personService.getPerson(novo.getPersonId().getId());
-        Job job = jobService.getJob(novo.getJob().getId());
+        Job job = jobServiceImpl.getJob(novo.getJob().getId());
         if(job.getStatus() == JobStatus.COMPLETED){
             throw new ResourceBadRequestException("Esta vaga não está disponível");
         }

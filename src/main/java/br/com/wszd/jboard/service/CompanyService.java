@@ -36,7 +36,7 @@ public class CompanyService {
     @Autowired
     private PersonService personService;
     @Autowired
-    private JobService jobService;
+    private JobServiceImpl jobServiceImpl;
     @Autowired
     private IUserService userServiceImpl;
     @Autowired
@@ -164,7 +164,7 @@ public class CompanyService {
 
         List<Optional<PersonDTO>> pessoas = new ArrayList<>();
         List<CandidacyDTO> candidaturas = candidacyService.getAllCandidacy();
-        Job job = jobService.getJob(jobId);
+        Job job = jobServiceImpl.getJob(jobId);
         Optional<Company> realCompany = repository.findById(job.getCompanyId().getId());
 
         Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -188,7 +188,7 @@ public class CompanyService {
         //validando se pessoa existe e se job existe
 
         Person person = personService.getPerson(personId);
-        Job job = jobService.getJob(jobId);
+        Job job = jobServiceImpl.getJob(jobId);
         Optional<Company> realCompany = repository.findById(job.getCompanyId().getId());
 
         Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -199,12 +199,12 @@ public class CompanyService {
         try {
             for (Optional<PersonDTO> p : pessoas) {
                 if (p.get().getId() == personId) {
-                    job = jobService.getJob(jobId);
+                    job = jobServiceImpl.getJob(jobId);
                     job.setPersonId(personService.getPerson(personId));
                     job.setStatus(JobStatus.COMPLETED);
 
                     candidacyService.deleteAllCandidacy(jobId);
-                    jobService.saveEditJob(job);
+                    jobServiceImpl.saveEditJob(job);
                 }
             }
         } catch (ResourceBadRequestException e) {

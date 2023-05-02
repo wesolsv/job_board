@@ -4,7 +4,7 @@ import br.com.wszd.jboard.dto.JobDTO;
 import br.com.wszd.jboard.model.*;
 import br.com.wszd.jboard.repository.CompanyRepository;
 import br.com.wszd.jboard.repository.JobRepository;
-import br.com.wszd.jboard.service.JobService;
+import br.com.wszd.jboard.service.JobServiceImpl;
 import br.com.wszd.jboard.service.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class JobServiceTest {
     @MockBean
     private CompanyRepository companyRepository;
     @Autowired
-    private JobService service;
+    private JobServiceImpl service;
 
     @Test
     public void shouldCreateJob() throws Exception {

@@ -8,7 +8,7 @@ import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.repository.CandidacyRepository;
 import br.com.wszd.jboard.service.CandidacyService;
 import br.com.wszd.jboard.service.EmailServiceImpl;
-import br.com.wszd.jboard.service.JobService;
+import br.com.wszd.jboard.service.JobServiceImpl;
 import br.com.wszd.jboard.service.PersonService;
 import br.com.wszd.jboard.util.CandidacyStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +34,7 @@ public class CandidacyServiceTest {
     @MockBean
     private PersonService personService;
     @MockBean
-    private JobService jobService;
+    private JobServiceImpl jobServiceImpl;
     @MockBean
     private EmailServiceImpl emailService;
     @Autowired
@@ -57,7 +57,7 @@ public class CandidacyServiceTest {
         when(company.getName()).thenReturn("Test Company");
         when(job.getCompanyId()).thenReturn(company);
         when(personService.getPerson(idPessoa)).thenReturn(pessoa);
-        when(jobService.getJob(idJob)).thenReturn(job);
+        when(jobServiceImpl.getJob(idJob)).thenReturn(job);
         when(repository.save(candidatura)).thenReturn(candidatura);
         service.createNewCandidacy(candidatura);
 

@@ -8,6 +8,7 @@ import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.CompanyRepository;
 import br.com.wszd.jboard.repository.JobRepository;
+import br.com.wszd.jboard.service.interfaces.IJobService;
 import br.com.wszd.jboard.util.ValidacaoUsuarioLogged;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class JobService {
+public class JobServiceImpl implements IJobService {
 
     @Autowired
     private JobRepository repository;

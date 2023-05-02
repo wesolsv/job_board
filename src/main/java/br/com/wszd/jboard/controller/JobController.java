@@ -2,7 +2,7 @@ package br.com.wszd.jboard.controller;
 
 import br.com.wszd.jboard.dto.JobDTO;
 import br.com.wszd.jboard.model.Job;
-import br.com.wszd.jboard.service.JobService;
+import br.com.wszd.jboard.service.JobServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.List;
 public class JobController {
 
     @Autowired
-    private JobService service;
+    private JobServiceImpl service;
 
     @ApiOperation(value = "Retorna todas os empregos")
     @GetMapping
