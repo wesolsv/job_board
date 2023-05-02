@@ -18,7 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -81,7 +80,7 @@ public class CompanyServiceImpl implements ICompanyService{
         if (repository.findByEmail(novo.getEmail()) != null
                 && repository.findByCnpj(novo.getCnpj()) != null
                 && userService.findByEmail(novo.getEmail()) != null) {
-            createLog(novo.toString(), "/company", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
+            logService.createLog(novo.toString(), "/company", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
             throw new ResourceBadRequestException("Email ou CNPJ já cadastrado, verfique seus dados");
         }
 
@@ -125,7 +124,7 @@ public class CompanyServiceImpl implements ICompanyService{
         userService.editUser(user);
 
         //Salvando o log da edicao efetuada
-        createLog(novo.toString(), "/company{" + id + "}",
+        logService.createLog(novo.toString(), "/company{" + id + "}",
                 userService.getUserByCompanyId(getCompany(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
 
         //Enviando Email
@@ -149,7 +148,7 @@ public class CompanyServiceImpl implements ICompanyService{
         deleteOneCompany(id);
 
         //Salvando o log do delete efetuada
-        createLog("Delete Company", "/company{" + id + "}",
+        logService.createLog("Delete Company", "/company{" + id + "}",
                 user.getId(), LogStatus.SUCESSO, HttpMethod.DELETE.toString());
     }
 
@@ -228,19 +227,5 @@ public class CompanyServiceImpl implements ICompanyService{
         } else {
             throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
         }
-    }
-
-    public void createLog(String payload, String endpoint, Long userId, LogStatus status, String method) {
-        log.info("Gerando Log");
-        LogTable log = new LogTable.Builder()
-                .payload(payload)
-                .endpoint(endpoint)
-                .userId(userId)
-                .status(status)
-                .dataInclusao(LocalDateTime.now())
-                .method(method)
-                .build();
-
-        logService.createLog(log);
     }
 }

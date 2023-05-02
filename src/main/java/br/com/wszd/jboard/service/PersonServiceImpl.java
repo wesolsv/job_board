@@ -19,7 +19,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,7 +72,7 @@ public class PersonServiceImpl implements IPersonService {
         log.info("Adicionando nova pessoa");
 
           if(repository.findByEmail(novo.getEmail()) != null && repository.findByCpf(novo.getCpf()) != null && userService.findByEmail(novo.getEmail())!= null){
-              createLog(novo.toString(), "/person", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
+              logService.createLog(novo.toString(), "/person", 0L, LogStatus.ERRO, HttpMethod.POST.toString());
               throw new ResourceBadRequestException("Email ou CPF já cadastrado, verfique seus dados");
           }
 
@@ -116,7 +115,7 @@ public class PersonServiceImpl implements IPersonService {
         userService.editUser(user);
 
         //Salvando o log da edicao efetuada
-        createLog(novo.toString(),"/person{" + id +"}",
+        logService.createLog(novo.toString(), "/person{" + id + "}",
                 userService.getUserByPersonId(getPerson(id)).getId(), LogStatus.SUCESSO, HttpMethod.PUT.toString());
 
         //Enviando email
@@ -142,7 +141,7 @@ public class PersonServiceImpl implements IPersonService {
         deleteOnePerson(id);
 
         //Salvando o log do delete efetuada
-        createLog("Delete Person","/person{" + id +"}",
+        logService.createLog("Delete Person","/person{" + id +"}",
                 user.getId(), LogStatus.SUCESSO, HttpMethod.DELETE.toString());
     }
 
@@ -154,19 +153,5 @@ public class PersonServiceImpl implements IPersonService {
     public Optional<PersonDTO> listPersonByCandidacyJobId(Long id) {
         log.info("Listando candidaturas por pessoa");
         return repository.listPersonByCandidacyJobId(id);
-    }
-
-    public void createLog(String payload, String endpoint, Long userId, LogStatus status, String method){
-        log.info("Criando log");
-        LogTable log = new LogTable.Builder()
-                .payload(payload)
-                .endpoint(endpoint)
-                .userId(userId)
-                .status(status)
-                .dataInclusao(LocalDateTime.now())
-                .method(method)
-                .build();
-
-        logService.createLog(log);
     }
 }

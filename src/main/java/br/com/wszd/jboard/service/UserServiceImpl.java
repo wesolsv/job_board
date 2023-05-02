@@ -10,6 +10,7 @@ import br.com.wszd.jboard.repository.UserRepository;
 import br.com.wszd.jboard.security.JWTCreator;
 import br.com.wszd.jboard.security.JWTObject;
 import br.com.wszd.jboard.security.SecurityConfig;
+import br.com.wszd.jboard.service.interfaces.ILogService;
 import br.com.wszd.jboard.service.interfaces.IUserService;
 import br.com.wszd.jboard.util.LogStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +34,7 @@ public class UserServiceImpl implements IUserService {
   private EmailServiceImpl emailService;
 
   @Autowired
-  private LogServiceImpl logServiceImpl;
+  private ILogService logService;
 
   public BCryptPasswordEncoder passwordEncoder(){
     return new BCryptPasswordEncoder();
@@ -104,7 +104,7 @@ public class UserServiceImpl implements IUserService {
     emailService.sendEmailToUserCreateUsers(user);
 
     //Criando log de inserção
-    createLog(entity.toString(), "/"+entity.getClass().getSimpleName(), user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
+    logService.createLog(entity.toString(), "/"+entity.getClass().getSimpleName(), user.getId(), LogStatus.SUCESSO, HttpMethod.POST.toString());
   }
 
   public Users getUserByPersonId(Person person) {
@@ -162,20 +162,6 @@ public class UserServiceImpl implements IUserService {
       throw new ResourceObjectNotFoundException("Usuário não encotrado");
     }
 
-  }
-
-  public void createLog(String payload, String endpoint, Long userId, LogStatus status, String method) {
-    log.info("Gerando Log");
-    LogTable log = new LogTable.Builder()
-            .payload(payload)
-            .endpoint(endpoint)
-            .userId(userId)
-            .status(status)
-            .dataInclusao(LocalDateTime.now())
-            .method(method)
-            .build();
-
-    logServiceImpl.createLog(log);
   }
 
 }
