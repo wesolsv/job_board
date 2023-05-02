@@ -7,6 +7,9 @@ import br.com.wszd.jboard.exceptions.ResourceBadRequestException;
 import br.com.wszd.jboard.exceptions.ResourceObjectNotFoundException;
 import br.com.wszd.jboard.model.*;
 import br.com.wszd.jboard.repository.*;
+import br.com.wszd.jboard.service.interfaces.IEmailService;
+import br.com.wszd.jboard.service.interfaces.ILogService;
+import br.com.wszd.jboard.service.interfaces.IUserService;
 import br.com.wszd.jboard.util.JobStatus;
 import br.com.wszd.jboard.util.LogStatus;
 import br.com.wszd.jboard.util.ValidacaoUsuarioLogged;
@@ -35,12 +38,11 @@ public class CompanyService {
     @Autowired
     private JobService jobService;
     @Autowired
-    private UserServiceImpl userServiceImpl;
+    private IUserService userServiceImpl;
     @Autowired
-    private EmailServiceImpl emailService;
-
+    private IEmailService emailService;
     @Autowired
-    private LogService logService;
+    private ILogService logService;
 
     private BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

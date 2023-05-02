@@ -34,7 +34,7 @@ public class UserServiceImpl implements IUserService {
   private EmailServiceImpl emailService;
 
   @Autowired
-  private LogService logService;
+  private LogServiceImpl logServiceImpl;
 
   public BCryptPasswordEncoder passwordEncoder(){
     return new BCryptPasswordEncoder();
@@ -175,7 +175,7 @@ public class UserServiceImpl implements IUserService {
             .method(method)
             .build();
 
-    logService.createLog(log);
+    logServiceImpl.createLog(log);
   }
 
 }

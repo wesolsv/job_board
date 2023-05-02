@@ -8,6 +8,7 @@ import br.com.wszd.jboard.model.Person;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.PersonRepository;
 import br.com.wszd.jboard.service.interfaces.IEmailService;
+import br.com.wszd.jboard.service.interfaces.ILogService;
 import br.com.wszd.jboard.service.interfaces.IUserService;
 import br.com.wszd.jboard.util.LogStatus;
 import br.com.wszd.jboard.util.ValidacaoUsuarioLogged;
@@ -32,7 +33,7 @@ public class PersonService {
     @Autowired
     private IUserService userService;
     @Autowired
-    private LogService logService;
+    private ILogService logService;
 
 
     private BCryptPasswordEncoder passwordEncoder(){
