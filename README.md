@@ -7,6 +7,8 @@ uma vaga publicada por uma empresa e a empresa poderá buscar e selecionar os ca
 * Utilizado o banco de dados PostgreSQL para criar as tabelas, ao rodar o projeto o script para seed ocorre automaticamente.
 * Implementado o spring security, adicionado controle de usuários, jwt e serviço para envio de e-mail ao usuário.
 * Implementada a documentação da aplicação com o Swagger.
+* Aplicados também princípios S.O.L.I.D.
+* Utilizado Builder para construção de objetos.
 
 **Para instalar o projeto: mvn clean install**
 
