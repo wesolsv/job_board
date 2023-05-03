@@ -8,6 +8,7 @@ import br.com.wszd.jboard.model.Job;
 import br.com.wszd.jboard.model.Users;
 import br.com.wszd.jboard.repository.CompanyRepository;
 import br.com.wszd.jboard.repository.JobRepository;
+import br.com.wszd.jboard.service.interfaces.ICompanyService;
 import br.com.wszd.jboard.service.interfaces.IJobService;
 import br.com.wszd.jboard.util.ValidacaoUsuarioLogged;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class JobServiceImpl implements IJobService {
     private UserServiceImpl userServiceImpl;
 
     @Autowired
-    private CompanyRepository companyRepository;
+    private ICompanyService companyService;
 
     public List<JobDTO> getAllJobs(){
         log.info("Buscando todas os jobs");
@@ -66,8 +67,8 @@ public class JobServiceImpl implements IJobService {
         Job realJob =  repository.findById(id).orElseThrow(
                 () ->  new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
 
-        Optional<Company> company = companyRepository.findById(realJob.getCompanyId().getId());
-        ValidacaoUsuarioLogged.validEmailUsuario(company.get().getId(), userServiceImpl.returnEmailUser());
+        Company company = companyService.getCompany(realJob.getCompanyId().getId());
+        ValidacaoUsuarioLogged.validEmailUsuario(company.getId(), userServiceImpl.returnEmailUser());
 
         JobDTO job = new JobDTO.Builder()
                         .id(realJob.getId())
@@ -79,7 +80,7 @@ public class JobServiceImpl implements IJobService {
                         .status(realJob.getStatus())
                         .companyName(realJob.getCompanyId().getName())
                         .datePublish(realJob.getDatePublish())
-                        .companyId(company.get().getId())
+                        .companyId(company.getId())
                         .build();
         return job;
     }
@@ -96,7 +97,7 @@ public class JobServiceImpl implements IJobService {
 
         ValidacaoUsuarioLogged.validEmailUsuario(novo.getCompanyId(), userServiceImpl.returnEmailUser());
         Users user =  userServiceImpl.returnEmailUser();
-        Optional<Company> company = companyRepository.findById(user.getCompanyId().getId());
+        Company company = companyService.getCompany(user.getCompanyId().getId());
 
         Job job;
         try{
@@ -108,7 +109,7 @@ public class JobServiceImpl implements IJobService {
                     .benefits(novo.getBenefits().toUpperCase())
                     .status(novo.getStatus())
                     .personId(novo.getPersonId())
-                    .companyId(company.get())
+                    .companyId(company)
                     .build();
 
             repository.save(job);
@@ -124,8 +125,6 @@ public class JobServiceImpl implements IJobService {
         novo.setDatePublish(returnJob.getDatePublish());
         novo.setId(id);
         novo.setCompanyId(returnJob.getCompanyId());
-
-        Optional<Company> company = companyRepository.findById(returnJob.getCompanyId().getId());
 
         ValidacaoUsuarioLogged.validEmailUsuario(novo.getCompanyId(), userServiceImpl.returnEmailUser());
 
@@ -150,7 +149,6 @@ public class JobServiceImpl implements IJobService {
 
     public void deleteJob(Long id){
         log.info("Deletando Job");
-        Optional<Company> company = companyRepository.findById(getJob(id).getCompanyId().getId());
 
         ValidacaoUsuarioLogged.validEmailUsuario(getJob(id).getCompanyId(), userServiceImpl.returnEmailUser());
 
