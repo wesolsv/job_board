@@ -26,7 +26,4 @@ public interface ICompanyService {
 
     public void hirePerson(Long personId, Long jobId);
 
-    public void validEmailUser(Company company, String emailRequest);
-
-
 }

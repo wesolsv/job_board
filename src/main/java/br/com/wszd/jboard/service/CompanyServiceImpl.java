@@ -30,6 +30,7 @@ public class CompanyServiceImpl implements ICompanyService{
     private CompanyRepository repository;
     @Autowired
     private ICandidacyService candidacyService;
+
     @Autowired
     private IPersonService personService;
     @Autowired
@@ -53,11 +54,9 @@ public class CompanyServiceImpl implements ICompanyService{
     public CompanyDTO getCompanyDTO(Long id) {
         log.info("Buscando empresa");
 
-        Company realCompany = repository.findById(id).orElseThrow(
-                () -> new ResourceObjectNotFoundException("Objeto não encontrado com o id = " + id));
+        Company realCompany = getCompany(id);
 
-        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(realCompany, email.toString());
+        ValidacaoUsuarioLogged.validEmailUsuario(realCompany, userService.returnEmailUser());
 
         return new CompanyDTO.Builder()
                 .id(realCompany.getId())
@@ -162,10 +161,9 @@ public class CompanyServiceImpl implements ICompanyService{
         List<Optional<PersonDTO>> pessoas = new ArrayList<>();
         List<CandidacyDTO> candidaturas = candidacyService.getAllCandidacy();
         Job job = jobService.getJob(jobId);
-        Optional<Company> realCompany = repository.findById(job.getCompanyId().getId());
 
-        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(realCompany.get(), email.toString());
+        Company realCompany = getCompany(job.getCompanyId().getId());
+        ValidacaoUsuarioLogged.validEmailUsuario(realCompany, userService.returnEmailUser());
 
         try {
             for (CandidacyDTO cd : candidaturas) {
@@ -186,10 +184,9 @@ public class CompanyServiceImpl implements ICompanyService{
 
         Person person = personService.getPerson(personId);
         Job job = jobService.getJob(jobId);
-        Optional<Company> realCompany = repository.findById(job.getCompanyId().getId());
 
-        Object email = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        validEmailUser(realCompany.get(), email.toString());
+        Company realCompany = getCompany(job.getCompanyId().getId());
+        ValidacaoUsuarioLogged.validEmailUsuario(realCompany, userService.returnEmailUser());
 
         List<Optional<PersonDTO>> pessoas = getAllPersonByJob(jobId);
 
@@ -208,24 +205,5 @@ public class CompanyServiceImpl implements ICompanyService{
             throw new ResourceBadRequestException("Não foi encontrada candidatura para a pessoa id " + personId);
         }
         emailService.sendEmailNewHire(person, job);
-    }
-
-    public void validEmailUser(Company company, String emailRequest) {
-        log.info("Validando usuario");
-
-        Users user = userService.findByEmail(emailRequest);
-
-        ArrayList<String> rolesRetorno = new ArrayList<>();
-
-        for (int i = 0; i < user.getRoles().size(); i++) {
-            String j = user.getRoles().get(i).getName() + "";
-            rolesRetorno.add(j);
-        }
-
-        if (rolesRetorno.contains("ADMIN") || company.getId().equals(user.getCompanyId().getId())) {
-            log.info("Validado email do usuario ou usuario é admin");
-        } else {
-            throw new ResourceBadRequestException("O usuário utilizado não tem acesso a este recurso");
-        }
     }
 }
